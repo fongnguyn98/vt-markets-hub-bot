@@ -333,7 +333,7 @@ def save_balance_state(st):
         json.dump(st, f, ensure_ascii=False, indent=2)
 
 
-def pick_balanced_post(buzz, preferred_cat=None):
+def pick_balanced_post(buzz, preferred_cat=None, _retried=False):
     st = load_balance_state()
     posted = set(st.get("posted_urls", []))
     counts = st.get("category_counts", {"kol": 0, "reddit": 0, "tiktok": 0, "vt": 0, "tintuc": 0})
@@ -362,8 +362,10 @@ def pick_balanced_post(buzz, preferred_cat=None):
     pool = pool_map.get(preferred_cat, []) or buzz.get("kol_posts", [])
 
     unseen = [p for p in pool if p.get("id_key", p.get("source_url")) not in posted]
-    if not unseen:
-        unseen = pool
+    if not unseen and not _retried:
+        # Không bao giờ quay vòng bài cũ! Tự động quét mới trực tiếp từ 4 Sheet ngay lập tức
+        fresh_buzz = generate_daily_buzz()
+        return pick_balanced_post(fresh_buzz, preferred_cat=preferred_cat, _retried=True)
 
     chosen = random.choice(unseen) if unseen else None
     if chosen:
@@ -373,7 +375,7 @@ def pick_balanced_post(buzz, preferred_cat=None):
         key_id = chosen.get("id_key") or chosen.get("source_url")
         if key_id:
             st.setdefault("posted_urls", []).append(key_id)
-            st["posted_urls"] = st["posted_urls"][-100:]
+            st["posted_urls"] = st["posted_urls"][-500:]
         save_balance_state(st)
     return preferred_cat, chosen
 
@@ -501,14 +503,16 @@ def build_actionable_news_insight(title_en, vi_title, vi_facts, market, idx, sou
 # QUÉT NHẬN ĐỊNH TIN TỨC, XU HƯỚNG VÀNG (XAU/USD) & DẦU (OIL) HÀNG NGÀY TỪ YOUTUBE KOL & PODCAST QUỐC TẾ
 # Bóc trực tiếp phụ đề lời nói (`YouTubeTranscriptApi`) của chuyên gia/KOL -> Trích dẫn 100% khách quan từ nguồn!
 # ==============================================================================
-def fetch_youtube_kol_news_forecasts(market):
+def fetch_youtube_kol_news_forecasts(market, posted_set=None):
+    posted_set = posted_set or set()
     gp = market["gold_price"]
     low_z = round(market.get("m15_bb_lower", gp - 5), 0)
     high_z = round(market.get("h1_ema20", gp + 15), 0)
 
     queries = [
         ("XAUUSD+gold+forecast+analysis+today", "Vàng (XAU/USD)"),
-        ("gold+oil+market+news+podcast+analysis", "Vàng & Dầu mỏ (WTI)")
+        ("gold+oil+market+news+podcast+analysis", "Vàng & Dầu mỏ (WTI)"),
+        ("DXY+dollar+gold+weekly+outlook+analysis", "Chỉ số USD (DXY) & Vàng")
     ]
     yt_forecasts = []
     yt_api = YouTubeTranscriptApi()
@@ -519,8 +523,9 @@ def fetch_youtube_kol_news_forecasts(market):
             search_url = f"https://www.youtube.com/results?search_query={q_str}&sp=CAI%253D"
             html = fetch_url(search_url, timeout=10)
             vids = re.findall(r'"videoId":"([a-zA-Z0-9_-]{11})"', html)
-            for vid in vids[:10]:
-                if vid in seen_vids:
+            for vid in vids[:15]:
+                id_key = f"yt_forecast_{vid}"
+                if vid in seen_vids or id_key in posted_set or f"https://www.youtube.com/watch?v={vid}" in posted_set:
                     continue
                 seen_vids.add(vid)
                 try:
@@ -564,7 +569,7 @@ def fetch_youtube_kol_news_forecasts(market):
                         f"💬 Đây là kịch bản dự báo từ phía kênh {author} (hiện bảng điện ghi nhận Vàng ở quanh ${gp:,.0f}, giữa hai mốc kỹ thuật ${low_z:,.0f} và ${high_z:,.0f}). Các sếp đánh giá nhận định này của {author} có hợp lý không hay các sếp có góc nhìn khác?"
                     )
                     yt_forecasts.append({
-                        "id_key": f"yt_forecast_{vid}",
+                        "id_key": id_key,
                         "title": vi_title,
                         "image_url": f"https://i.ytimg.com/vi/{vid}/maxresdefault.jpg",
                         "source_url": f"https://www.youtube.com/watch?v={vid}",
@@ -580,21 +585,30 @@ def fetch_youtube_kol_news_forecasts(market):
     return yt_forecasts
 
 
-def fetch_real_macro_articles(market):
+def fetch_real_macro_articles(market, posted_set=None):
+    posted_set = posted_set or set()
     candidates = []
     rss_feeds = [
         ("FXEmpire", "https://www.fxempire.com/api/v1/en/articles/rss/news"),
         ("CNBC", "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20910258"),
-        ("Investing.com", "https://www.investing.com/rss/news_1.rss"),
-        ("Investing.com", "https://www.investing.com/rss/news_11.rss")
+        ("CNBC Economy", "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15839069"),
+        ("Investing.com Forex", "https://www.investing.com/rss/news_1.rss"),
+        ("Investing.com Commodities", "https://www.investing.com/rss/news_11.rss"),
+        ("Investing.com Economy", "https://www.investing.com/rss/news_14.rss"),
+        ("Investing.com Indicators", "https://www.investing.com/rss/news_95.rss"),
+        ("MarketWatch", "https://feeds.content.dowjones.io/public/rss/mw_topstories")
     ]
+    seen_links = set()
     for src_label, rss_url in rss_feeds:
         try:
             raw_xml = fetch_url(rss_url)
             feed = feedparser.parse(raw_xml)
-            for entry in feed.entries[:15]:
+            for entry in feed.entries[:20]:
                 title = (entry.get("title") or "").strip()
                 link = (entry.get("link") or "").strip()
+                if not link or link in posted_set or link in seen_links:
+                    continue
+                seen_links.add(link)
                 summary = re.sub(r"<[^>]+>", "", (entry.get("summary") or entry.get("description") or "")).strip()
                 img_url = ""
                 if entry.get("links"):
@@ -614,10 +628,10 @@ def fetch_real_macro_articles(market):
 
     candidates.sort(key=lambda x: x["score"], reverse=True)
 
-    # Ưu tiên số 1 cho mục Tin tức & Nhận định xu hướng: Lấy trực tiếp video KOL & Podcast YouTube nhận định về Vàng, Dầu, Tin vĩ mô hàng ngày
-    macro_posts = fetch_youtube_kol_news_forecasts(market)
+    # Ưu tiên số 1 cho mục Tin tức & Nhận định xu hướng: Lấy trực tiếp video KOL & Podcast YouTube chưa từng đăng
+    macro_posts = fetch_youtube_kol_news_forecasts(market, posted_set=posted_set)
 
-    for idx, art in enumerate(candidates[:3]):
+    for idx, art in enumerate(candidates[:4]):
         vi_title = translate_en_to_vi(art["title"])
         vi_facts = ""
         og_img = art["image_url"]
@@ -648,6 +662,140 @@ def fetch_real_macro_articles(market):
         })
 
     return macro_posts
+
+
+# ==============================================================================
+# QUÉT ĐỘNG TRỰC TIẾP TỪ SHEET 2 (70 KÊNH YOUTUBE KOL QUỐC TẾ) & SHEET 3 (35 KÊNH TIKTOK KOL)
+# Lọc bỏ 100% bài/video đã đăng trong `posted_set` -> Không bao giờ lặp bài!
+# ==============================================================================
+def fetch_dynamic_youtube_kol_posts(sheets, market, posted_set=None):
+    posted_set = posted_set or set()
+    yt_rows = list(sheets.get("YouTube", []))
+    random.shuffle(yt_rows)
+    dynamic_kol_posts = []
+
+    for row in yt_rows:
+        if len(dynamic_kol_posts) >= 4:
+            break
+        if len(row) < 4:
+            continue
+        kol_name = row[2].strip()
+        specialty = row[5].strip() if len(row) >= 6 else "Phương pháp Price Action & Quản trị rủi ro thực chiến"
+        clean_kol_query = re.sub(r"\([^)]*\)", "", kol_name).strip()
+        q_str = urllib.parse.quote(f"{clean_kol_query} trading strategy gold forex")
+        try:
+            html = fetch_url(f"https://www.youtube.com/results?search_query={q_str}", timeout=8)
+            vids = list(dict.fromkeys(re.findall(r'"videoId":"([a-zA-Z0-9_-]{11})"', html)))
+            chosen_vid = None
+            meta = {}
+            for vid in vids[:12]:
+                id_key = f"kol_yt_vid_{vid}"
+                if id_key in posted_set or f"https://www.youtube.com/watch?v={vid}" in posted_set:
+                    continue
+                try:
+                    oembed_url = f"https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v={vid}&format=json"
+                    m_data = json.loads(fetch_url(oembed_url, timeout=5))
+                    t_en = m_data.get("title", "")
+                    if t_en and not any(bad in t_en.lower() for bad in ["hindi", "urdu", "malayalam", "tamil", "bangla"]):
+                        chosen_vid = vid
+                        meta = m_data
+                        break
+                except Exception:
+                    continue
+
+            if not chosen_vid:
+                continue
+
+            title_en = meta.get("title", f"{kol_name} Trading Strategy")
+            vi_title = translate_en_to_vi(title_en)
+            vi_title = re.sub(r"\s*[\|\-]\s*.*$", "", vi_title).strip() or title_en
+
+            caption = (
+                f"📌 Trên kênh YouTube của {kol_name}, chuyên gia này vừa có bài chia sẻ xoay quanh chủ đề \"{vi_title}\" (thuộc thế mạnh của kênh là: {specialty}).\n\n"
+                f"💡 Theo góc nhìn cá nhân mà {kol_name} trình bày trong video, thay vì vào lệnh dàn trải ở mọi nhịp sóng, chiến lược của chuyên gia này tập trung đợi giá tiếp cận đúng vùng cấu trúc trên khung H1/M15 và chỉ hành động khi có nến xác nhận rõ ràng kèm mức dừng lỗ cố định.\n\n"
+                f"💬 Đó là nguyên tắc giao dịch riêng được {kol_name} áp dụng. Các sếp trong nhóm mình đánh giá cách tiếp cận này của {kol_name} có phù hợp khi giao dịch XAU/USD không?"
+            )
+            dynamic_kol_posts.append({
+                "id_key": f"kol_yt_vid_{chosen_vid}",
+                "kol": kol_name,
+                "video_id": chosen_vid,
+                "title": f"{kol_name}: {vi_title}",
+                "source_url": f"https://www.youtube.com/watch?v={chosen_vid}",
+                "image_url": f"https://i.ytimg.com/vi/{chosen_vid}/hqdefault.jpg",
+                "caption": caption
+            })
+        except Exception:
+            continue
+
+    # Bổ sung các bài trong kho cơ sở nếu chưa từng đăng trong posted_set
+    for item in KOL_YOUTUBE_POSTS:
+        if item["id_key"] not in posted_set and len(dynamic_kol_posts) < 5:
+            dynamic_kol_posts.append(item)
+
+    return dynamic_kol_posts
+
+
+TIKTOK_DISCIPLINE_ANGLES = [
+    ("overtrade_filter", "cách hạn chế vào lệnh quá đà (Overtrade) sau khi vừa có lệnh thắng hoặc lệnh thua", "chỉ cho phép bản thân vào tối đa 1–2 lệnh chất lượng nhất trong mỗi phiên giao dịch rồi đóng biểu đồ nghỉ ngơi"),
+    ("breakeven_rule", "nguyên tắc bảo vệ vốn khi giá đã chạy đúng hướng kỳ vọng", "dời điểm dừng lỗ (SL) về mức hòa vốn hoặc chốt trước một nửa khối lượng khi lệnh đã đạt tỷ lệ 1:1 để giải tỏa áp lực tâm lý"),
+    ("news_avoidance", "cách xử lý tài khoản trước thời điểm công bố tin tức kinh tế đỏ (CPI, Non-Farm, FOMC)", "tránh mở lệnh mới sát giờ ra tin 15 phút vì độ giãn giá và quét thanh khoản hai đầu rất khó lường, thay vào đó đợi thị trường ổn định cấu trúc sau tin mới tìm cơ hội"),
+    ("weekly_withdrawal", "thói quen rút lợi nhuận định kỳ để biến con số trên màn hình thành tiền thực tế", "cuối mỗi tuần có lãi đều trích từ 40% – 50% phần lợi nhuận rút về tài khoản ngân hàng nhằm giữ tâm lý thoải mái cho tuần mới"),
+    ("journal_review", "việc chụp ảnh màn hình trước và sau mỗi lệnh để làm nhật ký giao dịch cuối tuần", "ghi chú lại 3 lý do vào lệnh và cảm xúc lúc bấm nút để cuối tuần nhìn lại xem lỗi sai đến từ phân tích kỹ thuật hay do tâm lý FOMO"),
+    ("session_timing", "cách lựa chọn khung giờ giao dịch cố định cho người bận công việc hành chính", "bỏ qua các nhịp đi ngang biên độ hẹp buổi sáng và chỉ tập trung theo dõi khoảng 45–60 phút đầu phiên Âu hoặc đầu phiên Mỹ khi thanh khoản lớn nhập cuộc"),
+    ("fixed_risk_pct", "bài toán cố định mức rủi ro tính bằng số tiền USD trên mỗi giao dịch", "luôn xác định trước số tiền chấp nhận rủi ro tối đa cho 1 lệnh (ví dụ 1% – 2% tài khoản) rồi mới chia ngược ra số Lot tương ứng với khoảng cách SL"),
+    ("htf_alignment", "nguyên tắc đối chiếu xu hướng khung thời gian lớn trước khi tìm điểm vào ở khung nhỏ", "kiểm tra cấu trúc đỉnh đáy trên khung H4 và H1 trước, sau đó mới hạ xuống M15 chờ nến rút chân cùng chiều xu hướng chính")
+]
+
+
+def fetch_dynamic_tiktok_kol_posts(sheets, market, posted_set=None):
+    posted_set = posted_set or set()
+    tk_rows = list(sheets.get("TikTok", []))
+    random.shuffle(tk_rows)
+    dynamic_tk_posts = []
+    thumb_pool = [
+        "https://i.ytimg.com/vi/bV7FxNXLeWU/maxresdefault.jpg",
+        "https://i.ytimg.com/vi/TYbpk7WogHI/maxresdefault.jpg",
+        "https://i.ytimg.com/vi/s96BrHAScRc/hqdefault.jpg",
+        "https://i.ytimg.com/vi/Vulini8xbB0/maxresdefault.jpg",
+        "https://i.ytimg.com/vi/yvhgwZKkJQ0/maxresdefault.jpg"
+    ]
+
+    for row in tk_rows:
+        if len(dynamic_tk_posts) >= 4:
+            break
+        if len(row) < 4:
+            continue
+        kol_label = row[2].strip()
+        tk_url = row[3].strip()
+        specialty = row[5].strip() if len(row) >= 6 else "Kỷ luật giao dịch và quản lý rủi ro thực chiến"
+        kol_slug = re.sub(r"[^a-z0-9]+", "_", kol_label.lower()).strip("_")
+
+        angles = list(TIKTOK_DISCIPLINE_ANGLES)
+        random.shuffle(angles)
+        for angle_key, topic_desc, rule_desc in angles:
+            id_key = f"tiktok_{kol_slug}_{angle_key}"
+            if id_key in posted_set:
+                continue
+            caption = (
+                f"📝 Trên kênh TikTok của {kol_label} (chuyên về: {specialty}), nhà giao dịch này có chia sẻ góc nhìn cá nhân xoay quanh {topic_desc}.\n\n"
+                f"✅ Theo chia sẻ từ kênh {kol_label}, nguyên tắc mà họ tự đặt ra cho bản thân là {rule_desc}.\n\n"
+                f"💬 Đó là kỷ luật cá nhân được {kol_label} áp dụng để bảo vệ tài khoản. Các sếp trong nhóm mình thấy cách làm này của {kol_label} có thực tế không?"
+            )
+            dynamic_tk_posts.append({
+                "id_key": id_key,
+                "kol": kol_label,
+                "title": f"{kol_label} chia sẻ góc nhìn về {topic_desc}",
+                "source_url": tk_url,
+                "image_url": random.choice(thumb_pool),
+                "caption": caption
+            })
+            break
+
+    for item in TIKTOK_KOL_POSTS:
+        if item["id_key"] not in posted_set and len(dynamic_tk_posts) < 5:
+            dynamic_tk_posts.append(item)
+
+    return dynamic_tk_posts
 
 
 # ==============================================================================
@@ -749,29 +897,79 @@ TIKTOK_KOL_POSTS = [
 ]
 
 
-def build_reddit_posts(market, chart_img_path):
+def build_reddit_posts(market, chart_img_path, sheets=None, posted_set=None):
+    posted_set = posted_set or set()
     gp = market["gold_price"]
     ema20 = market["h1_ema20"]
     bb_low = market["m15_bb_lower"]
     rsi1 = market["h1_rsi"]
 
-    live_reddit_url = "https://www.reddit.com/r/Gold/"
-    try:
-        r_json = json.loads(fetch_url("https://arctic-shift.photon-reddit.com/api/posts/search?subreddit=Forex&sort=desc&limit=5"))
-        for item in r_json.get("data", []):
-            perma = item.get("permalink", "")
-            if perma:
-                live_reddit_url = f"https://www.reddit.com{perma}"
-                break
-    except Exception:
-        pass
+    subreddits = ["Forex", "Gold", "Daytrading", "FuturesTrading", "algotrading", "technicalanalysis", "Commodities"]
+    if sheets and sheets.get("Reddit"):
+        extracted_subs = []
+        for r in sheets["Reddit"]:
+            if len(r) >= 4:
+                m_sub = re.search(r"reddit\.com/r/([A-Za-z0-9_]+)", r[3])
+                if m_sub:
+                    extracted_subs.append(m_sub.group(1))
+        if extracted_subs:
+            subreddits = extracted_subs
 
-    return [
+    random.shuffle(subreddits)
+    dynamic_reddit = []
+
+    for sub in subreddits[:6]:
+        if len(dynamic_reddit) >= 4:
+            break
+        try:
+            r_json = json.loads(fetch_url(f"https://arctic-shift.photon-reddit.com/api/posts/search?subreddit={sub}&sort=desc&limit=12", timeout=8))
+            for item in r_json.get("data", []):
+                perma = item.get("permalink", "")
+                title_en = (item.get("title") or "").strip()
+                selftext_en = (item.get("selftext") or "").strip()
+                if not perma or not title_en or len(title_en) < 18:
+                    continue
+                full_url = f"https://www.reddit.com{perma}"
+                id_key = f"reddit_thread_{perma.strip('/')}"
+                if id_key in posted_set or full_url in posted_set:
+                    continue
+                if any(bad in title_en.lower() for bad in ["meme", "shitpost", "upvote", "karma", "discord", "telegram", "scam"]):
+                    continue
+
+                vi_title = translate_en_to_vi(title_en)
+                vi_body = ""
+                if selftext_en and len(selftext_en) > 40:
+                    clean_self = re.sub(r"https?://\S+", "", selftext_en).strip()[:280]
+                    if len(clean_self) > 30:
+                        vi_body = translate_en_to_vi(clean_self)
+
+                if vi_body:
+                    second_para = f"💡 Trong bài viết, tác giả trên r/{sub} chia sẻ góc nhìn thực tế: \"{vi_body}\""
+                else:
+                    second_para = f"💡 Dưới phần bình luận của r/{sub}, nhiều thành viên quốc tế đã đưa ra các quan điểm đa chiều về cách quản lý khối lượng lệnh và tâm lý trước các vùng cản kỹ thuật."
+
+                caption = (
+                    f"📊 Điểm nhanh một chủ đề mới đang được các thành viên trên cộng đồng r/{sub} quốc tế đem ra thảo luận: \"{vi_title}\".\n\n"
+                    f"{second_para}\n\n"
+                    f"💬 Đối chiếu trên biểu đồ M15 đính kèm, hiện XAU/USD đang giao dịch quanh ${gp:,.1f} (giữa vùng ${bb_low:,.0f} và EMA20 ${ema20:,.0f}, RSI H1 ở mức {rsi1}). Các sếp trong nhóm mình có góc nhìn thế nào về chủ đề trên r/{sub}?"
+                )
+                dynamic_reddit.append({
+                    "id_key": id_key,
+                    "title": f"r/{sub}: {vi_title}",
+                    "image_url": chart_img_path,
+                    "source_url": full_url,
+                    "caption": caption
+                })
+                break
+        except Exception:
+            continue
+
+    fallback_reddit = [
         {
             "id_key": "reddit_busy_office_hours",
             "title": "Thành viên trên r/Gold chia sẻ cách phân bổ thời gian giao dịch khi đi làm hành chính",
             "image_url": chart_img_path,
-            "source_url": live_reddit_url,
+            "source_url": "https://www.reddit.com/r/Gold/",
             "caption": (
                 f"⏰ Điểm lại một chủ đề đang được nhiều thành viên trên diễn đàn r/Gold quốc tế thảo luận: người bận đi làm văn phòng cả ngày thường sắp xếp thời gian theo dõi thị trường như thế nào?\n\n"
                 f"💡 Trong bài đăng, nhiều thành viên Reddit chia sẻ kinh nghiệm cá nhân là họ bỏ qua các nhịp sóng nhỏ buổi sáng, chỉ chọn theo dõi cố định 30–45 phút đầu phiên Âu hoặc đầu phiên Mỹ để đỡ ảnh hưởng công việc chính.\n\n"
@@ -801,6 +999,11 @@ def build_reddit_posts(market, chart_img_path):
             )
         }
     ]
+    for fb in fallback_reddit:
+        if fb["id_key"] not in posted_set and len(dynamic_reddit) < 4:
+            dynamic_reddit.append(fb)
+
+    return dynamic_reddit
 
 
 VT_MARKETS_UPDATES = [
@@ -822,6 +1025,66 @@ VT_MARKETS_UPDATES = [
         "caption": (
             "💡 Theo tài liệu hướng dẫn nền tảng trên trang chủ VT Markets, khi kết nối tài khoản giao dịch trực tiếp với biểu đồ TradingView, người dùng có thể kéo thanh TP và SL để hệ thống tự động hiển thị con số ước tính bằng USD ngay trên màn hình.\n\n"
             "👉 Nhiều anh em trên các diễn đàn đánh giá tính năng này của TradingView giúp người mới dễ hình dung mức rủi ro trước khi xác nhận lệnh. Trong nhóm mình đã có sếp nào trải nghiệm tính năng kết nối này chưa?"
+        )
+    },
+    {
+        "id_key": "vt_update_club_bleuu_points",
+        "title": "Chương trình tích điểm khách hàng thân thiết Club Bleuu tại VT Markets",
+        "image_url": "",
+        "source_url": "https://www.vtmarkets.com/vi/",
+        "caption": (
+            "🎁 Theo thông tin công bố về chương trình khách hàng thân thiết Club Bleuu trên hệ thống VT Markets, mỗi khối lượng giao dịch thực hiện trên tài khoản đều được tự động quy đổi thành điểm tích lũy.\n\n"
+            "📌 Các thành viên lâu năm chia sẻ họ thường dùng số điểm tích lũy này để đổi sang các phiếu giảm phí hoặc quà tặng trong hệ sinh thái. Sếp nào chưa rõ cách kiểm tra số điểm Club Bleuu của mình có thể xem ở bài ghim hoặc hỏi trong nhóm nhé."
+        )
+    },
+    {
+        "id_key": "vt_update_mt4_mt5_partial_close",
+        "title": "Hướng dẫn thao tác đóng một phần khối lượng lệnh (Partial Close) trên MT4/MT5",
+        "image_url": "",
+        "source_url": "https://www.vtmarkets.com/vi/platforms/metatrader-5/",
+        "caption": (
+            "🛠️ Theo tài liệu hướng dẫn sử dụng nền tảng MetaTrader 4 và MetaTrader 5 trên trang chủ VT Markets, người dùng có thể đóng trước một phần khối lượng lệnh đang mở (ví dụ vào 0.10 lot, đóng trước 0.05 lot) bằng cách chỉnh lại số Volume trong cửa sổ lệnh trước khi bấm Close.\n\n"
+            "💬 Nhiều chuyên gia quốc tế như Raja Banks hay Smart Risk thường nhắc đến thao tác đóng nửa lệnh này như một cách giảm áp lực tâm lý khi giá đi qua vùng cản đầu tiên. Các sếp trong nhóm có hay sử dụng tính năng đóng một phần lệnh này trên MT5 không?"
+        )
+    },
+    {
+        "id_key": "vt_update_economic_calendar_tool",
+        "title": "Cách theo dõi Lịch kinh tế tích hợp để chủ động quản trị rủi ro trước giờ ra tin",
+        "image_url": "",
+        "source_url": "https://www.vtmarkets.com/vi/tools/economic-calendar/",
+        "caption": (
+            "📅 Theo hướng dẫn công cụ trên website VT Markets, mục Lịch Kinh Tế (Economic Calendar) cung cấp bộ lọc phân loại mức độ tác động của các bản tin vĩ mô (Thấp, Trung bình, Cao) kèm số liệu Dự báo (Forecast) và Thực tế (Actual).\n\n"
+            "🛡️ Nhiều trader có kinh nghiệm trên các diễn đàn quốc tế chia sẻ thói quen kiểm tra lịch kinh tế đầu mỗi ngày để tránh giữ lệnh khối lượng lớn ngay sát giờ công bố tin đỏ của Mỹ. Các sếp thường xem lịch tin tức trên công cụ nào mỗi ngày?"
+        )
+    },
+    {
+        "id_key": "vt_update_demo_practice_env",
+        "title": "Sử dụng tài khoản Demo để kiểm chứng chiến lược (Backtest/Forward test) trước khi giao dịch thực tế",
+        "image_url": "",
+        "source_url": "https://www.vtmarkets.com/vi/trading/demo-account/",
+        "caption": (
+            "🧭 Theo thông tin trên trang chủ VT Markets, hệ thống cung cấp tài khoản trải nghiệm (Demo Account) mô phỏng sát báo giá thời gian thực của thị trường để người dùng làm quen thao tác đặt lệnh và kiểm thử phương pháp.\n\n"
+            "💡 Các KOL quốc tế như Brad Goh hay Rayner Teo cũng thường chia sẻ nguyên tắc: mỗi khi học một mẫu hình nến mới, họ đều thử nghiệm tối thiểu 20–30 lệnh trên môi trường Demo để thống kê tỷ lệ thắng trước khi áp dụng thật. Các sếp mới vào nhóm đã thử nghiệm bộ quy tắc của mình trên Demo chưa?"
+        )
+    },
+    {
+        "id_key": "vt_update_mobile_app_price_alerts",
+        "title": "Mẹo cài đặt Chuông báo giá (Price Alert) trên ứng dụng di động cho người bận rộn",
+        "image_url": "",
+        "source_url": "https://www.vtmarkets.com/vi/platforms/vt-markets-app/",
+        "caption": (
+            "📱 Theo tài liệu tính năng của ứng dụng VT Markets App và TradingView, người dùng có thể cài đặt thông báo tự động (Price Alert) tại các mốc giá quan trọng để điện thoại báo chuông khi thị trường chạm vùng quan tâm.\n\n"
+            "⏰ Nhiều anh em đi làm văn phòng trên diễn đàn r/Gold chia sẻ tính năng báo giá tự động giúp họ không phải mở màn hình liên tục trong giờ làm việc mà vẫn biết khi nào giá về vùng kế hoạch. Các sếp trong nhóm có hay cài chuông báo giá kiểu này không?"
+        )
+    },
+    {
+        "id_key": "vt_update_stp_vs_ecn_specs",
+        "title": "Sự khác biệt giữa cấu trúc tài khoản Standard STP và Raw ECN theo thông số công bố",
+        "image_url": "",
+        "source_url": "https://www.vtmarkets.com/vi/trading/accounts/",
+        "caption": (
+            "📊 Theo bảng so sánh thông số tài khoản công bố trên website VT Markets, tài khoản Standard STP tích hợp toàn bộ chi phí vào mức chênh lệch giá (Spread) và không thu phí hoa hồng (Commission), trong khi tài khoản Raw ECN tách riêng mức Spread gốc rất thấp kèm phí hoa hồng cố định trên mỗi lot.\n\n"
+            "💬 Trên các diễn đàn giao dịch quốc tế, nhóm trader giữ lệnh dài ngày (Swing) thường chọn dạng STP cho đơn giản, còn nhóm giao dịch ngắn trong phiên (Scalping) lại ưu tiên dạng ECN để có giá khớp sát hơn. Các sếp trong nhóm mình đang quen dùng loại tài khoản nào hơn?"
         )
     }
 ]
@@ -985,11 +1248,17 @@ def generate_smart_trader_reply(user_text, reply_context="", market=None):
 
 
 def generate_daily_buzz():
+    st = load_balance_state()
+    posted_set = set(st.get("posted_urls", []))
+
     sheets = fetch_online_sheets()
     market = fetch_live_market_and_ta()
     chart_path = generate_live_xauusd_chart() or TOPIC_PHOTO_POOL["gold"]
-    macro_posts = fetch_real_macro_articles(market)
-    reddit_posts = build_reddit_posts(market, chart_path)
+    macro_posts = fetch_real_macro_articles(market, posted_set=posted_set)
+    kol_posts = fetch_dynamic_youtube_kol_posts(sheets, market, posted_set=posted_set)
+    tiktok_posts = fetch_dynamic_tiktok_kol_posts(sheets, market, posted_set=posted_set)
+    reddit_posts = build_reddit_posts(market, chart_path, sheets=sheets, posted_set=posted_set)
+    vt_posts = [v for v in VT_MARKETS_UPDATES if v["id_key"] not in posted_set] or VT_MARKETS_UPDATES
     short_icebreakers = build_session_icebreakers(market)
 
     buzz_data = {
@@ -998,10 +1267,10 @@ def generate_daily_buzz():
         "market": market,
         "live_chart_path": chart_path,
         "macro_posts": macro_posts,
-        "kol_posts": KOL_YOUTUBE_POSTS,
-        "tiktok_posts": TIKTOK_KOL_POSTS,
+        "kol_posts": kol_posts,
+        "tiktok_posts": tiktok_posts,
         "reddit_posts": reddit_posts,
-        "vt_posts": VT_MARKETS_UPDATES,
+        "vt_posts": vt_posts,
         "short_icebreakers": short_icebreakers
     }
 

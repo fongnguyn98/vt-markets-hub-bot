@@ -391,12 +391,30 @@ def handle_member_message_lead(msg):
     })
 
 
-def load_or_refresh_buzz():
+def sync_git_state():
+    try:
+        import subprocess
+        git_dir = os.path.join(BASE_DIR, ".git")
+        if not os.path.exists(git_dir):
+            return
+        subprocess.run(["git", "config", "user.name", "VT-Markets-Bot-Cloud"], cwd=BASE_DIR, timeout=8, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "bot@vtmarketshub.local"], cwd=BASE_DIR, timeout=8, capture_output=True)
+        subprocess.run(["git", "add", "bot_state.json", "content_balance_state.json", "daily_buzz_pool.json"], cwd=BASE_DIR, timeout=10, capture_output=True)
+        diff_res = subprocess.run(["git", "diff", "--staged", "--quiet"], cwd=BASE_DIR, timeout=8)
+        if diff_res.returncode != 0:
+            subprocess.run(["git", "commit", "-m", "chore: auto-sync posted history [skip ci]"], cwd=BASE_DIR, timeout=10, capture_output=True)
+            subprocess.run(["git", "pull", "--rebase", "origin", "main"], cwd=BASE_DIR, timeout=20, capture_output=True)
+            subprocess.run(["git", "push", "origin", "main"], cwd=BASE_DIR, timeout=20, capture_output=True)
+    except Exception as e:
+        log_info(f"[Git Sync Warning]: {e}")
+
+
+def load_or_refresh_buzz(force_refresh=False):
     now = time.time()
-    if os.path.exists(BUZZ_FILE):
+    if not force_refresh and os.path.exists(BUZZ_FILE):
         try:
             mtime = os.path.getmtime(BUZZ_FILE)
-            if now - mtime < 1800:  # Refresh every 30 minutes max
+            if now - mtime < 900:  # Refresh every 15 minutes max
                 with open(BUZZ_FILE, "r", encoding="utf-8") as f:
                     return json.load(f)
         except Exception:
@@ -431,7 +449,7 @@ def check_scheduled_daily_posts(state):
     morning_id = f"{date_str}_morning_slot"
     if 510 <= cur_mins <= 690 and morning_id not in executed and state.get("last_scheduled_post") != morning_id:
         log_info(f"Triggering scheduled slot: {morning_id}")
-        buzz = news_and_kol_radar.generate_daily_buzz()
+        buzz = load_or_refresh_buzz(force_refresh=True)
         _, post = news_and_kol_radar.pick_balanced_post(buzz, preferred_cat="auto")
         if post:
             res = news_and_kol_radar.publish_post(DISCUSSION_CHAT_ID, post)
@@ -441,6 +459,7 @@ def check_scheduled_daily_posts(state):
                 state["last_scheduled_time"] = now
                 state["last_group_activity"] = now
                 save_state(state)
+                sync_git_state()
                 log_info(f"Published {morning_id} OK (msg_id={res.get('result', {}).get('message_id')})")
                 return True
 
@@ -448,7 +467,7 @@ def check_scheduled_daily_posts(state):
     noon_id = f"{date_str}_noon_slot"
     if 705 <= cur_mins <= 855 and noon_id not in executed and state.get("last_scheduled_post") != noon_id:
         log_info(f"Triggering scheduled slot: {noon_id}")
-        buzz = load_or_refresh_buzz()
+        buzz = load_or_refresh_buzz(force_refresh=True)
         cat_choice = "vt" if dt.day % 2 == 0 else "tiktok"
         _, post = news_and_kol_radar.pick_balanced_post(buzz, preferred_cat=cat_choice)
         if post:
@@ -459,6 +478,7 @@ def check_scheduled_daily_posts(state):
                 state["last_scheduled_time"] = now
                 state["last_group_activity"] = now
                 save_state(state)
+                sync_git_state()
                 log_info(f"Published {noon_id} OK (msg_id={res.get('result', {}).get('message_id')})")
                 return True
 
@@ -466,7 +486,7 @@ def check_scheduled_daily_posts(state):
     afternoon_id = f"{date_str}_afternoon_kol"
     if 870 <= cur_mins <= 950 and afternoon_id not in executed and state.get("last_scheduled_post") != afternoon_id:
         log_info(f"Triggering scheduled slot: {afternoon_id}")
-        buzz = load_or_refresh_buzz()
+        buzz = load_or_refresh_buzz(force_refresh=True)
         _, post = news_and_kol_radar.pick_balanced_post(buzz, preferred_cat="kol")
         if post:
             res = news_and_kol_radar.publish_post(DISCUSSION_CHAT_ID, post)
@@ -476,6 +496,7 @@ def check_scheduled_daily_posts(state):
                 state["last_scheduled_time"] = now
                 state["last_group_activity"] = now
                 save_state(state)
+                sync_git_state()
                 log_info(f"Published {afternoon_id} OK (msg_id={res.get('result', {}).get('message_id')})")
                 return True
 
@@ -483,7 +504,7 @@ def check_scheduled_daily_posts(state):
     evening_id = f"{date_str}_evening_us"
     if 1155 <= cur_mins <= 1235 and evening_id not in executed and state.get("last_scheduled_post") != evening_id:
         log_info(f"Triggering scheduled slot: {evening_id}")
-        buzz = news_and_kol_radar.generate_daily_buzz()
+        buzz = load_or_refresh_buzz(force_refresh=True)
         _, post = news_and_kol_radar.pick_balanced_post(buzz, preferred_cat="reddit")
         if post:
             res = news_and_kol_radar.publish_post(DISCUSSION_CHAT_ID, post)
@@ -493,6 +514,7 @@ def check_scheduled_daily_posts(state):
                 state["last_scheduled_time"] = now
                 state["last_group_activity"] = now
                 save_state(state)
+                sync_git_state()
                 log_info(f"Published {evening_id} OK (msg_id={res.get('result', {}).get('message_id')})")
                 return True
 

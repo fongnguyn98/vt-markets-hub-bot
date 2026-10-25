@@ -3,8 +3,9 @@
   "last_group_activity": 1792898102.8461163,
   "executed_slots": [
     "2026-10-25_morning_slot",
-    "2026-10-25_short_1015"
+    "2026-10-25_short_1015",
+    "2026-10-25_noon_slot"
   ],
-  "last_scheduled_post": "2026-10-25_short_1015",
-  "last_scheduled_time": 1792898102.8461163
+  "last_scheduled_post": "2026-10-25_noon_slot",
+  "last_scheduled_time": 1792904599.7038915
 }
