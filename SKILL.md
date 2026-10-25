@@ -69,3 +69,18 @@ description: Quy trình tự động quét 4 Sheet nguồn Quốc tế (Website,
   - Khi nhóm im ắng > 3.5 tiếng: Tự động thả câu hỏi gợi chuyện ngắn (1–2 câu) bám sát giá Vàng và `RSI / EMA20` hiện tại.
 - **Lệnh kích hoạt tức thì (Gõ trong nhóm `[NỘI BỘ] Báo Khách & Sale`):**
   - `/tintuc`, `/kol`, `/tiktok`, `/reddit`, `/vt`, `/goichuyen`, `/them`, `/xoa`, `/danhsach`.
+
+## 5. Cơ Chế Chạy Đám Mây 24/7 Trên GitHub Actions & Quy Trình Cập Nhật Skill
+- **Kho chứa GitHub 24/7:** `https://github.com/fongnguyn98/vt-markets-hub-bot` (Workflow: `.github/workflows/vt_bot_247.yml`).
+- **Quy trình bắt buộc khi AI sửa đổi skill này trong các cuộc trò chuyện sau:**
+  1. Mọi thay đổi code được thực hiện trực tiếp tại `D:\CÁC LOẠI WORKFLOW & SKILL\HE_THONG_CONG_DONG_VT_MARKETS_HUB` (`news_and_kol_radar.py`, `bot_truc_nhom.py`, `SKILL.md`).
+  2. Đồng bộ `SKILL.md` sang `C:\Users\PHONG\.gemini\config\skills\vt-community-radar\SKILL.md`.
+  3. Đẩy bản cập nhật lên GitHub Actions bằng lệnh:
+     ```powershell
+     Set-Location 'D:\CÁC LOẠI WORKFLOW & SKILL\HE_THONG_CONG_DONG_VT_MARKETS_HUB'
+     git pull --rebase origin main
+     git add news_and_kol_radar.py bot_truc_nhom.py SKILL.md
+     git commit -m "feat: update vt-community-radar skill"
+     git push origin main
+     ```
+  4. Ngay khi `git push origin main`, GitHub Actions sẽ tự động kích hoạt bản mới trên máy chủ đám mây 24/7.
