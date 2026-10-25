@@ -1,0 +1,72 @@
+name: VT Markets Hub Bot 24/7 Cloud Runner
+
+on:
+  schedule:
+    - cron: '*/20 * * * *'
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: vt-markets-hub-bot-247
+  cancel-in-progress: false
+
+jobs:
+  run-bot-247:
+    runs-on: ubuntu-latest
+    timeout-minutes: 345
+    env:
+      TZ: Asia/Ho_Chi_Minh
+      PYTHONIOENCODING: utf-8
+      PYTHONUNBUFFERED: "1"
+      VT_BOT_TOKEN: ${{ secrets.VT_BOT_TOKEN }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Timezone (Asia/Ho_Chi_Minh UTC+7)
+        run: |
+          sudo timedatectl set-timezone Asia/Ho_Chi_Minh
+          date
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Pull latest state before starting
+        run: |
+          git pull --rebase origin main || true
+
+      - name: Run VT Markets Hub Bot (5h25m cycle)
+        run: |
+          python bot_truc_nhom.py --max-runtime-seconds 19500
+
+      - name: Save & Commit Bot State back to Repository
+        if: always()
+        run: |
+          git config user.name "VT-Markets-Bot-Cloud"
+          git config user.email "bot@vtmarketshub.local"
+          git add bot_state.json content_balance_state.json whitelist.json daily_buzz_pool.json || true
+          git diff --staged --quiet || (git pull --rebase origin main && git commit -m "chore: sync bot state [skip ci]" && git push origin main) || true
+
+      - name: Self-trigger next 24/7 cycle immediately
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow run vt_bot_247.yml || true

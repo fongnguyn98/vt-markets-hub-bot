@@ -1,0 +1,9 @@
+tradingview_ta
+mplfinance
+pandas
+trafilatura
+feedparser
+youtube-transcript-api
+curl_cffi
+g4f
+gradio_client

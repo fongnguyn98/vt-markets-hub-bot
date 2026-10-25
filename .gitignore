@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+bot.pid
+bot_runtime.log
+gh_cli/
+.env
+news_and_kol_radar_BACKUP_truoc_khi_sua_van_phong.py.txt
+COMMITTED_SPEC.md
+HANDOFF_HE_THONG_VT_MARKETS_HUB.md
