@@ -397,14 +397,17 @@ def sync_git_state():
         git_dir = os.path.join(BASE_DIR, ".git")
         if not os.path.exists(git_dir):
             return
-        subprocess.run(["git", "config", "user.name", "VT-Markets-Bot-Cloud"], cwd=BASE_DIR, timeout=8, capture_output=True)
-        subprocess.run(["git", "config", "user.email", "bot@vtmarketshub.local"], cwd=BASE_DIR, timeout=8, capture_output=True)
-        subprocess.run(["git", "add", "bot_state.json", "content_balance_state.json", "daily_buzz_pool.json"], cwd=BASE_DIR, timeout=10, capture_output=True)
-        diff_res = subprocess.run(["git", "diff", "--staged", "--quiet"], cwd=BASE_DIR, timeout=8)
+        kw = {"cwd": BASE_DIR, "capture_output": True}
+        if os.name == "nt":
+            kw["creationflags"] = subprocess.CREATE_NO_WINDOW
+        subprocess.run(["git", "config", "user.name", "VT-Markets-Bot-Cloud"], timeout=8, **kw)
+        subprocess.run(["git", "config", "user.email", "bot@vtmarketshub.local"], timeout=8, **kw)
+        subprocess.run(["git", "add", "bot_state.json", "content_balance_state.json", "daily_buzz_pool.json"], timeout=10, **kw)
+        diff_res = subprocess.run(["git", "diff", "--staged", "--quiet"], timeout=8, **kw)
         if diff_res.returncode != 0:
-            subprocess.run(["git", "commit", "-m", "chore: auto-sync posted history [skip ci]"], cwd=BASE_DIR, timeout=10, capture_output=True)
-            subprocess.run(["git", "pull", "--rebase", "origin", "main"], cwd=BASE_DIR, timeout=20, capture_output=True)
-            subprocess.run(["git", "push", "origin", "main"], cwd=BASE_DIR, timeout=20, capture_output=True)
+            subprocess.run(["git", "commit", "-m", "chore: auto-sync posted history [skip ci]"], timeout=10, **kw)
+            subprocess.run(["git", "pull", "--rebase", "origin", "main"], timeout=20, **kw)
+            subprocess.run(["git", "push", "origin", "main"], timeout=20, **kw)
     except Exception as e:
         log_info(f"[Git Sync Warning]: {e}")
 
