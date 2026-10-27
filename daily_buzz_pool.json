@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-27 11:45:26",
+  "updated_at": "2026-10-27 14:30:47",
   "sources_count": {
     "Website": 56,
     "YouTube": 70,
@@ -7,19 +7,19 @@
     "Reddit": 20
   },
   "market": {
-    "gold_price": 4014.2,
-    "gold_high": 4026.0,
-    "gold_low": 4003.0,
-    "dxy_price": 102.04,
-    "h1_rec": "BUY",
-    "h1_sell_count": 6,
-    "h1_buy_count": 11,
-    "h1_rsi": 50.6,
-    "h1_ema20": 4012.7,
-    "h1_ema50": 4021.5,
-    "m15_bb_lower": 4005.9,
-    "m15_bb_upper": 4022.2,
-    "m15_rsi": 49.5
+    "gold_price": 4004.8,
+    "gold_high": 4024.0,
+    "gold_low": 3995.0,
+    "dxy_price": 102.11,
+    "h1_rec": "SELL",
+    "h1_sell_count": 16,
+    "h1_buy_count": 2,
+    "h1_rsi": 45.5,
+    "h1_ema20": 4010.4,
+    "h1_ema50": 4019.5,
+    "m15_bb_lower": 3997.7,
+    "m15_bb_upper": 4022.0,
+    "m15_rsi": 43.8
   },
   "live_chart_path": "/home/runner/work/vt-markets-hub-bot/vt-markets-hub-bot/live_xauusd_chart.png",
   "macro_posts": [
@@ -28,66 +28,66 @@
       "title": "Chủ tịch FED Jerome Powell tự tin về lạm phát bất chấp PCE cốt lõi 3% khi thị trường lao động cho thấy sự ổn định",
       "image_url": "https://responsive.fxempire.com/v7/_fxempire_/2025/12/Powell-White-House.jpg?width=1201",
       "source_url": "https://www.fxempire.com/news/article/feds-powell-confident-on-inflation-despite-3-core-pce-as-labor-market-shows-stability-1575790",
-      "caption": "📰 Theo bài phân tích vừa đăng tải trên FXEmpire (Chủ tịch FED Jerome Powell tự tin về lạm phát bất chấp PCE cốt lõi 3% khi thị trường lao động cho thấy sự ổn định), các chuyên gia tại đây nhận định việc dữ liệu lạm phát và lao động Mỹ giữ ổn định đang khiến giới đầu tư giảm kỳ vọng FED sớm hạ lãi suất, từ đó tạo áp lực điều chỉnh lên giá Vàng quanh vùng $4,014.2.\n\n📊 Đối chiếu trên bảng thống kê tự động của TradingView, hiện có 6/26 chỉ báo kỹ thuật nghiêng về chiều bán dưới đường trung bình EMA20 ($4,013), trong khi chỉ số RSI khung H1 đang hiển thị ở mức 50.6 gần biên dưới $4,006.\n\n💬 Từ các dữ liệu trên, đội ngũ phân tích của FXEmpire chia sẻ góc nhìn rằng thị trường có thể xuất hiện các nhịp giằng co quanh vùng $4,006 – $4,013. Các sếp đánh giá thế nào về nhận định này của FXEmpire?"
+      "caption": "📰 Theo bài phân tích vừa đăng tải trên FXEmpire (Chủ tịch FED Jerome Powell tự tin về lạm phát bất chấp PCE cốt lõi 3% khi thị trường lao động cho thấy sự ổn định), các chuyên gia tại đây nhận định việc dữ liệu lạm phát và lao động Mỹ giữ ổn định đang khiến giới đầu tư giảm kỳ vọng FED sớm hạ lãi suất, từ đó tạo áp lực điều chỉnh lên giá Vàng quanh vùng $4,004.8.\n\n📊 Đối chiếu trên bảng thống kê tự động của TradingView, hiện có 16/26 chỉ báo kỹ thuật nghiêng về chiều bán dưới đường trung bình EMA20 ($4,010), trong khi chỉ số RSI khung H1 đang hiển thị ở mức 45.5 gần biên dưới $3,998.\n\n💬 Từ các dữ liệu trên, đội ngũ phân tích của FXEmpire chia sẻ góc nhìn rằng thị trường có thể xuất hiện các nhịp giằng co quanh vùng $3,998 – $4,010. Các sếp đánh giá thế nào về nhận định này của FXEmpire?"
     },
     {
       "id_key": "https://www.fxempire.com/news/article/u-s-cpi-misses-forecasts-strengthening-case-for-further-fed-rate-cuts-1568381",
       "title": "CPI của Hoa Kỳ bỏ lỡ dự báo, củng cố khả năng cắt giảm lãi suất của FED",
       "image_url": "https://responsive.fxempire.com/v7/_fxempire_/2025/12/Shopping-cart-rollercoaster-3.jpg?width=1201",
       "source_url": "https://www.fxempire.com/news/article/u-s-cpi-misses-forecasts-strengthening-case-for-further-fed-rate-cuts-1568381",
-      "caption": "Trang FXEmpire vừa có bài viết \"CPI của Hoa Kỳ bỏ lỡ dự báo, củng cố khả năng cắt giảm lãi suất của FED\" phân tích tác động của đồng USD (DXY hiện ở 102.04) lên giá Vàng quanh vùng $4,006 – $4,022. Các sếp đánh giá kịch bản mà chuyên gia bên FXEmpire đưa ra hôm nay thế nào?"
+      "caption": "Trang FXEmpire vừa có bài viết \"CPI của Hoa Kỳ bỏ lỡ dự báo, củng cố khả năng cắt giảm lãi suất của FED\" phân tích tác động của đồng USD (DXY hiện ở 102.11) lên giá Vàng quanh vùng $3,998 – $4,022. Các sếp đánh giá kịch bản mà chuyên gia bên FXEmpire đưa ra hôm nay thế nào?"
     },
     {
       "id_key": "https://www.cnbc.com/2026/10/15/treasury-yields-deficit-national-debt-ai.html",
       "title": "Phân tích: Tại sao thâm hụt 2 nghìn tỷ USD và lãi suất trái phiếu kho bạc 5% đang trở thành thách thức kinh tế lớn nhất của Mỹ",
       "image_url": "https://image.cnbcfm.com/api/v1/image/108364024-17895883942026-09-16t194825z_342271609_rc2iknaojij8_rtrmadp_0_usa-fed.jpeg?v=1789588428&amp;w=1920&amp;h=1080",
       "source_url": "https://www.cnbc.com/2026/10/15/treasury-yields-deficit-national-debt-ai.html",
-      "caption": "📌 Theo bản tin thị trường trên CNBC (Phân tích: Tại sao thâm hụt 2 nghìn tỷ USD và lãi suất trái phiếu kho bạc 5% đang trở thành thách thức kinh tế lớn nhất của Mỹ), tác giả bài viết cho rằng sự hạ nhiệt của lợi suất trái phiếu Mỹ đang được một bộ phận nhà đầu tư xem là yếu tố hỗ trợ tâm lý cho Vàng quanh vùng $4,006 – $4,014.2.\n\n📊 Trong khi đó, số liệu công khai trên TradingView ghi nhận chỉ số DXY đang ở mức 102.04 còn giá Vàng dao động giữa biên $4,006 và đường trung bình EMA20 H1 ($4,013) với RSI ở mức 50.6.\n\n💬 Bài viết trên CNBC nghiêng về kịch bản quan sát phản ứng giá tại hai mốc biên này trước khi xu hướng mới hình thành. Các sếp có đồng tình với góc nhìn của tác giả bài báo không?"
+      "caption": "📌 Theo bản tin thị trường trên CNBC (Phân tích: Tại sao thâm hụt 2 nghìn tỷ USD và lãi suất trái phiếu kho bạc 5% đang trở thành thách thức kinh tế lớn nhất của Mỹ), tác giả bài viết cho rằng sự hạ nhiệt của lợi suất trái phiếu Mỹ đang được một bộ phận nhà đầu tư xem là yếu tố hỗ trợ tâm lý cho Vàng quanh vùng $3,998 – $4,004.8.\n\n📊 Trong khi đó, số liệu công khai trên TradingView ghi nhận chỉ số DXY đang ở mức 102.11 còn giá Vàng dao động giữa biên $3,998 và đường trung bình EMA20 H1 ($4,010) với RSI ở mức 45.5.\n\n💬 Bài viết trên CNBC nghiêng về kịch bản quan sát phản ứng giá tại hai mốc biên này trước khi xu hướng mới hình thành. Các sếp có đồng tình với góc nhìn của tác giả bài báo không?"
     },
     {
       "id_key": "https://www.cnbc.com/2026/10/20/housing-mortgage-rates-real-estate-federal-reserve.html",
       "title": "Nhà ở đang nhấp nháy các dấu hiệu cảnh báo ngay khi FED cân nhắc việc tăng lãi suất",
       "image_url": "https://image.cnbcfm.com/api/v1/image/108327067-1792519521637-108327067-1782417101819-gettyimages-2283316440-_24a0872_jiglfdso.jpeg?v=1792519640&amp;w=1920&amp;h=1080",
       "source_url": "https://www.cnbc.com/2026/10/20/housing-mortgage-rates-real-estate-federal-reserve.html",
-      "caption": "📰 Theo bài phân tích vừa đăng tải trên CNBC (Nhà ở đang nhấp nháy các dấu hiệu cảnh báo ngay khi FED cân nhắc việc tăng lãi suất), các chuyên gia tại đây nhận định việc dữ liệu lạm phát và lao động Mỹ giữ ổn định đang khiến giới đầu tư giảm kỳ vọng FED sớm hạ lãi suất, từ đó tạo áp lực điều chỉnh lên giá Vàng quanh vùng $4,014.2.\n\n📊 Đối chiếu trên bảng thống kê tự động của TradingView, hiện có 6/26 chỉ báo kỹ thuật nghiêng về chiều bán dưới đường trung bình EMA20 ($4,013), trong khi chỉ số RSI khung H1 đang hiển thị ở mức 50.6 gần biên dưới $4,006.\n\n💬 Từ các dữ liệu trên, đội ngũ phân tích của CNBC chia sẻ góc nhìn rằng thị trường có thể xuất hiện các nhịp giằng co quanh vùng $4,006 – $4,013. Các sếp đánh giá thế nào về nhận định này của CNBC?"
+      "caption": "📰 Theo bài phân tích vừa đăng tải trên CNBC (Nhà ở đang nhấp nháy các dấu hiệu cảnh báo ngay khi FED cân nhắc việc tăng lãi suất), các chuyên gia tại đây nhận định việc dữ liệu lạm phát và lao động Mỹ giữ ổn định đang khiến giới đầu tư giảm kỳ vọng FED sớm hạ lãi suất, từ đó tạo áp lực điều chỉnh lên giá Vàng quanh vùng $4,004.8.\n\n📊 Đối chiếu trên bảng thống kê tự động của TradingView, hiện có 16/26 chỉ báo kỹ thuật nghiêng về chiều bán dưới đường trung bình EMA20 ($4,010), trong khi chỉ số RSI khung H1 đang hiển thị ở mức 45.5 gần biên dưới $3,998.\n\n💬 Từ các dữ liệu trên, đội ngũ phân tích của CNBC chia sẻ góc nhìn rằng thị trường có thể xuất hiện các nhịp giằng co quanh vùng $3,998 – $4,010. Các sếp đánh giá thế nào về nhận định này của CNBC?"
     }
   ],
   "kol_posts": [
     {
-      "id_key": "kol_yt_vid_nvBLhiE4gDw",
-      "kol": "Lance Breitstein",
-      "video_id": "nvBLhiE4gDw",
-      "title": "Lance Breitstein: Quy tắc giao dịch: Chốt lời với Lance Breitstein, Nhà giao dịch 9 nhân vật #tradingcourse #trading",
-      "source_url": "https://www.youtube.com/watch?v=nvBLhiE4gDw",
-      "image_url": "https://i.ytimg.com/vi/nvBLhiE4gDw/hqdefault.jpg",
-      "caption": "📌 Trên kênh YouTube của Lance Breitstein, chuyên gia này vừa có bài chia sẻ xoay quanh chủ đề \"Quy tắc giao dịch: Chốt lời với Lance Breitstein, Nhà giao dịch 9 nhân vật #tradingcourse #trading\" (thuộc thế mạnh của kênh là: Trader kiếm hàng chục triệu USD tại Trillium chia sẻ về cách phân bổ khối lượng (Sizing) khi gặp kèo A+.).\n\n💡 Theo góc nhìn cá nhân mà Lance Breitstein trình bày trong video, thay vì vào lệnh dàn trải ở mọi nhịp sóng, chiến lược của chuyên gia này tập trung đợi giá tiếp cận đúng vùng cấu trúc trên khung H1/M15 và chỉ hành động khi có nến xác nhận rõ ràng kèm mức dừng lỗ cố định.\n\n💬 Đó là nguyên tắc giao dịch riêng được Lance Breitstein áp dụng. Các sếp trong nhóm mình đánh giá cách tiếp cận này của Lance Breitstein có phù hợp khi giao dịch XAU/USD không?"
+      "id_key": "kol_yt_vid_8IOi2tcYIhk",
+      "kol": "Photon Trading",
+      "video_id": "8IOi2tcYIhk",
+      "title": "Photon Trading: Hướng dẫn cho người mới bắt đầu giao dịch ngoại hối vào năm 2026 (+3 giờ)",
+      "source_url": "https://www.youtube.com/watch?v=8IOi2tcYIhk",
+      "image_url": "https://i.ytimg.com/vi/8IOi2tcYIhk/hqdefault.jpg",
+      "caption": "📌 Trên kênh YouTube của Photon Trading, chuyên gia này vừa có bài chia sẻ xoay quanh chủ đề \"Hướng dẫn cho người mới bắt đầu giao dịch ngoại hối vào năm 2026 (+3 giờ)\" (thuộc thế mạnh của kênh là: Hệ thống hóa Market Structure (Swing Structure vs Internal Structure) cực kỳ logic, rõ ràng.).\n\n💡 Theo góc nhìn cá nhân mà Photon Trading trình bày trong video, thay vì vào lệnh dàn trải ở mọi nhịp sóng, chiến lược của chuyên gia này tập trung đợi giá tiếp cận đúng vùng cấu trúc trên khung H1/M15 và chỉ hành động khi có nến xác nhận rõ ràng kèm mức dừng lỗ cố định.\n\n💬 Đó là nguyên tắc giao dịch riêng được Photon Trading áp dụng. Các sếp trong nhóm mình đánh giá cách tiếp cận này của Photon Trading có phù hợp khi giao dịch XAU/USD không?"
     },
     {
-      "id_key": "kol_yt_vid_0brnPCaLaXU",
-      "kol": "Vertex Investing",
-      "video_id": "0brnPCaLaXU",
-      "title": "Vertex Investing: CÁCH TÔI KIẾM ĐƯỢC 21% GIAO DỊCH VÀNG BẰNG KẾ HOẠCH",
-      "source_url": "https://www.youtube.com/watch?v=0brnPCaLaXU",
-      "image_url": "https://i.ytimg.com/vi/0brnPCaLaXU/hqdefault.jpg",
-      "caption": "📌 Trên kênh YouTube của Vertex Investing, chuyên gia này vừa có bài chia sẻ xoay quanh chủ đề \"CÁCH TÔI KIẾM ĐƯỢC 21% GIAO DỊCH VÀNG BẰNG KẾ HOẠCH\" (thuộc thế mạnh của kênh là: Hướng dẫn cách lọc vùng Order Block chất lượng cao và tránh bẫy phá vỡ giả.).\n\n💡 Theo góc nhìn cá nhân mà Vertex Investing trình bày trong video, thay vì vào lệnh dàn trải ở mọi nhịp sóng, chiến lược của chuyên gia này tập trung đợi giá tiếp cận đúng vùng cấu trúc trên khung H1/M15 và chỉ hành động khi có nến xác nhận rõ ràng kèm mức dừng lỗ cố định.\n\n💬 Đó là nguyên tắc giao dịch riêng được Vertex Investing áp dụng. Các sếp trong nhóm mình đánh giá cách tiếp cận này của Vertex Investing có phù hợp khi giao dịch XAU/USD không?"
+      "id_key": "kol_yt_vid_dQn1QsHqZgE",
+      "kol": "The Secret Mindset",
+      "video_id": "dQn1QsHqZgE",
+      "title": "The Secret Mindset: Tôi Đã Tìm Ra Chiến Lược Giao Dịch Vàng Chính Xác Nhất",
+      "source_url": "https://www.youtube.com/watch?v=dQn1QsHqZgE",
+      "image_url": "https://i.ytimg.com/vi/dQn1QsHqZgE/hqdefault.jpg",
+      "caption": "📌 Trên kênh YouTube của The Secret Mindset, chuyên gia này vừa có bài chia sẻ xoay quanh chủ đề \"Tôi Đã Tìm Ra Chiến Lược Giao Dịch Vàng Chính Xác Nhất\" (thuộc thế mạnh của kênh là: Phân tích chuyên sâu các chiến lược Smart Money, Order Flow và quản trị lệnh.).\n\n💡 Theo góc nhìn cá nhân mà The Secret Mindset trình bày trong video, thay vì vào lệnh dàn trải ở mọi nhịp sóng, chiến lược của chuyên gia này tập trung đợi giá tiếp cận đúng vùng cấu trúc trên khung H1/M15 và chỉ hành động khi có nến xác nhận rõ ràng kèm mức dừng lỗ cố định.\n\n💬 Đó là nguyên tắc giao dịch riêng được The Secret Mindset áp dụng. Các sếp trong nhóm mình đánh giá cách tiếp cận này của The Secret Mindset có phù hợp khi giao dịch XAU/USD không?"
     },
     {
-      "id_key": "kol_yt_vid_eDFl4HpaZUk",
-      "kol": "TTrades",
-      "video_id": "eDFl4HpaZUk",
-      "title": "TTrades: Giao dịch TRENDLINE gấp 3 lần trên VÀNG",
-      "source_url": "https://www.youtube.com/watch?v=eDFl4HpaZUk",
-      "image_url": "https://i.ytimg.com/vi/eDFl4HpaZUk/hqdefault.jpg",
-      "caption": "📌 Trên kênh YouTube của TTrades, chuyên gia này vừa có bài chia sẻ xoay quanh chủ đề \"Giao dịch TRENDLINE gấp 3 lần trên VÀNG\" (thuộc thế mạnh của kênh là: Giải thích các setup ICT/SMC ngắn gọn trong 5–8 phút, đi thẳng vào công thức vào lệnh.).\n\n💡 Theo góc nhìn cá nhân mà TTrades trình bày trong video, thay vì vào lệnh dàn trải ở mọi nhịp sóng, chiến lược của chuyên gia này tập trung đợi giá tiếp cận đúng vùng cấu trúc trên khung H1/M15 và chỉ hành động khi có nến xác nhận rõ ràng kèm mức dừng lỗ cố định.\n\n💬 Đó là nguyên tắc giao dịch riêng được TTrades áp dụng. Các sếp trong nhóm mình đánh giá cách tiếp cận này của TTrades có phù hợp khi giao dịch XAU/USD không?"
+      "id_key": "kol_yt_vid_2MBKUuyCQ_o",
+      "kol": "Andrea Cimi",
+      "video_id": "2MBKUuyCQ_o",
+      "title": "Andrea Cimi: Chiến lược giao dịch SWING tốt nhất BAO GIỜ?",
+      "source_url": "https://www.youtube.com/watch?v=2MBKUuyCQ_o",
+      "image_url": "https://i.ytimg.com/vi/2MBKUuyCQ_o/hqdefault.jpg",
+      "caption": "📌 Trên kênh YouTube của Andrea Cimi, chuyên gia này vừa có bài chia sẻ xoay quanh chủ đề \"Chiến lược giao dịch SWING tốt nhất BAO GIỜ?\" (thuộc thế mạnh của kênh là: Tâm lý giao dịch thực tế, cách đối mặt với chuỗi thua (Losing Streak) và giữ kỷ luật tài khoản.).\n\n💡 Theo góc nhìn cá nhân mà Andrea Cimi trình bày trong video, thay vì vào lệnh dàn trải ở mọi nhịp sóng, chiến lược của chuyên gia này tập trung đợi giá tiếp cận đúng vùng cấu trúc trên khung H1/M15 và chỉ hành động khi có nến xác nhận rõ ràng kèm mức dừng lỗ cố định.\n\n💬 Đó là nguyên tắc giao dịch riêng được Andrea Cimi áp dụng. Các sếp trong nhóm mình đánh giá cách tiếp cận này của Andrea Cimi có phù hợp khi giao dịch XAU/USD không?"
     },
     {
-      "id_key": "kol_yt_vid_wZ4ea0VJnrw",
-      "kol": "Jadecap",
-      "video_id": "wZ4ea0VJnrw",
-      "title": "Jadecap: Chiến lược giao dịch duy nhất tôi sẽ sử dụng nếu phải bắt đầu lại",
-      "source_url": "https://www.youtube.com/watch?v=wZ4ea0VJnrw",
-      "image_url": "https://i.ytimg.com/vi/wZ4ea0VJnrw/hqdefault.jpg",
-      "caption": "📌 Trên kênh YouTube của Jadecap, chuyên gia này vừa có bài chia sẻ xoay quanh chủ đề \"Chiến lược giao dịch duy nhất tôi sẽ sử dụng nếu phải bắt đầu lại\" (thuộc thế mạnh của kênh là: Kỷ lục gia rút tiền Prop Firm lớn nhất thế giới — Chuyên phân tích Daily Bias (Xu hướng ngày) và ICT/SMC chuẩn mực.).\n\n💡 Theo góc nhìn cá nhân mà Jadecap trình bày trong video, thay vì vào lệnh dàn trải ở mọi nhịp sóng, chiến lược của chuyên gia này tập trung đợi giá tiếp cận đúng vùng cấu trúc trên khung H1/M15 và chỉ hành động khi có nến xác nhận rõ ràng kèm mức dừng lỗ cố định.\n\n💬 Đó là nguyên tắc giao dịch riêng được Jadecap áp dụng. Các sếp trong nhóm mình đánh giá cách tiếp cận này của Jadecap có phù hợp khi giao dịch XAU/USD không?"
+      "id_key": "kol_yt_vid_MgdvHviO5gc",
+      "kol": "SMB Capital",
+      "video_id": "MgdvHviO5gc",
+      "title": "SMB Capital: Các nhà giao dịch ưu tú yêu thích chiến lược NÀY",
+      "source_url": "https://www.youtube.com/watch?v=MgdvHviO5gc",
+      "image_url": "https://i.ytimg.com/vi/MgdvHviO5gc/hqdefault.jpg",
+      "caption": "📌 Trên kênh YouTube của SMB Capital, chuyên gia này vừa có bài chia sẻ xoay quanh chủ đề \"Các nhà giao dịch ưu tú yêu thích chiến lược NÀY\" (thuộc thế mạnh của kênh là: Học viện Prop Trading hàng đầu Phố Wall. Chuyên chia sẻ quy trình chuẩn bị trước phiên và kỷ luật Playbook.).\n\n💡 Theo góc nhìn cá nhân mà SMB Capital trình bày trong video, thay vì vào lệnh dàn trải ở mọi nhịp sóng, chiến lược của chuyên gia này tập trung đợi giá tiếp cận đúng vùng cấu trúc trên khung H1/M15 và chỉ hành động khi có nến xác nhận rõ ràng kèm mức dừng lỗ cố định.\n\n💬 Đó là nguyên tắc giao dịch riêng được SMB Capital áp dụng. Các sếp trong nhóm mình đánh giá cách tiếp cận này của SMB Capital có phù hợp khi giao dịch XAU/USD không?"
     },
     {
       "id_key": "kol_yt_smartrisk_idm",
@@ -101,47 +101,68 @@
   ],
   "tiktok_posts": [
     {
-      "id_key": "tiktok_lamboraul_lamboraul_session_timing",
-      "kol": "LamboRaul (@lamboraul)",
-      "title": "LamboRaul (@lamboraul) chia sẻ góc nhìn về cách lựa chọn khung giờ giao dịch cố định cho người bận công việc hành chính",
-      "source_url": "https://www.tiktok.com/@lamboraul",
-      "image_url": "https://i.ytimg.com/vi/yvhgwZKkJQ0/maxresdefault.jpg",
-      "caption": "📝 Trên kênh TikTok của LamboRaul (@lamboraul) (chuyên về: Thực chiến Supply & Demand (Vùng Cung - Cầu) và cách đi lệnh phiên New York.), nhà giao dịch này có chia sẻ góc nhìn cá nhân xoay quanh cách lựa chọn khung giờ giao dịch cố định cho người bận công việc hành chính.\n\n✅ Theo chia sẻ từ kênh LamboRaul (@lamboraul), nguyên tắc mà họ tự đặt ra cho bản thân là bỏ qua các nhịp đi ngang biên độ hẹp buổi sáng và chỉ tập trung theo dõi khoảng 45–60 phút đầu phiên Âu hoặc đầu phiên Mỹ khi thanh khoản lớn nhập cuộc.\n\n💬 Đó là kỷ luật cá nhân được LamboRaul (@lamboraul) áp dụng để bảo vệ tài khoản. Các sếp trong nhóm mình thấy cách làm này của LamboRaul (@lamboraul) có thực tế không?"
-    },
-    {
-      "id_key": "tiktok_alex_g_alexgonzalezfx_news_avoidance",
-      "kol": "Alex G (@alexgonzalezfx)",
-      "title": "Alex G (@alexgonzalezfx) chia sẻ góc nhìn về cách xử lý tài khoản trước thời điểm công bố tin tức kinh tế đỏ (CPI, Non-Farm, FOMC)",
-      "source_url": "https://www.tiktok.com/@alexgonzalezfx",
-      "image_url": "https://i.ytimg.com/vi/bV7FxNXLeWU/maxresdefault.jpg",
-      "caption": "📝 Trên kênh TikTok của Alex G (@alexgonzalezfx) (chuyên về: Phong cách Swing Trading 'Set and Forget' — Nhận định xu hướng lớn cho Vàng và các cặp Forex.), nhà giao dịch này có chia sẻ góc nhìn cá nhân xoay quanh cách xử lý tài khoản trước thời điểm công bố tin tức kinh tế đỏ (CPI, Non-Farm, FOMC).\n\n✅ Theo chia sẻ từ kênh Alex G (@alexgonzalezfx), nguyên tắc mà họ tự đặt ra cho bản thân là tránh mở lệnh mới sát giờ ra tin 15 phút vì độ giãn giá và quét thanh khoản hai đầu rất khó lường, thay vào đó đợi thị trường ổn định cấu trúc sau tin mới tìm cơ hội.\n\n💬 Đó là kỷ luật cá nhân được Alex G (@alexgonzalezfx) áp dụng để bảo vệ tài khoản. Các sếp trong nhóm mình thấy cách làm này của Alex G (@alexgonzalezfx) có thực tế không?"
-    },
-    {
-      "id_key": "tiktok_wall_street_journal_wsj_breakeven_rule",
-      "kol": "Wall Street Journal (@wsj)",
-      "title": "Wall Street Journal (@wsj) chia sẻ góc nhìn về nguyên tắc bảo vệ vốn khi giá đã chạy đúng hướng kỳ vọng",
-      "source_url": "https://www.tiktok.com/@wsj",
+      "id_key": "tiktok_kyla_scanlon_kylascanlon_fixed_risk_pct",
+      "kol": "Kyla Scanlon (@kylascanlon)",
+      "title": "Kyla Scanlon (@kylascanlon) chia sẻ góc nhìn về bài toán cố định mức rủi ro tính bằng số tiền USD trên mỗi giao dịch",
+      "source_url": "https://www.tiktok.com/@kylascanlon",
       "image_url": "https://i.ytimg.com/vi/Vulini8xbB0/maxresdefault.jpg",
-      "caption": "📝 Trên kênh TikTok của Wall Street Journal (@wsj) (chuyên về: Bóc tách nhanh các quyết định lãi suất của FED và dữ liệu kinh tế Mỹ vừa công bố.), nhà giao dịch này có chia sẻ góc nhìn cá nhân xoay quanh nguyên tắc bảo vệ vốn khi giá đã chạy đúng hướng kỳ vọng.\n\n✅ Theo chia sẻ từ kênh Wall Street Journal (@wsj), nguyên tắc mà họ tự đặt ra cho bản thân là dời điểm dừng lỗ (SL) về mức hòa vốn hoặc chốt trước một nửa khối lượng khi lệnh đã đạt tỷ lệ 1:1 để giải tỏa áp lực tâm lý.\n\n💬 Đó là kỷ luật cá nhân được Wall Street Journal (@wsj) áp dụng để bảo vệ tài khoản. Các sếp trong nhóm mình thấy cách làm này của Wall Street Journal (@wsj) có thực tế không?"
+      "caption": "📝 Trên kênh TikTok của Kyla Scanlon (@kylascanlon) (chuyên về: KOL số 1 về giải thích tin tức FED, Lạm phát CPI, DXY và Giá Vàng bằng góc nhìn sắc sảo, hài hước.), nhà giao dịch này có chia sẻ góc nhìn cá nhân xoay quanh bài toán cố định mức rủi ro tính bằng số tiền USD trên mỗi giao dịch.\n\n✅ Theo chia sẻ từ kênh Kyla Scanlon (@kylascanlon), nguyên tắc mà họ tự đặt ra cho bản thân là luôn xác định trước số tiền chấp nhận rủi ro tối đa cho 1 lệnh (ví dụ 1% – 2% tài khoản) rồi mới chia ngược ra số Lot tương ứng với khoảng cách SL.\n\n💬 Đó là kỷ luật cá nhân được Kyla Scanlon (@kylascanlon) áp dụng để bảo vệ tài khoản. Các sếp trong nhóm mình thấy cách làm này của Kyla Scanlon (@kylascanlon) có thực tế không?"
     },
     {
-      "id_key": "tiktok_raja_banks_wicksdontlie_wicksdontlie_session_timing",
-      "kol": "Raja Banks / WicksDontLie (@wicksdontlie)",
-      "title": "Raja Banks / WicksDontLie (@wicksdontlie) chia sẻ góc nhìn về cách lựa chọn khung giờ giao dịch cố định cho người bận công việc hành chính",
-      "source_url": "https://www.tiktok.com/@wicksdontlie",
+      "id_key": "tiktok_wall_street_journal_wsj_overtrade_filter",
+      "kol": "Wall Street Journal (@wsj)",
+      "title": "Wall Street Journal (@wsj) chia sẻ góc nhìn về cách hạn chế vào lệnh quá đà (Overtrade) sau khi vừa có lệnh thắng hoặc lệnh thua",
+      "source_url": "https://www.tiktok.com/@wsj",
       "image_url": "https://i.ytimg.com/vi/s96BrHAScRc/hqdefault.jpg",
-      "caption": "📝 Trên kênh TikTok của Raja Banks / WicksDontLie (@wicksdontlie) (chuyên về: Chuyên gia thực chiến Vàng (XAU/USD) theo phiên Âu & Mỹ, đọc râu nến và khối lượng vào lệnh.), nhà giao dịch này có chia sẻ góc nhìn cá nhân xoay quanh cách lựa chọn khung giờ giao dịch cố định cho người bận công việc hành chính.\n\n✅ Theo chia sẻ từ kênh Raja Banks / WicksDontLie (@wicksdontlie), nguyên tắc mà họ tự đặt ra cho bản thân là bỏ qua các nhịp đi ngang biên độ hẹp buổi sáng và chỉ tập trung theo dõi khoảng 45–60 phút đầu phiên Âu hoặc đầu phiên Mỹ khi thanh khoản lớn nhập cuộc.\n\n💬 Đó là kỷ luật cá nhân được Raja Banks / WicksDontLie (@wicksdontlie) áp dụng để bảo vệ tài khoản. Các sếp trong nhóm mình thấy cách làm này của Raja Banks / WicksDontLie (@wicksdontlie) có thực tế không?"
+      "caption": "📝 Trên kênh TikTok của Wall Street Journal (@wsj) (chuyên về: Bóc tách nhanh các quyết định lãi suất của FED và dữ liệu kinh tế Mỹ vừa công bố.), nhà giao dịch này có chia sẻ góc nhìn cá nhân xoay quanh cách hạn chế vào lệnh quá đà (Overtrade) sau khi vừa có lệnh thắng hoặc lệnh thua.\n\n✅ Theo chia sẻ từ kênh Wall Street Journal (@wsj), nguyên tắc mà họ tự đặt ra cho bản thân là chỉ cho phép bản thân vào tối đa 1–2 lệnh chất lượng nhất trong mỗi phiên giao dịch rồi đóng biểu đồ nghỉ ngơi.\n\n💬 Đó là kỷ luật cá nhân được Wall Street Journal (@wsj) áp dụng để bảo vệ tài khoản. Các sếp trong nhóm mình thấy cách làm này của Wall Street Journal (@wsj) có thực tế không?"
     },
     {
-      "id_key": "tiktok_umar_profit_withdrawal",
-      "kol": "Umar Ashraf (@umarashraf)",
-      "title": "Umar Ashraf chia sẻ về quy tắc bảo toàn lợi nhuận cuối tuần",
-      "source_url": "https://www.tiktok.com/@umarashraf",
-      "image_url": "https://i.ytimg.com/vi/bV7FxNXLeWU/maxresdefault.jpg",
-      "caption": "💵 Trên kênh TikTok cá nhân, triệu phú trader Umar Ashraf (@umarashraf) chia sẻ quan điểm rằng số dư đang nổi trên phần mềm giao dịch chưa phải là kết quả cuối cùng cho tới khi được rút về tài khoản ngân hàng.\n\n📌 Chia sẻ về chiến lược quản lý vốn của riêng mình, Umar Ashraf cho biết nếu phiên sáng đã đạt mục tiêu thì phiên tối ông chỉ dùng tối đa 30% phần lãi đó để giao dịch tiếp, và thứ Sáu hàng tuần đều rút một nửa lợi nhuận ra ngoài.\n\n💬 Các sếp đánh giá thế nào về thói quen quản lý tiền lãi này của Umar Ashraf?"
+      "id_key": "tiktok_humphrey_yang_humphreytalks_fixed_risk_pct",
+      "kol": "Humphrey Yang (@humphreytalks)",
+      "title": "Humphrey Yang (@humphreytalks) chia sẻ góc nhìn về bài toán cố định mức rủi ro tính bằng số tiền USD trên mỗi giao dịch",
+      "source_url": "https://www.tiktok.com/@humphreytalks",
+      "image_url": "https://i.ytimg.com/vi/TYbpk7WogHI/maxresdefault.jpg",
+      "caption": "📝 Trên kênh TikTok của Humphrey Yang (@humphreytalks) (chuyên về: Giải thích trực quan cách lạm phát, lãi suất FED và nợ công Mỹ đẩy giá Vàng lên đỉnh.), nhà giao dịch này có chia sẻ góc nhìn cá nhân xoay quanh bài toán cố định mức rủi ro tính bằng số tiền USD trên mỗi giao dịch.\n\n✅ Theo chia sẻ từ kênh Humphrey Yang (@humphreytalks), nguyên tắc mà họ tự đặt ra cho bản thân là luôn xác định trước số tiền chấp nhận rủi ro tối đa cho 1 lệnh (ví dụ 1% – 2% tài khoản) rồi mới chia ngược ra số Lot tương ứng với khoảng cách SL.\n\n💬 Đó là kỷ luật cá nhân được Humphrey Yang (@humphreytalks) áp dụng để bảo vệ tài khoản. Các sếp trong nhóm mình thấy cách làm này của Humphrey Yang (@humphreytalks) có thực tế không?"
+    },
+    {
+      "id_key": "tiktok_brad_goh_thetradinggeek_overtrade_filter",
+      "kol": "Brad Goh (@thetradinggeek)",
+      "title": "Brad Goh (@thetradinggeek) chia sẻ góc nhìn về cách hạn chế vào lệnh quá đà (Overtrade) sau khi vừa có lệnh thắng hoặc lệnh thua",
+      "source_url": "https://www.tiktok.com/@thetradinggeek",
+      "image_url": "https://i.ytimg.com/vi/yvhgwZKkJQ0/maxresdefault.jpg",
+      "caption": "📝 Trên kênh TikTok của Brad Goh (@thetradinggeek) (chuyên về: Tóm tắt các mô hình nến, cấu trúc sóng và kế hoạch giao dịch trong 60 giây.), nhà giao dịch này có chia sẻ góc nhìn cá nhân xoay quanh cách hạn chế vào lệnh quá đà (Overtrade) sau khi vừa có lệnh thắng hoặc lệnh thua.\n\n✅ Theo chia sẻ từ kênh Brad Goh (@thetradinggeek), nguyên tắc mà họ tự đặt ra cho bản thân là chỉ cho phép bản thân vào tối đa 1–2 lệnh chất lượng nhất trong mỗi phiên giao dịch rồi đóng biểu đồ nghỉ ngơi.\n\n💬 Đó là kỷ luật cá nhân được Brad Goh (@thetradinggeek) áp dụng để bảo vệ tài khoản. Các sếp trong nhóm mình thấy cách làm này của Brad Goh (@thetradinggeek) có thực tế không?"
     }
   ],
-  "reddit_posts": [],
+  "reddit_posts": [
+    {
+      "id_key": "reddit_thread_r/wallstreetbets/comments/1xgl58b/whwn_the_ai_bubble_burst_what_does_this_mean",
+      "title": "r/wallstreetbets: Khi xảy ra vụ nổ bong bóng AI, điều này có ý nghĩa gì theo phần trăm chẳng hạn đối với Thế giới MSCI?",
+      "image_url": "/home/runner/work/vt-markets-hub-bot/vt-markets-hub-bot/live_xauusd_chart.png",
+      "source_url": "https://www.reddit.com/r/wallstreetbets/comments/1xgl58b/whwn_the_ai_bubble_burst_what_does_this_mean/",
+      "caption": "📊 Điểm nhanh một chủ đề mới đang được các thành viên trên cộng đồng r/wallstreetbets quốc tế đem ra thảo luận: \"Khi xảy ra vụ nổ bong bóng AI, điều này có ý nghĩa gì theo phần trăm chẳng hạn đối với Thế giới MSCI?\".\n\n💡 Dưới phần bình luận của r/wallstreetbets, nhiều thành viên quốc tế đã đưa ra các quan điểm đa chiều về cách quản lý khối lượng lệnh và tâm lý trước các vùng cản kỹ thuật.\n\n💬 Đối chiếu trên biểu đồ M15 đính kèm, hiện XAU/USD đang giao dịch quanh $4,004.8 (giữa vùng $3,998 và EMA20 $4,010, RSI H1 ở mức 45.5). Các sếp trong nhóm mình có góc nhìn thế nào về chủ đề trên r/wallstreetbets?"
+    },
+    {
+      "id_key": "reddit_thread_r/macroeconomics/comments/1wx6rkz/continuation_of_individual_government_bonds_are",
+      "title": "r/MacroEconomics: Tiếp tục \"Trái phiếu chính phủ riêng lẻ được mua lại, nhưng về mặt vĩ mô, trái phiếu chính phủ thực tế không bao giờ được mua lại.\"",
+      "image_url": "/home/runner/work/vt-markets-hub-bot/vt-markets-hub-bot/live_xauusd_chart.png",
+      "source_url": "https://www.reddit.com/r/macroeconomics/comments/1wx6rkz/continuation_of_individual_government_bonds_are/",
+      "caption": "📊 Điểm nhanh một chủ đề mới đang được các thành viên trên cộng đồng r/MacroEconomics quốc tế đem ra thảo luận: \"Tiếp tục \"Trái phiếu chính phủ riêng lẻ được mua lại, nhưng về mặt vĩ mô, trái phiếu chính phủ thực tế không bao giờ được mua lại.\"\".\n\n💡 Trong bài viết, tác giả trên r/MacroEconomics chia sẻ góc nhìn thực tế: \"Trên thực tế, FED Hoa Kỳ chuyển nợ thông qua phương thức đấu thầu không cạnh tranh, và ở Nhật Bản, việc chuyển hạn trái phiếu chính phủ đáo hạn do Ngân hàng Nhật Bản nắm giữ được lặp lại thông qua nghị quyết của quốc hội thông qua cái gọi là \"chuyển đổi BOJ\" (nichigin norikae).\"\n\n💬 Đối chiếu trên biểu đồ M15 đính kèm, hiện XAU/USD đang giao dịch quanh $4,004.8 (giữa vùng $3,998 và EMA20 $4,010, RSI H1 ở mức 45.5). Các sếp trong nhóm mình có góc nhìn thế nào về chủ đề trên r/MacroEconomics?"
+    },
+    {
+      "id_key": "reddit_thread_r/Commodities/comments/1xgcjm2/power_trading_ipp_prop_utility",
+      "title": "r/commodities: Kinh doanh điện: IPP, Prop, Utility?",
+      "image_url": "/home/runner/work/vt-markets-hub-bot/vt-markets-hub-bot/live_xauusd_chart.png",
+      "source_url": "https://www.reddit.com/r/Commodities/comments/1xgcjm2/power_trading_ipp_prop_utility/",
+      "caption": "📊 Điểm nhanh một chủ đề mới đang được các thành viên trên cộng đồng r/commodities quốc tế đem ra thảo luận: \"Kinh doanh điện: IPP, Prop, Utility?\".\n\n💡 Trong bài viết, tác giả trên r/commodities chia sẻ góc nhìn thực tế: \"Đang thắc mắc về trải nghiệm của mọi người trong việc giao dịch quyền lực ở mỗi lĩnh vực này, đặc biệt nếu bạn đã từng ở cả hai lĩnh vực này. Tôi làm việc tại một cửa hàng sở hữu tài sản và tự hỏi về mặt thông số kỹ thuật thì nó như thế nào. \n\nKinh nghiệm của tôi về mặt vật chất tại IPP là nó thực sự phụ thuộc vào mức độ rủi ro\"\n\n💬 Đối chiếu trên biểu đồ M15 đính kèm, hiện XAU/USD đang giao dịch quanh $4,004.8 (giữa vùng $3,998 và EMA20 $4,010, RSI H1 ở mức 45.5). Các sếp trong nhóm mình có góc nhìn thế nào về chủ đề trên r/commodities?"
+    },
+    {
+      "id_key": "reddit_thread_r/geopolitics/comments/1xgl39i/iran_hosts_saudi_arabia_and_regional_powers_as",
+      "title": "r/geopolitics: Iran tiếp đón Ả Rập Saudi và các cường quốc trong khu vực khi lo ngại chiến tranh quay trở lại",
+      "image_url": "/home/runner/work/vt-markets-hub-bot/vt-markets-hub-bot/live_xauusd_chart.png",
+      "source_url": "https://www.reddit.com/r/geopolitics/comments/1xgl39i/iran_hosts_saudi_arabia_and_regional_powers_as/",
+      "caption": "📊 Điểm nhanh một chủ đề mới đang được các thành viên trên cộng đồng r/geopolitics quốc tế đem ra thảo luận: \"Iran tiếp đón Ả Rập Saudi và các cường quốc trong khu vực khi lo ngại chiến tranh quay trở lại\".\n\n💡 Dưới phần bình luận của r/geopolitics, nhiều thành viên quốc tế đã đưa ra các quan điểm đa chiều về cách quản lý khối lượng lệnh và tâm lý trước các vùng cản kỹ thuật.\n\n💬 Đối chiếu trên biểu đồ M15 đính kèm, hiện XAU/USD đang giao dịch quanh $4,004.8 (giữa vùng $3,998 và EMA20 $4,010, RSI H1 ở mức 45.5). Các sếp trong nhóm mình có góc nhìn thế nào về chủ đề trên r/geopolitics?"
+    }
+  ],
   "vt_posts": [
     {
       "id_key": "vt_update_mt4_mt5_partial_close",
@@ -180,10 +201,10 @@
     }
   ],
   "short_icebreakers": [
-    "Trên bảng điện TradingView hiện giá Vàng đang giao dịch quanh mốc $4,014.2 (giữa vùng $4,006 và $4,013), sáng giờ các sếp trong nhóm mình có theo dõi kịch bản của chuyên gia nào không?",
-    "Thống kê tự động trên TradingView đang ghi nhận XAU/USD ở $4,014.2 và chỉ số RSI H1 ở mức 50.6, hôm nay các sếp đánh giá thị trường thế nào?",
-    "Các sếp vừa đi làm vừa theo dõi thị trường hôm nay có tham khảo nhận định từ kênh phân tích nào không? Giá trên biểu đồ đang quanh $4,014.2 rồi.",
-    "Theo lịch kinh tế tối nay phiên Mỹ dự kiến có nhiều tin tức đáng chú ý trong khi Vàng đang ở mức $4,014.2, các sếp hôm nay chọn đứng ngoài quan sát hay có kế hoạch gì chưa?",
+    "Trên bảng điện TradingView hiện giá Vàng đang giao dịch quanh mốc $4,004.8 (giữa vùng $3,998 và $4,010), sáng giờ các sếp trong nhóm mình có theo dõi kịch bản của chuyên gia nào không?",
+    "Thống kê tự động trên TradingView đang ghi nhận XAU/USD ở $4,004.8 và chỉ số RSI H1 ở mức 45.5, hôm nay các sếp đánh giá thị trường thế nào?",
+    "Các sếp vừa đi làm vừa theo dõi thị trường hôm nay có tham khảo nhận định từ kênh phân tích nào không? Giá trên biểu đồ đang quanh $4,004.8 rồi.",
+    "Theo lịch kinh tế tối nay phiên Mỹ dự kiến có nhiều tin tức đáng chú ý trong khi Vàng đang ở mức $4,004.8, các sếp hôm nay chọn đứng ngoài quan sát hay có kế hoạch gì chưa?",
     "Sếp nào mới vào nhóm cần tìm hiểu kiến thức nền tảng hoặc cách tính năng hoàn phí tự động vận hành thì xem tài liệu tổng hợp ở bài ghim trên đầu nhóm nhé."
   ]
 }
