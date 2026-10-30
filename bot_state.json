@@ -1,6 +1,6 @@
 {
   "offset": 500582438,
-  "last_group_activity": 1793323805.3331263,
+  "last_group_activity": 1793335853.7549155,
   "executed_slots": [
     "2026-10-25_morning_slot",
     "2026-10-25_short_1015",
@@ -31,10 +31,12 @@
     "2026-10-29_noon_slot",
     "2026-10-29_afternoon_kol",
     "2026-10-29_evening_us",
-    "2026-10-30_morning_slot"
+    "2026-10-30_morning_slot",
+    "2026-10-30_short_1015",
+    "2026-10-30_noon_slot"
   ],
-  "last_scheduled_post": "2026-10-30_morning_slot",
-  "last_scheduled_time": 1793323805.3331263,
+  "last_scheduled_post": "2026-10-30_noon_slot",
+  "last_scheduled_time": 1793335853.7549155,
   "last_icebreaker_time": 1793322006.3497849,
   "last_icebreaker_slot": "2026-10-30_morning"
 }
