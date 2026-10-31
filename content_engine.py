@@ -384,25 +384,32 @@ def _article_text(url):
 
 
 def make_news(buzz):
-    """Tin mới (<= 24h) từ RSS: LLM viết lại theo nội dung bài gốc; LLM lỗi thì dùng bản dựng sẵn."""
-    cat, post = radar.pick_balanced_post(buzz, preferred_cat="tintuc")
-    key = str((post or {}).get("id_key", ""))
-    if not (post and key.startswith("http")):  # chỉ tin thật, không rơi về mẫu cũ
+    """Tin mới (<= 24h) từ RSS: ưu tiên bài bóc được toàn văn (CNBC/MarketWatch/FXEmpire) để LLM viết tự nhiên."""
+    st = _state()
+    cands = [p for p in buzz.get("macro_posts", [])
+             if str(p.get("id_key", "")).startswith("http") and not _used(st, p.get("id_key", ""))]
+    if not cands:
         return None
-    post = dict(post, kind="news")
-    text = _article_text(key)
-    if len(text) > 400:
+    # Ưu tiên các nguồn không chặn bóc toàn văn trước
+    cands.sort(key=lambda x: (0 if any(d in x.get("id_key", "") for d in ("cnbc.com", "fxempire.com", "marketwatch.com")) else 1))
+    for item in cands[:4]:
+        key = item["id_key"]
+        text = _article_text(key)
+        raw_source = text if len(text) > 300 else f"Tiêu đề: {item.get('title', '')}"
+        if len(raw_source) < 40:
+            continue
         src = urllib.parse.urlparse(key).netloc.replace("www.", "")
         out = ask_llm(
-            f"Dưới đây là nội dung bài báo từ {src}:\n---\n{text[:5000]}\n---\n"
-            f"Chỉ dựa vào bài báo, viết 1 bài đăng Telegram tiếng Việt cho nhóm trader. {SAFETY_RULES}\n"
-            f"Cấu trúc: (1) 1-2 câu nêu sự kiện/số liệu chính, nói rõ theo {src}; (2) 1-2 câu nói vì sao tin này đáng chú ý với thị trường (USD, lãi suất, Vàng) "
-            "chỉ khi bài báo có đề cập, không tự suy diễn; (3) 1 câu hỏi mở để các sếp chia sẻ góc nhìn. Không icon. Dưới 700 ký tự. Chỉ trả về nội dung bài.",
-            validate=lambda a: 150 <= len(a) <= 1100 and "?" in a
+            f"Dưới đây là nội dung bản tin từ {src}:\n---\n{raw_source[:5000]}\n---\n"
+            f"Chỉ dựa vào thông tin trên, viết 1 bài đăng Telegram tiếng Việt cho nhóm trader. {SAFETY_RULES}\n"
+            f"Cấu trúc: (1) 1-2 câu nêu sự kiện/số liệu chính, dẫn nguồn {src}; (2) 1-2 câu giải thích vì sao tin này đáng chú ý với thị trường "
+            "(USD, lãi suất, Vàng) sát với nội dung bài; (3) 1 câu hỏi mở để các sếp chia sẻ góc nhìn. Không icon. Dưới 700 ký tự. Chỉ trả về nội dung bài.",
+            validate=lambda a: 140 <= len(a) <= 1100 and "?" in a
         )
-        if out and 150 <= len(out) <= 1100 and "?" in out:
-            post["caption"] = out
-    return post
+        if out:
+            post = dict(item, kind="news", caption=out)
+            return post
+    return None
 
 
 BANNED_ATTRIBUTION = ("Raja Banks", "Smart Risk", "Brad Goh", "Rayner", "TJR", "r/")
