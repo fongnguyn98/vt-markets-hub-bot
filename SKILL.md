@@ -83,3 +83,9 @@ description: Quy trình tự động quét 4 Sheet nguồn Quốc tế (Website,
 ## 7. Nội Dung Mới (v2 — thay thế mục lịch ở phần 4 và tỷ lệ 5 nhóm ở phần 1.6)
 - Engine: `content_engine.py`. Nhiều dạng bài: tin vĩ mô thật, tóm tắt video KOL **từ phụ đề thật** (không có phụ đề thì không đăng, tuyệt đối không gán lời cho KOL), poll (`sendPoll`), câu hỏi tình huống, giải thích thuật ngữ, Reddit (chỉ bài có nội dung thật), tổng kết cuối tuần.
 - LLM lỗi thì dùng kho dự phòng viết sẵn trong `content_engine.py` (poll, tình huống, thuật ngữ). Bot im ắng trên 5 giờ mới thả câu hỏi gợi chuyện.
+
+## 8. Tự Chăm Sóc Cộng Đồng (Không Cần Gõ Lệnh)
+- Bot tự đăng theo lịch ở mục 4; các lệnh admin chỉ là tùy chọn khi muốn đăng thêm ngay.
+- **Chào thành viên mới** ngay trong nhóm (1 tin duy nhất kể cả nhiều người vào cùng lúc), đồng thời vẫn báo nội bộ cho Sale.
+- **Câu hỏi chưa ai đáp:** sau 8 phút không có người khác trả lời, bot tự trả lời (dẫn nguồn khách quan, không khuyên mua/bán). Giới hạn 6 lần/ngày, cách nhau tối thiểu 15 phút, chỉ 07:00–23:00, bỏ qua câu hỏi quá 4 giờ.
+- Vẫn trả lời ngay khi được tag, gọi "bot" hoặc reply vào tin của bot.

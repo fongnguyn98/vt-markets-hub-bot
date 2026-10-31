@@ -327,7 +327,23 @@ def handle_violation(msg, reason):
     })
 
 
+def welcome_new_members(members):
+    """Chào thành viên mới ngay trong nhóm (1 tin duy nhất kể cả khi nhiều người vào cùng lúc)."""
+    if not members:
+        return
+    names = ", ".join(format_user_html(m) for m in members[:5])
+    text = (
+        f"Chào mừng {names} đã vào nhóm VT Markets | Thảo Luận & Thực Chiến.\n\n"
+        "Nhóm mình chia sẻ kiến thức, tin tức và kinh nghiệm giao dịch để anh em cùng tham khảo, "
+        "tài liệu cơ bản có ở bài ghim đầu nhóm. Các sếp đang theo dõi sản phẩm nào, Vàng, Dầu hay ngoại tệ, "
+        "và mới bắt đầu hay đã giao dịch một thời gian? Giới thiệu nhanh một câu để anh em làm quen nhé.\n\n"
+        "Lưu ý: mọi nội dung trong nhóm chỉ mang tính tham khảo, không phải lời khuyên đầu tư."
+    )
+    api_call("sendMessage", {"chat_id": DISCUSSION_CHAT_ID, "text": text, "parse_mode": "HTML"})
+
+
 def handle_new_members(msg, wl):
+    welcome_new_members([m for m in msg.get("new_chat_members", []) if not m.get("is_bot") and m.get("id") not in wl["user_ids"]])
     for m in msg.get("new_chat_members", []):
         if m.get("is_bot"):
             continue
@@ -792,6 +808,67 @@ def handle_smart_bot_reply(msg):
         log_info(f"Replied to user message {msg_id} (ok={res.get('ok')})")
 
 
+QUESTION_HINTS = ("làm sao", "thế nào", "như nào", "là gì", "bao nhiêu", "có nên", "ai biết", "ai rành", "giúp mình", "cho hỏi", "hỏi chút")
+PENDING_WAIT = 8 * 60          # đợi 8 phút xem anh em trong nhóm có trả lời không
+PENDING_MAX_AGE = 4 * 3600     # quá 4 giờ thì bỏ qua (trả lời muộn là vô duyên)
+DAILY_AUTO_ANSWER_LIMIT = 6
+AUTO_ANSWER_MIN_GAP = 15 * 60
+
+
+def looks_like_question(text):
+    t = (text or "").strip()
+    if len(t) < 15 or t.startswith("/") or re.search(r"https?://", t):
+        return False
+    low = t.lower()
+    return "?" in t or any(h in low for h in QUESTION_HINTS)
+
+
+def track_question(msg, state):
+    """Ghi nhận câu hỏi chưa ai trả lời; xoá khỏi hàng đợi khi có người khác trả lời."""
+    rt = msg.get("reply_to_message")
+    sender = msg.get("from", {}).get("id")
+    pend = state.setdefault("pending_questions", [])
+    if rt and sender != rt.get("from", {}).get("id"):
+        state["pending_questions"] = pend = [q for q in pend if q["mid"] != rt.get("message_id")]
+    text = (msg.get("text") or "").strip()
+    if not msg.get("from", {}).get("is_bot") and looks_like_question(text):
+        pend.append({"mid": msg["message_id"], "ts": time.time(), "uid": sender, "text": text[:400]})
+        state["pending_questions"] = pend[-20:]
+
+
+def check_pending_questions(state):
+    """Câu hỏi nhóm chưa ai đáp sau 8 phút -> bot tự trả lời (có giới hạn/ngày, không trả lời ban đêm)."""
+    pend = state.get("pending_questions") or []
+    if not pend:
+        return False
+    now = time.time()
+    dt = datetime.now()
+    today = dt.strftime("%Y-%m-%d")
+    counts = state.get("auto_answers", {})
+    if counts.get("day") != today:
+        counts = {"day": today, "n": 0}
+    keep, answered = [], False
+    for q in pend:
+        age = now - q["ts"]
+        if age > PENDING_MAX_AGE:
+            continue
+        can = (7 <= dt.hour < 23 and age >= PENDING_WAIT and not answered
+               and counts["n"] < DAILY_AUTO_ANSWER_LIMIT
+               and now - state.get("last_auto_answer", 0) >= AUTO_ANSWER_MIN_GAP)
+        if can:
+            log_info(f"Auto-answering unanswered question {q['mid']} (waited {int(age)}s)")
+            handle_smart_bot_reply({"chat": {"id": DISCUSSION_CHAT_ID}, "message_id": q["mid"], "text": q["text"]})
+            counts["n"] += 1
+            state["last_auto_answer"] = now
+            answered = True
+            continue
+        keep.append(q)
+    state["pending_questions"] = keep
+    state["auto_answers"] = counts
+    save_state(state)
+    return answered
+
+
 def process_update(upd, wl, state):
     if "callback_query" in upd:
         handle_callback(upd["callback_query"], wl)
@@ -826,6 +903,10 @@ def process_update(upd, wl, state):
 
         if should_bot_reply(msg):
             handle_smart_bot_reply(msg)
+        elif not exempt:
+            track_question(msg, state)
+        else:
+            track_question({**msg, "text": ""}, state)  # admin/whitelist trả lời cũng được tính là đã có người đáp
 
         if not exempt:
             handle_member_message_lead(msg)
@@ -896,6 +977,7 @@ def main():
         # Check scheduled daily posts + 1B Dynamic Icebreaker
         try:
             check_scheduled_daily_posts(state)
+            check_pending_questions(state)
             send_session_icebreaker(state, force=False)
         except Exception as e:
             log_info(f"[Error in 1B / Scheduled posts]: {e}")
