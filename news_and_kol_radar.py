@@ -638,7 +638,7 @@ def fetch_real_macro_articles(market, posted_set=None):
                 pub = entry.get("published_parsed") or entry.get("updated_parsed")
                 if pub:
                     age_h = (time.time() - calendar.timegm(pub)) / 3600
-                    if age_h > 72:  # chỉ lấy tin mới (<= 72 giờ, đủ phủ cuối tuần)
+                    if age_h > 24:  # chỉ lấy tin mới trong 24 giờ
                         continue
                     sc += max(0, 24 - age_h) / 2  # tin càng mới càng được ưu tiên
                 if sc >= 15 and link:
@@ -705,9 +705,9 @@ def fetch_dynamic_youtube_kol_posts(sheets, market, posted_set=None):
         kol_name = row[2].strip()
         specialty = row[5].strip() if len(row) >= 6 else "Phương pháp Price Action & Quản trị rủi ro thực chiến"
         clean_kol_query = re.sub(r"\([^)]*\)", "", kol_name).strip()
-        q_str = urllib.parse.quote(f"{clean_kol_query} trading strategy gold forex")
+        q_str = urllib.parse.quote(f"{clean_kol_query} gold forex trading")
         try:
-            html = fetch_url(f"https://www.youtube.com/results?search_query={q_str}", timeout=8)
+            html = fetch_url(f"https://www.youtube.com/results?search_query={q_str}&sp=CAI%3D", timeout=8)  # CAI%3D = sắp xếp theo ngày đăng mới nhất
             vids = list(dict.fromkeys(re.findall(r'"videoId":"([a-zA-Z0-9_-]{11})"', html)))
             chosen_vid = None
             meta = {}

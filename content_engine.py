@@ -245,6 +245,70 @@ def make_glossary():
     return {"id_key": f"ce_gloss_{item['id']}", "kind": "glossary", "title": f"Giải thích: {item['term']}", "caption": item["t"]}
 
 
+KOL_MAX_AGE_DAYS = 30
+YT_THIS_MONTH = "EgIIBA%253D%253D"  # bộ lọc YouTube: video đăng trong tháng này
+
+
+def _age_days_from_text(txt):
+    """'18h ago' / '6d ago' / '2w ago' / 'Streamed 4d ago' -> số ngày; None nếu quá cũ/không hiểu."""
+    m = re.search(r"(\d+)\s*(min|h|d|w|mo|y)\b", txt or "")
+    if not m:
+        return None
+    n, unit = int(m.group(1)), m.group(2)
+    days = {"min": n / 1440, "h": n / 24, "d": n, "w": n * 7, "mo": n * 30, "y": n * 365}[unit]
+    return days
+
+
+def _unescape(s):
+    try:
+        return json.loads('"' + s + '"')
+    except Exception:
+        return s
+
+
+def _same_channel(kol, owner):
+    kol, owner = kol.lower().strip(), owner.lower().strip()
+    toks = [w for w in re.split(r"\W+", kol) if w][:2]
+    return bool(toks) and (kol in owner or owner in kol or all(w in owner for w in toks))
+
+
+def fresh_kol_videos(max_channels=12, want=4):
+    """Video MỚI (<= 30 ngày) đúng kênh KOL trong Sheet: tìm trên YouTube với bộ lọc 'tháng này' rồi đối chiếu tên kênh."""
+    st = _state()
+    try:
+        rows = list(radar.fetch_online_sheets().get("YouTube", []))
+    except Exception:
+        rows = []
+    random.shuffle(rows)
+    out, checked = [], 0
+    pat = (r'"videoRenderer":\{"videoId":"([\w-]{11})".*?"title":\{"runs":\[\{"text":"(.*?)"\}\].*?'
+           r'"publishedTimeText":\{"simpleText":"(.*?)"\}.*?"ownerText":\{"runs":\[\{"text":"(.*?)"')
+    for row in rows:
+        if len(row) < 3:
+            continue
+        kol = re.sub(r"\([^)]*\)", "", row[2]).strip()
+        if not kol:
+            continue
+        checked += 1
+        try:
+            html = radar.fetch_url(f"https://www.youtube.com/results?search_query={urllib.parse.quote(kol)}&sp={YT_THIS_MONTH}", timeout=15)
+            for vid, title, pub, owner in re.findall(pat, html)[:20]:
+                if sum(1 for o in out if o["kol"] == kol) >= 2:  # tối đa 2 video mỗi kênh
+                    break
+                age = _age_days_from_text(pub)
+                if age is None or age > KOL_MAX_AGE_DAYS or not _same_channel(kol, owner) or _used(st, f"ce_kol_{vid}"):
+                    continue
+                out.append({"video_id": vid, "kol": kol, "title": _unescape(title),
+                            "source_url": f"https://www.youtube.com/watch?v={vid}",
+                            "image_url": f"https://i.ytimg.com/vi/{vid}/hqdefault.jpg"})
+        except Exception:
+            pass
+        if len(out) >= want or checked >= max_channels:
+            break
+    random.shuffle(out)
+    return out
+
+
 def make_kol_insight(buzz):
     """Tóm tắt video KOL dựa trên PHỤ ĐỀ THẬT. Không có phụ đề hoặc LLM lỗi thì bỏ qua (không bịa)."""
     try:
@@ -253,9 +317,8 @@ def make_kol_insight(buzz):
         return None
     st = _state()
     api = YouTubeTranscriptApi()
-    cands = [p for p in buzz.get("kol_posts", []) if p.get("video_id") and not _used(st, f"ce_kol_{p['video_id']}")]
-    random.shuffle(cands)
-    for p in cands[:4]:
+    cands = fresh_kol_videos()
+    for p in cands[:5]:
         vid = p["video_id"]
         try:
             segs = api.fetch(vid, languages=["en", "en-US", "en-GB"])
@@ -271,7 +334,7 @@ def make_kol_insight(buzz):
             f"Chỉ dựa vào phụ đề trên, viết 1 bài đăng Telegram tiếng Việt cho nhóm trader. {SAFETY_RULES}\n"
             "Cấu trúc: (1) 1 câu mở đầu nêu video nói về vấn đề gì; (2) 2-3 ý chính mà người trong video thực sự nói, mỗi ý 1 dòng bắt đầu bằng dấu '•'; "
             "(3) 1 câu hỏi mở để các sếp chia sẻ kinh nghiệm hoặc quan điểm riêng. Luôn nêu rõ đó là quan điểm của kênh, không phải của nhóm. "
-            "Tuyệt đối không thêm thông tin ngoài phụ đề. Nếu phụ đề không có nội dung giao dịch/phân tích rõ ràng, chỉ trả lời đúng một chữ: SKIP. Dưới 900 ký tự.",
+            "Tuyệt đối không thêm thông tin ngoài phụ đề. Không nhắc số tiền lãi/lỗ cụ thể của người trong video, không dùng ngôn từ khoe lợi nhuận. Nếu phụ đề không có nội dung giao dịch/phân tích rõ ràng, chỉ trả lời đúng một chữ: SKIP. Dưới 900 ký tự.",
             validate=lambda a: a.strip().upper().startswith("SKIP") or 150 <= len(a) <= 1500
         )
         if not out or out.strip().upper().startswith("SKIP") or not (150 <= len(out) <= 1500):
@@ -321,7 +384,7 @@ def _article_text(url):
 
 
 def make_news(buzz):
-    """Tin mới (<= 72h) từ RSS: LLM viết lại theo nội dung bài gốc; LLM lỗi thì dùng bản dựng sẵn."""
+    """Tin mới (<= 24h) từ RSS: LLM viết lại theo nội dung bài gốc; LLM lỗi thì dùng bản dựng sẵn."""
     cat, post = radar.pick_balanced_post(buzz, preferred_cat="tintuc")
     key = str((post or {}).get("id_key", ""))
     if not (post and key.startswith("http")):  # chỉ tin thật, không rơi về mẫu cũ
