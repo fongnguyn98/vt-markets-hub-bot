@@ -38,14 +38,29 @@
     "kol_yt_vid_gAjLia6mEWg",
     "reddit_thread_r/RealDayTrading/comments/1xjbze7/hey_come_and_join_moomoo_to_get_rewards",
     "https://www.fxempire.com/news/article/feds-powell-confident-on-inflation-despite-3-core-pce-as-labor-market-shows-stability-1575790",
-    "tiktok_mambafx_mambafx_journal_review"
+    "tiktok_mambafx_mambafx_journal_review",
+    "https://www.investing.com/news/economic-indicators/german-economy-grows-by-02-in-q3-preliminary-data-shows-4986289",
+    "https://www.investing.com/news/economic-indicators/german-economy-grows-by-02-in-q3-preliminary-data-shows-4986289",
+    "ce_poll_gen_66998984"
   ],
   "category_counts": {
-    "tintuc": 7,
+    "tintuc": 8,
     "kol": 11,
     "reddit": 9,
     "vt": 6,
     "tiktok": 6
   },
-  "last_category": "tiktok"
+  "last_category": "tintuc",
+  "post_log": [
+    {
+      "t": 1793427755,
+      "kind": "news",
+      "title": "Lạm phát ở Đức hạ nhiệt nhờ cắt giảm thuế nhiên liệu, kinh tế tăng trưởng hơn dự kiến ​​trong quý 3"
+    },
+    {
+      "t": 1793427780,
+      "kind": "poll",
+      "title": "Mình muốn hỏi các sếp thường đặt Stop Loss theo thói quen nào khi giao dịch ạ?"
+    }
+  ]
 }
