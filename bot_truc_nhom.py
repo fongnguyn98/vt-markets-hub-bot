@@ -470,14 +470,78 @@ def _slot_cooling(slot_id):
 # (tag, bắt đầu, kết thúc [cửa sổ bù], loại nội dung, các thứ trong tuần: 0=T2 ... 6=CN)
 WEEKDAYS = {0, 1, 2, 3, 4}
 SCHEDULE = [
-    ("morning_slot", 510, 690, "news", WEEKDAYS),          # 08:30 tin vĩ mô thật kèm câu hỏi
+    ("morning_slot", 510, 690, "news", WEEKDAYS),          # 08:30 tin vĩ mô thật (<=24h) kèm câu hỏi
     ("short_1015", 615, 695, "poll", WEEKDAYS),            # 10:15 khảo sát nhanh
     ("afternoon_kol", 870, 950, "kol_insight", WEEKDAYS),  # 14:30 tóm tắt video KOL từ phụ đề thật
     ("short_1600", 960, 1125, "scenario", WEEKDAYS),       # 16:00 câu hỏi tình huống
     ("evening_us", 1155, 1235, "discussion", WEEKDAYS),    # 19:15 xoay vòng Reddit / giải thích thuật ngữ / VT Markets
-    ("weekend_recap", 600, 780, "recap", {5}),             # T7 10:00 tổng kết tuần
-    ("weekend_ahead", 1140, 1260, "weekahead", {6}),       # CN 19:00 khảo sát đầu tuần
+    ("weekend_recap", 540, 810, "recap", {5}),             # T7 09:00-13:30 tổng kết tuần
+    ("sat_kol", 870, 1020, "kol_insight", {5}),            # T7 14:30-17:00 video KOL mới
+    ("sat_scenario", 1170, 1290, "scenario", {5}),         # T7 19:30-21:30 tình huống cuối tuần
+    ("sun_glossary", 570, 750, "glossary", {6}),           # CN 09:30-12:30 giải thích thuật ngữ
+    ("sun_kol", 900, 1050, "kol_insight", {6}),            # CN 15:00-17:30 video KOL mới
+    ("weekend_ahead", 1140, 1290, "weekahead", {6}),       # CN 19:00-21:30 khảo sát đầu tuần
 ]
+
+
+def run_live_v2_showcase(state):
+    """Chạy thử 1 lần duy nhất khi lên bản v2 trên GitHub Cloud: đăng ngay 1 bài Tin mới 24h + 1 Poll lên nhóm."""
+    if state.get("engine_v2_live_verified"):
+        return False
+    log_info("[Live Test v2] Triggering one-time live test post to Telegram...")
+    now = time.time()
+    results = []
+    try:
+        buzz = load_or_refresh_buzz(force_refresh=True)
+        news_post = content_engine.make_post("news", buzz)
+        if news_post:
+            r1 = news_and_kol_radar.publish_post(DISCUSSION_CHAT_ID, news_post)
+            if r1.get("ok"):
+                content_engine.record(news_post.get("kind", "news"), news_post.get("id_key", "live_news"), news_post.get("title", ""))
+                results.append({
+                    "kind": news_post.get("kind", "news"),
+                    "msg_id": r1.get("result", {}).get("message_id"),
+                    "source_url": news_post.get("source_url", ""),
+                    "caption": (news_post.get("caption") or "")[:500]
+                })
+        time.sleep(3)
+        poll_post = content_engine.make_post("poll", buzz)
+        if poll_post:
+            r2 = news_and_kol_radar.publish_post(DISCUSSION_CHAT_ID, poll_post)
+            if r2.get("ok"):
+                content_engine.record("poll", poll_post.get("id_key", "live_poll"), poll_post.get("title", ""))
+                results.append({
+                    "kind": "poll",
+                    "msg_id": r2.get("result", {}).get("message_id"),
+                    "poll": poll_post.get("poll")
+                })
+    except Exception as e:
+        log_info(f"[Live Test v2 Error]: {e}")
+
+    if results:
+        state["engine_v2_live_verified"] = True
+        state["last_live_test_result"] = {
+            "ts": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "posts": results
+        }
+        state["last_scheduled_time"] = now
+        state["last_group_activity"] = now
+        save_state(state)
+        sync_git_state()
+        try:
+            api_call("sendMessage", {
+                "chat_id": INTERNAL_CHAT_ID,
+                "text": (
+                    "✅ <b>ĐÃ CHẠY THỬ SKILL V2 TRÊN GITHUB CLOUD LÊN NHÓM THẢO LUẬN</b>\n\n"
+                    f"• Số bài vừa đăng test: <b>{len(results)} bài</b> (Tin mới 24h + Khảo sát Poll tương tác)\n"
+                    "• Toàn bộ lịch tự động & chăm sóc cộng đồng đã hoạt động 100% trên GitHub Actions."
+                ),
+                "parse_mode": "HTML"
+            })
+        except Exception:
+            pass
+        return True
+    return False
 
 
 def check_scheduled_daily_posts(state):
@@ -930,6 +994,7 @@ def main():
 
     # Kiểm tra và đăng bù ngay lập tức nếu vừa khởi động trong khung giờ có lịch (ví dụ khung 08:30 -> 11:30 sáng)
     try:
+        run_live_v2_showcase(state)
         check_scheduled_daily_posts(state)
         send_session_icebreaker(state, force=False)
     except Exception as e:

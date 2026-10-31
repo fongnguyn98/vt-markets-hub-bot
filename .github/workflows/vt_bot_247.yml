@@ -14,7 +14,7 @@ permissions:
 
 concurrency:
   group: vt-markets-hub-bot-247
-  cancel-in-progress: false
+  cancel-in-progress: ${{ github.event_name == 'push' }}
 
 jobs:
   run-bot-247:
@@ -50,15 +50,20 @@ jobs:
           pip install -r requirements.txt
 
       - name: Pull latest state before starting
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git pull --rebase origin main || true
+          git pull --rebase --autostash origin main || true
+          for id in $(gh run list --workflow vt_bot_247.yml --status queued --json databaseId --jq '.[].databaseId'); do
+            if [ "$id" != "${{ github.run_id }}" ]; then gh run cancel "$id" || true; fi
+          done
 
       - name: Run VT Markets Hub Bot (5h25m cycle)
         run: |
           python bot_truc_nhom.py --max-runtime-seconds 19500
 
       - name: Save & Commit Bot State back to Repository
-        if: always()
+        if: ${{ !cancelled() }}
         run: |
           git config user.name "VT-Markets-Bot-Cloud"
           git config user.email "bot@vtmarketshub.local"
@@ -73,7 +78,7 @@ jobs:
           fi
 
       - name: Self-trigger next 24/7 cycle immediately
-        if: always()
+        if: ${{ !cancelled() }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
