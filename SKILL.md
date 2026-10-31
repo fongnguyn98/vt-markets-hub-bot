@@ -1,14 +1,14 @@
 ---
 name: vt-community-radar
-description: Quy trình tự động quét 4 Sheet nguồn Quốc tế (Website, YouTube, TikTok, Reddit) từ Google Sheets Online của hệ thống VT Markets Hub, giải mã tin tức kết hợp chỉ báo định lượng TradingView-TA, tự động chụp biểu đồ nến XAU/USD thời gian thực (mplfinance), cân bằng 5 nhóm nội dung và tự động đăng lên nhóm Thảo Luận. Toàn bộ code & cấu hình chạy trực tiếp tại D:\CÁC LOẠI WORKFLOW & SKILL\HE_THONG_CONG_DONG_VT_MARKETS_HUB.
+description: Quy trình tự động quét 4 Sheet nguồn Quốc tế (Website, YouTube, TikTok, Reddit) từ Google Sheets Online của hệ thống VT Markets Hub, giải mã tin tức kết hợp chỉ báo định lượng TradingView-TA, tự động chụp biểu đồ nến XAU/USD thời gian thực (mplfinance), cân bằng 5 nhóm nội dung và tự động đăng lên nhóm Thảo Luận. Bot chạy 100% trên GitHub Actions (repo fongnguyn98/vt-markets-hub-bot), KHÔNG chạy trên máy local.
 ---
 
-# VT Community Radar & Content Balancing Skill (Master Directory: `D:\CÁC LOẠI WORKFLOW & SKILL\HE_THONG_CONG_DONG_VT_MARKETS_HUB`)
+# VT Community Radar & Content Balancing Skill (chạy 100% trên GitHub Actions)
 
 > [!IMPORTANT]
-> **THƯ MỤC GỐC DUY NHẤT ĐỂ SỬA ĐỔI & CHẠY SKILL:**
-> `D:\CÁC LOẠI WORKFLOW & SKILL\HE_THONG_CONG_DONG_VT_MARKETS_HUB`
-> Mọi chỉnh sửa code, cập nhật dữ liệu và khởi chạy tiến trình Bot đều thực hiện trực tiếp tại thư mục này.
+> **BOT CHẠY 100% TRÊN GITHUB ACTIONS — KHÔNG CHẠY THƯ MỤC LOCAL.**
+> Nguồn chuẩn duy nhất là repo `https://github.com/fongnguyn98/vt-markets-hub-bot` (workflow `.github/workflows/vt_bot_247.yml`).
+> Tuyệt đối không chạy `bot_truc_nhom.py` / `watchdog_bot.py` trên máy (gây `409 Conflict`, đăng trùng bài). Thư mục D: không còn dùng để chạy.
 
 ## 1. Nguyên Tắc Vận Hành Cốt Lõi (Strict Rules)
 1. **100% Nguồn Quốc Tế Trên Google Sheets Online:**
@@ -53,45 +53,33 @@ description: Quy trình tự động quét 4 Sheet nguồn Quốc tế (Website,
 - `youtube-transcript-api`: Bóc tách phụ đề video YouTube KOL & Podcast nhận định Vàng, Dầu hàng ngày.
 - `curl_cffi` + Cloudflare DoH `1.1.1.1`: Giả lập TLS Chrome vượt chặn DNS nhà mạng Việt Nam.
 
-## 3. Các File Thực Thi Tại `D:\CÁC LOẠI WORKFLOW & SKILL\HE_THONG_CONG_DONG_VT_MARKETS_HUB`
-- Bộ quét, phân tích định lượng & xuất bản: [`news_and_kol_radar.py`](file:///D:/CÁC%20LOẠI%20WORKFLOW%20&%20SKILL/HE_THONG_CONG_DONG_VT_MARKETS_HUB/news_and_kol_radar.py)
-- Bot trực nhóm & tự động đăng 24/7: [`bot_truc_nhom.py`](file:///D:/CÁC%20LOẠI%20WORKFLOW%20&%20SKILL/HE_THONG_CONG_DONG_VT_MARKETS_HUB/bot_truc_nhom.py)
-- Kho dữ liệu bài đăng đã xử lý: [`daily_buzz_pool.json`](file:///D:/CÁC%20LOẠI%20WORKFLOW%20&%20SKILL/HE_THONG_CONG_DONG_VT_MARKETS_HUB/daily_buzz_pool.json)
-- Ảnh biểu đồ nến `XAU/USD` M15 thời gian thực: [`live_xauusd_chart.png`](file:///D:/CÁC%20LOẠI%20WORKFLOW%20&%20SKILL/HE_THONG_CONG_DONG_VT_MARKETS_HUB/live_xauusd_chart.png)
-- Hồ sơ bàn giao & thông số: [`HANDOFF_HE_THONG_VT_MARKETS_HUB.md`](file:///D:/CÁC%20LOẠI%20WORKFLOW%20&%20SKILL/HE_THONG_CONG_DONG_VT_MARKETS_HUB/HANDOFF_HE_THONG_VT_MARKETS_HUB.md) và [`COMMITTED_SPEC.md`](file:///D:/CÁC%20LOẠI%20WORKFLOW%20&%20SKILL/HE_THONG_CONG_DONG_VT_MARKETS_HUB/COMMITTED_SPEC.md)
+## 3. Các File Trong Repo GitHub
+- Engine nội dung (các dạng bài, LLM, kho dự phòng): `content_engine.py`
+- Bộ quét nguồn, phân tích định lượng & xuất bản: `news_and_kol_radar.py`
+- Bot trực nhóm, lịch đăng & lệnh admin: `bot_truc_nhom.py`
+- State do bot tự commit về repo: `bot_state.json`, `content_balance_state.json`, `daily_buzz_pool.json`, `whitelist.json`
+- Secrets cấu hình tại GitHub (Settings → Secrets → Actions): `VT_BOT_TOKEN` (bắt buộc), `GEMINI_API_KEY` (khuyến nghị)
 
-## 4. Lịch Tự Động & Lệnh Điều Khiển Tức Thì Trên Telegram
-- **Tự động đăng vào nhóm `VT Markets | Thảo Luận & Thực Chiến` (`-1004375233328`):**
-  - `08:30`: Giải mã Tin tức Vĩ mô + Chỉ báo `TradingView-TA` (`tintuc`)
-  - `11:45` (Cách ngày): Cập nhật Tính năng & Điều kiện giao dịch VT Markets VN (`vt`)
-  - `14:30`: Phương pháp thực chiến từ YouTube / TikTok KOL quốc tế (`kol` / `tiktok`)
-  - `19:15`: Chủ đề Tranh luận Reddit trước phiên Mỹ kèm Biểu đồ Nến M15 thực tế (`reddit`)
-  - Khi nhóm im ắng > 3.5 tiếng: Tự động thả câu hỏi gợi chuyện ngắn (1–2 câu) bám sát giá Vàng và `RSI / EMA20` hiện tại.
-- **Lệnh kích hoạt tức thì (Gõ trong nhóm `[NỘI BỘ] Báo Khách & Sale`):**
-  - `/tintuc`, `/kol`, `/tiktok`, `/reddit`, `/vt`, `/goichuyen`, `/them`, `/xoa`, `/danhsach`.
+## 4. Lịch Tự Động & Lệnh Điều Khiển Trên Telegram
+- Nhóm `VT Markets | Thảo Luận & Thực Chiến` (`-1004375233328`), múi giờ `Asia/Ho_Chi_Minh`. Lịch định nghĩa trong `SCHEDULE` của `bot_truc_nhom.py`:
+  - T2–T6: `08:30` tin vĩ mô (`news`), `10:15` poll, `14:30` tóm tắt video KOL từ phụ đề thật (`kol_insight`), `16:00` câu hỏi tình huống, `19:15` xoay vòng Reddit / giải thích thuật ngữ / VT Markets.
+  - T7 `10:00` tổng kết tuần; CN `19:00` poll đầu tuần.
+  - Nhóm im ắng trên 5 giờ: thả câu hỏi gợi chuyện ngắn.
+- Lệnh admin (gõ trong nhóm `[NỘI BỘ] Báo Khách & Sale`): `/tintuc`, `/kol`, `/tiktok`, `/reddit`, `/vt`, `/goichuyen`, `/them`, `/xoa`, `/danhsach`.
 
-## 5. Cơ Chế Chạy Đám Mây 24/7 Trên GitHub Actions & Quy Trình Cập Nhật Skill
-- **Kho chứa GitHub 24/7:** `https://github.com/fongnguyn98/vt-markets-hub-bot` (Workflow: `.github/workflows/vt_bot_247.yml`).
-- **Quy trình bắt buộc khi AI sửa đổi skill này trong các cuộc trò chuyện sau:**
-  1. Mọi thay đổi code được thực hiện trực tiếp tại `D:\CÁC LOẠI WORKFLOW & SKILL\HE_THONG_CONG_DONG_VT_MARKETS_HUB` (`news_and_kol_radar.py`, `bot_truc_nhom.py`, `SKILL.md`).
-  2. Đồng bộ `SKILL.md` sang `C:\Users\PHONG\.gemini\config\skills\vt-community-radar\SKILL.md`.
-  3. Đẩy bản cập nhật lên GitHub Actions bằng lệnh:
-     ```powershell
-     Set-Location 'D:\CÁC LOẠI WORKFLOW & SKILL\HE_THONG_CONG_DONG_VT_MARKETS_HUB'
-     git pull --rebase origin main
-     git add news_and_kol_radar.py bot_truc_nhom.py SKILL.md
-     git commit -m "feat: update vt-community-radar skill"
-     git push origin main
-     ```
-  4. Ngay khi `git push origin main`, GitHub Actions sẽ tự động kích hoạt bản mới trên máy chủ đám mây 24/7.
+## 5. Quy Trình Cập Nhật Skill (Chỉ Qua GitHub)
+1. Clone/pull repo về thư mục tạm (không chạy bot): `git pull --rebase --autostash origin main` (bot cloud tự commit state nên repo luôn đi trước).
+2. Sửa code, chạy `python -m py_compile` để kiểm tra cú pháp. Không chạy bot thật khi test (dùng mock `publish_post`), và hoàn tác các file state bị ghi đè (`git checkout -- daily_buzz_pool.json content_balance_state.json`).
+3. Đồng bộ `SKILL.md` sang `C:\Users\PHONG\.gemini\config\skills\vt-community-radar\SKILL.md`.
+4. `git add`, `git commit`, `git push origin main`. Push kích hoạt workflow, bot mới chạy trên máy chủ GitHub.
+5. Xem kết quả ở tab Actions của repo.
 
-## 6. Lưu Ý Vận Hành (Rút Ra Sau 1 Tuần Chạy Thật)
-- **Chỉ MỘT instance được gọi getUpdates:** KHÔNG chạy watchdog_bot.py / ot_truc_nhom.py trên máy local khi bản GitHub Actions đang chạy (gây lỗi 409 Conflict, bot local và cloud giành tin nhắn, state lệch nhau). Muốn test local: dừng workflow trước.
-- **Lưu state:** ot_state.json bị ghi liên tục nên khi git pull --rebase phải dùng --autostash và retry push; mọi slot (kể cả tin nhắn ngắn) và lúc thoát đều gọi sync_git_state().
-- **Đăng lỗi:** slot đăng lỗi sẽ chờ 10 phút (SLOT_RETRY_COOLDOWN) mới thử lại, tránh quét lại toàn bộ nguồn liên tục.
-- **Thư mục D: có thể tụt hậu so với GitHub** (bot cloud tự commit state): luôn git pull --rebase --autostash origin main trước khi sửa.
+## 6. Lưu Ý Vận Hành
+- **Chỉ MỘT instance được gọi `getUpdates`:** chỉ chạy trên GitHub Actions, không chạy bot trên máy local (lỗi `409 Conflict`, đăng trùng, state lệch).
+- **Lưu state:** `bot_state.json` bị ghi liên tục nên `git pull --rebase` luôn dùng `--autostash` và retry push; mọi slot và lúc thoát đều gọi `sync_git_state()`.
+- **Đăng lỗi:** slot lỗi chờ 10 phút (`SLOT_RETRY_COOLDOWN`) mới thử lại, tránh quét lại toàn bộ nguồn liên tục.
+- **Repo luôn đi trước bản sao trên máy** vì bot cloud tự commit state: luôn `git pull --rebase --autostash origin main` trước khi sửa.
 
 ## 7. Nội Dung Mới (v2 — thay thế mục lịch ở phần 4 và tỷ lệ 5 nhóm ở phần 1.6)
 - Engine: `content_engine.py`. Nhiều dạng bài: tin vĩ mô thật, tóm tắt video KOL **từ phụ đề thật** (không có phụ đề thì không đăng, tuyệt đối không gán lời cho KOL), poll (`sendPoll`), câu hỏi tình huống, giải thích thuật ngữ, Reddit (chỉ bài có nội dung thật), tổng kết cuối tuần.
-- Lịch T2-T6: 08:30 tin tức, 10:15 poll, 14:30 KOL insight, 16:00 tình huống, 19:15 xoay vòng Reddit / thuật ngữ / VT Markets. T7 10:00 tổng kết tuần, CN 19:00 poll đầu tuần. Bỏ slot 11:45 và 20:45.
 - LLM lỗi thì dùng kho dự phòng viết sẵn trong `content_engine.py` (poll, tình huống, thuật ngữ). Bot im ắng trên 5 giờ mới thả câu hỏi gợi chuyện.
