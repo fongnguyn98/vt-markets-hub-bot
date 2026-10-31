@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-31 13:38:44",
+  "updated_at": "2026-10-31 14:30:29",
   "sources_count": {
     "Website": 56,
     "YouTube": 70,
@@ -24,6 +24,16 @@
   "live_chart_path": "/home/runner/work/vt-markets-hub-bot/vt-markets-hub-bot/live_xauusd_chart.png",
   "macro_posts": [
     {
+      "id_key": "https://www.investing.com/news/economy-news/china-reports-sharp-increase-in-gold-nickel-and-strategic-minerals--xinhua-4989148",
+      "title": "Trung Quốc báo cáo tăng mạnh về vàng, niken và khoáng sản chiến lược - Tân Hoa Xã",
+      "raw_title": "China reports sharp increase in gold, nickel and strategic minerals - Xinhua",
+      "raw_summary": "",
+      "source_name": "Investing.com Economy",
+      "image_url": "https://content-media.investing.com/news/LYNXNPEC3L1A6_M.jpg",
+      "source_url": "https://www.investing.com/news/economy-news/china-reports-sharp-increase-in-gold-nickel-and-strategic-minerals--xinhua-4989148",
+      "caption": "Theo bản tin trên Investing.com Economy, tác giả chia sẻ góc nhìn: \"Trung Quốc báo cáo tăng mạnh về vàng, niken và khoáng sản chiến lược - Tân Hoa Xã.\" Số liệu trên TradingView hiện ghi nhận Vàng ở $3,875.6 (giữa vùng $3,868 và $3,937), các sếp thấy nhận định trên của Investing.com Economy có sát thực tế không?"
+    },
+    {
       "id_key": "https://www.investing.com/news/forex-news/asian-currencies-mixed-as-dollar-retreats-yen-steadies-ahead-of-boj-decision-4985749",
       "title": "Đồng đô la tăng trong tháng 10 khi đặt cược tăng lãi suất vẫn ở mức cao, đồng euro và đồng yên trượt dốc",
       "raw_title": "Dollar rises for October as rate hike bets remain elevated, euro and yen slip",
@@ -44,16 +54,6 @@
       "caption": "📰 Theo bài phân tích vừa đăng tải trên Investing.com Indicators (FED cần ít nhất hai lần tăng lãi suất nữa, Logan nói), các chuyên gia tại đây nhận định việc dữ liệu lạm phát và lao động Mỹ giữ ổn định đang khiến giới đầu tư giảm kỳ vọng FED sớm hạ lãi suất, từ đó tạo áp lực điều chỉnh lên giá Vàng quanh vùng $3,875.6.\n\n📊 Đối chiếu trên bảng thống kê tự động của TradingView, hiện có 14/26 chỉ báo kỹ thuật nghiêng về chiều bán dưới đường trung bình EMA20 ($3,937), trong khi chỉ số RSI khung H1 đang hiển thị ở mức 17.5 gần biên dưới $3,868.\n\n💬 Từ các dữ liệu trên, đội ngũ phân tích của Investing.com Indicators chia sẻ góc nhìn rằng thị trường có thể xuất hiện các nhịp giằng co quanh vùng $3,868 – $3,937. Các sếp đánh giá thế nào về nhận định này của Investing.com Indicators?"
     },
     {
-      "id_key": "https://www.marketwatch.com/story/why-gold-plunged-to-its-lowest-price-in-a-year-despite-renewed-iran-jitters-365be0e2?mod=mw_rss_topstories",
-      "title": "Tại sao vàng giảm xuống mức giá thấp nhất trong một năm bất chấp những lo lắng mới về Iran",
-      "raw_title": "Why gold plunged to its lowest price in a year despite renewed Iran jitters",
-      "raw_summary": "Safe-haven gold fell to its lowest price in a year, despite jitters around the potential for fresh Middle East attacks following the U.S. midterm elections on Tuesday",
-      "source_name": "MarketWatch",
-      "image_url": "https://images.mktw.net/im-86036110",
-      "source_url": "https://www.marketwatch.com/story/why-gold-plunged-to-its-lowest-price-in-a-year-despite-renewed-iran-jitters-365be0e2?mod=mw_rss_topstories",
-      "caption": "Theo bản tin trên MarketWatch, tác giả chia sẻ góc nhìn: \"Vàng trú ẩn an toàn giảm xuống mức giá thấp nhất trong một năm, bất chấp những lo lắng xung quanh khả năng xảy ra các cuộc tấn công mới ở Trung Đông sau cuộc bầu cử giữa nhiệm kỳ của Hoa Kỳ vào thứ Ba.\" Số liệu trên TradingView hiện ghi nhận Vàng ở $3,875.6 (giữa vùng $3,868 và $3,937), các sếp thấy nhận định trên của MarketWatch có sát thực tế không?"
-    },
-    {
       "id_key": "https://www.investing.com/news/economic-indicators/germany-october-inflation-slows-more-than-expected-to-28-4987753",
       "title": "Lạm phát tháng 10 của Đức chậm hơn dự kiến ​​xuống 2,8%",
       "raw_title": "Germany October inflation slows more than expected to 2.8%",
@@ -66,40 +66,40 @@
   ],
   "kol_posts": [
     {
-      "id_key": "kol_yt_vid_3E7k47dZeWk",
-      "kol": "Data Trader",
-      "video_id": "3E7k47dZeWk",
-      "title": "Data Trader: Chiến lược giao dịch vàng XAUUSD mạnh mẽ",
-      "source_url": "https://www.youtube.com/watch?v=3E7k47dZeWk",
-      "image_url": "https://i.ytimg.com/vi/3E7k47dZeWk/hqdefault.jpg",
-      "caption": "📌 Trên kênh YouTube của Data Trader, chuyên gia này vừa có bài chia sẻ xoay quanh chủ đề \"Chiến lược giao dịch vàng XAUUSD mạnh mẽ\" (thuộc thế mạnh của kênh là: Phân tích thống kê tỷ lệ thắng của từng mô hình nến và thiết lập giao dịch.).\n\n💡 Theo góc nhìn cá nhân mà Data Trader trình bày trong video, thay vì vào lệnh dàn trải ở mọi nhịp sóng, chiến lược của chuyên gia này tập trung đợi giá tiếp cận đúng vùng cấu trúc trên khung H1/M15 và chỉ hành động khi có nến xác nhận rõ ràng kèm mức dừng lỗ cố định.\n\n💬 Đó là nguyên tắc giao dịch riêng được Data Trader áp dụng. Các sếp trong nhóm mình đánh giá cách tiếp cận này của Data Trader có phù hợp khi giao dịch XAU/USD không?"
+      "id_key": "kol_yt_vid_sPyOWwKEsnU",
+      "kol": "guilherme / ICT Gems & Concepts",
+      "video_id": "sPyOWwKEsnU",
+      "title": "guilherme / ICT Gems & Concepts: CNTT giải thích những khoảng trống giá trị hợp lý thực sự #ictgems #forex #trading",
+      "source_url": "https://www.youtube.com/watch?v=sPyOWwKEsnU",
+      "image_url": "https://i.ytimg.com/vi/sPyOWwKEsnU/hqdefault.jpg",
+      "caption": "📌 Trên kênh YouTube của guilherme / ICT Gems & Concepts, chuyên gia này vừa có bài chia sẻ xoay quanh chủ đề \"CNTT giải thích những khoảng trống giá trị hợp lý thực sự #ictgems #forex #trading\" (thuộc thế mạnh của kênh là: Cắt gọn những kiến thức cốt lõi nhất về bẫy thanh khoản phiên Á - Âu - Mỹ.).\n\n💡 Theo góc nhìn cá nhân mà guilherme / ICT Gems & Concepts trình bày trong video, thay vì vào lệnh dàn trải ở mọi nhịp sóng, chiến lược của chuyên gia này tập trung đợi giá tiếp cận đúng vùng cấu trúc trên khung H1/M15 và chỉ hành động khi có nến xác nhận rõ ràng kèm mức dừng lỗ cố định.\n\n💬 Đó là nguyên tắc giao dịch riêng được guilherme / ICT Gems & Concepts áp dụng. Các sếp trong nhóm mình đánh giá cách tiếp cận này của guilherme / ICT Gems & Concepts có phù hợp khi giao dịch XAU/USD không?"
     },
     {
-      "id_key": "kol_yt_vid_LeNWgk50xKw",
-      "kol": "TraderMayne",
-      "video_id": "LeNWgk50xKw",
-      "title": "TraderMayne: TÔI YÊU (THƯƠNG MẠI) GOOOOOLD",
-      "source_url": "https://www.youtube.com/watch?v=LeNWgk50xKw",
-      "image_url": "https://i.ytimg.com/vi/LeNWgk50xKw/hqdefault.jpg",
-      "caption": "📌 Trên kênh YouTube của TraderMayne, chuyên gia này vừa có bài chia sẻ xoay quanh chủ đề \"TÔI YÊU (THƯƠNG MẠI) GOOOOOLD\" (thuộc thế mạnh của kênh là: Phân tích Price Action, Range Trading (Đánh biên độ hộp tích lũy) và quản trị lệnh.).\n\n💡 Theo góc nhìn cá nhân mà TraderMayne trình bày trong video, thay vì vào lệnh dàn trải ở mọi nhịp sóng, chiến lược của chuyên gia này tập trung đợi giá tiếp cận đúng vùng cấu trúc trên khung H1/M15 và chỉ hành động khi có nến xác nhận rõ ràng kèm mức dừng lỗ cố định.\n\n💬 Đó là nguyên tắc giao dịch riêng được TraderMayne áp dụng. Các sếp trong nhóm mình đánh giá cách tiếp cận này của TraderMayne có phù hợp khi giao dịch XAU/USD không?"
+      "id_key": "kol_yt_vid_OiXEpjO7rOs",
+      "kol": "Fractal Flow - Pro Trading Strategies",
+      "video_id": "OiXEpjO7rOs",
+      "title": "Fractal Flow - Pro Trading Strategies: Hướng dẫn TUYỆT VỜI cho người mới bắt đầu về MẪU BIỂU ĐỒ",
+      "source_url": "https://www.youtube.com/watch?v=OiXEpjO7rOs",
+      "image_url": "https://i.ytimg.com/vi/OiXEpjO7rOs/hqdefault.jpg",
+      "caption": "📌 Trên kênh YouTube của Fractal Flow - Pro Trading Strategies, chuyên gia này vừa có bài chia sẻ xoay quanh chủ đề \"Hướng dẫn TUYỆT VỜI cho người mới bắt đầu về MẪU BIỂU ĐỒ\" (thuộc thế mạnh của kênh là: Chuyên sâu về cấu trúc thị trường nâng cao, Volume Profile và hành vi giá.).\n\n💡 Theo góc nhìn cá nhân mà Fractal Flow - Pro Trading Strategies trình bày trong video, thay vì vào lệnh dàn trải ở mọi nhịp sóng, chiến lược của chuyên gia này tập trung đợi giá tiếp cận đúng vùng cấu trúc trên khung H1/M15 và chỉ hành động khi có nến xác nhận rõ ràng kèm mức dừng lỗ cố định.\n\n💬 Đó là nguyên tắc giao dịch riêng được Fractal Flow - Pro Trading Strategies áp dụng. Các sếp trong nhóm mình đánh giá cách tiếp cận này của Fractal Flow - Pro Trading Strategies có phù hợp khi giao dịch XAU/USD không?"
     },
     {
-      "id_key": "kol_yt_vid_VPkTzYuMrsc",
-      "kol": "Brooks Trading Course (Al Brooks)",
-      "video_id": "VPkTzYuMrsc",
-      "title": "Brooks Trading Course (Al Brooks): Sai lầm lớn nhất mà người mới bắt đầu mắc phải",
-      "source_url": "https://www.youtube.com/watch?v=VPkTzYuMrsc",
-      "image_url": "https://i.ytimg.com/vi/VPkTzYuMrsc/hqdefault.jpg",
-      "caption": "📌 Trên kênh YouTube của Brooks Trading Course (Al Brooks), chuyên gia này vừa có bài chia sẻ xoay quanh chủ đề \"Sai lầm lớn nhất mà người mới bắt đầu mắc phải\" (thuộc thế mạnh của kênh là: Cha đẻ trường phái đọc Price Action từng thanh nến (Bar-by-Bar Analysis).).\n\n💡 Theo góc nhìn cá nhân mà Brooks Trading Course (Al Brooks) trình bày trong video, thay vì vào lệnh dàn trải ở mọi nhịp sóng, chiến lược của chuyên gia này tập trung đợi giá tiếp cận đúng vùng cấu trúc trên khung H1/M15 và chỉ hành động khi có nến xác nhận rõ ràng kèm mức dừng lỗ cố định.\n\n💬 Đó là nguyên tắc giao dịch riêng được Brooks Trading Course (Al Brooks) áp dụng. Các sếp trong nhóm mình đánh giá cách tiếp cận này của Brooks Trading Course (Al Brooks) có phù hợp khi giao dịch XAU/USD không?"
+      "id_key": "kol_yt_vid_YK9Cs3y-otE",
+      "kol": "Mack (Price Action Trading System - PATS)",
+      "video_id": "YK9Cs3y-otE",
+      "title": "Mack (Price Action Trading System - PATS): Giao dịch xoay vòng vàng và bạc",
+      "source_url": "https://www.youtube.com/watch?v=YK9Cs3y-otE",
+      "image_url": "https://i.ytimg.com/vi/YK9Cs3y-otE/hqdefault.jpg",
+      "caption": "📌 Trên kênh YouTube của Mack (Price Action Trading System - PATS), chuyên gia này vừa có bài chia sẻ xoay quanh chủ đề \"Giao dịch xoay vòng vàng và bạc\" (thuộc thế mạnh của kênh là: Chuyên gia đếm nhịp sóng hồi 2 chân (Two-Legged Pullback) kinh điển.).\n\n💡 Theo góc nhìn cá nhân mà Mack (Price Action Trading System - PATS) trình bày trong video, thay vì vào lệnh dàn trải ở mọi nhịp sóng, chiến lược của chuyên gia này tập trung đợi giá tiếp cận đúng vùng cấu trúc trên khung H1/M15 và chỉ hành động khi có nến xác nhận rõ ràng kèm mức dừng lỗ cố định.\n\n💬 Đó là nguyên tắc giao dịch riêng được Mack (Price Action Trading System - PATS) áp dụng. Các sếp trong nhóm mình đánh giá cách tiếp cận này của Mack (Price Action Trading System - PATS) có phù hợp khi giao dịch XAU/USD không?"
     },
     {
-      "id_key": "kol_yt_vid_tFKOaF4HMcg",
-      "kol": "Jadecap",
-      "video_id": "tFKOaF4HMcg",
-      "title": "Jadecap: Chiến lược giao dịch cập nhật của tôi (2026)",
-      "source_url": "https://www.youtube.com/watch?v=tFKOaF4HMcg",
-      "image_url": "https://i.ytimg.com/vi/tFKOaF4HMcg/hqdefault.jpg",
-      "caption": "📌 Trên kênh YouTube của Jadecap, chuyên gia này vừa có bài chia sẻ xoay quanh chủ đề \"Chiến lược giao dịch cập nhật của tôi (2026)\" (thuộc thế mạnh của kênh là: Kỷ lục gia rút tiền Prop Firm lớn nhất thế giới — Chuyên phân tích Daily Bias (Xu hướng ngày) và ICT/SMC chuẩn mực.).\n\n💡 Theo góc nhìn cá nhân mà Jadecap trình bày trong video, thay vì vào lệnh dàn trải ở mọi nhịp sóng, chiến lược của chuyên gia này tập trung đợi giá tiếp cận đúng vùng cấu trúc trên khung H1/M15 và chỉ hành động khi có nến xác nhận rõ ràng kèm mức dừng lỗ cố định.\n\n💬 Đó là nguyên tắc giao dịch riêng được Jadecap áp dụng. Các sếp trong nhóm mình đánh giá cách tiếp cận này của Jadecap có phù hợp khi giao dịch XAU/USD không?"
+      "id_key": "kol_yt_vid_Krwh3FE9Q70",
+      "kol": "Financial Wisdom",
+      "video_id": "Krwh3FE9Q70",
+      "title": "Financial Wisdom: Chiến lược xu hướng vàng và bạc đơn giản (nghiên cứu trong 50 năm) Tiếp theo ở đâu?",
+      "source_url": "https://www.youtube.com/watch?v=Krwh3FE9Q70",
+      "image_url": "https://i.ytimg.com/vi/Krwh3FE9Q70/hqdefault.jpg",
+      "caption": "📌 Trên kênh YouTube của Financial Wisdom, chuyên gia này vừa có bài chia sẻ xoay quanh chủ đề \"Chiến lược xu hướng vàng và bạc đơn giản (nghiên cứu trong 50 năm) Tiếp theo ở đâu?\" (thuộc thế mạnh của kênh là: Tóm tắt phương pháp giao dịch của các huyền thoại Phố Wall (Wyckoff, Livermore, Darvas, Minervini).).\n\n💡 Theo góc nhìn cá nhân mà Financial Wisdom trình bày trong video, thay vì vào lệnh dàn trải ở mọi nhịp sóng, chiến lược của chuyên gia này tập trung đợi giá tiếp cận đúng vùng cấu trúc trên khung H1/M15 và chỉ hành động khi có nến xác nhận rõ ràng kèm mức dừng lỗ cố định.\n\n💬 Đó là nguyên tắc giao dịch riêng được Financial Wisdom áp dụng. Các sếp trong nhóm mình đánh giá cách tiếp cận này của Financial Wisdom có phù hợp khi giao dịch XAU/USD không?"
     },
     {
       "id_key": "kol_yt_smartrisk_idm",
@@ -113,39 +113,59 @@
   ],
   "tiktok_posts": [
     {
-      "id_key": "tiktok_trades_by_matt_tradesbymatt_overtrade_filter",
-      "kol": "Trades by Matt (@tradesbymatt)",
-      "title": "Trades by Matt (@tradesbymatt) chia sẻ góc nhìn về cách hạn chế vào lệnh quá đà (Overtrade) sau khi vừa có lệnh thắng hoặc lệnh thua",
-      "source_url": "https://www.tiktok.com/@tradesbymatt",
-      "image_url": "https://i.ytimg.com/vi/yvhgwZKkJQ0/maxresdefault.jpg",
-      "caption": "📝 Trên kênh TikTok của Trades by Matt (@tradesbymatt) (chuyên về: Thực chiến giao dịch hợp đồng tương lai (Futures) và kỷ luật cắt lỗ dứt khoát.), nhà giao dịch này có chia sẻ góc nhìn cá nhân xoay quanh cách hạn chế vào lệnh quá đà (Overtrade) sau khi vừa có lệnh thắng hoặc lệnh thua.\n\n✅ Theo chia sẻ từ kênh Trades by Matt (@tradesbymatt), nguyên tắc mà họ tự đặt ra cho bản thân là chỉ cho phép bản thân vào tối đa 1–2 lệnh chất lượng nhất trong mỗi phiên giao dịch rồi đóng biểu đồ nghỉ ngơi.\n\n💬 Đó là kỷ luật cá nhân được Trades by Matt (@tradesbymatt) áp dụng để bảo vệ tài khoản. Các sếp trong nhóm mình thấy cách làm này của Trades by Matt (@tradesbymatt) có thực tế không?"
-    },
-    {
-      "id_key": "tiktok_the_economist_theeconomist_htf_alignment",
-      "kol": "The Economist (@theeconomist)",
-      "title": "The Economist (@theeconomist) chia sẻ góc nhìn về nguyên tắc đối chiếu xu hướng khung thời gian lớn trước khi tìm điểm vào ở khung nhỏ",
-      "source_url": "https://www.tiktok.com/@theeconomist",
-      "image_url": "https://i.ytimg.com/vi/yvhgwZKkJQ0/maxresdefault.jpg",
-      "caption": "📝 Trên kênh TikTok của The Economist (@theeconomist) (chuyên về: Phân tích sâu sắc các xu hướng địa chính trị, thương mại toàn cầu và lạm phát.), nhà giao dịch này có chia sẻ góc nhìn cá nhân xoay quanh nguyên tắc đối chiếu xu hướng khung thời gian lớn trước khi tìm điểm vào ở khung nhỏ.\n\n✅ Theo chia sẻ từ kênh The Economist (@theeconomist), nguyên tắc mà họ tự đặt ra cho bản thân là kiểm tra cấu trúc đỉnh đáy trên khung H4 và H1 trước, sau đó mới hạ xuống M15 chờ nến rút chân cùng chiều xu hướng chính.\n\n💬 Đó là kỷ luật cá nhân được The Economist (@theeconomist) áp dụng để bảo vệ tài khoản. Các sếp trong nhóm mình thấy cách làm này của The Economist (@theeconomist) có thực tế không?"
-    },
-    {
-      "id_key": "tiktok_marketwatch_marketwatch_weekly_withdrawal",
-      "kol": "MarketWatch (@marketwatch)",
-      "title": "MarketWatch (@marketwatch) chia sẻ góc nhìn về thói quen rút lợi nhuận định kỳ để biến con số trên màn hình thành tiền thực tế",
-      "source_url": "https://www.tiktok.com/@marketwatch",
+      "id_key": "tiktok_ttrades_ttrades_edu_weekly_withdrawal",
+      "kol": "TTrades (@ttrades_edu)",
+      "title": "TTrades (@ttrades_edu) chia sẻ góc nhìn về thói quen rút lợi nhuận định kỳ để biến con số trên màn hình thành tiền thực tế",
+      "source_url": "https://www.tiktok.com/@ttrades_edu",
       "image_url": "https://i.ytimg.com/vi/bV7FxNXLeWU/maxresdefault.jpg",
-      "caption": "📝 Trên kênh TikTok của MarketWatch (@marketwatch) (chuyên về: Điểm tin nhanh các báo cáo kinh tế Mỹ và tâm lý nhà đầu tư.), nhà giao dịch này có chia sẻ góc nhìn cá nhân xoay quanh thói quen rút lợi nhuận định kỳ để biến con số trên màn hình thành tiền thực tế.\n\n✅ Theo chia sẻ từ kênh MarketWatch (@marketwatch), nguyên tắc mà họ tự đặt ra cho bản thân là cuối mỗi tuần có lãi đều trích từ 40% – 50% phần lợi nhuận rút về tài khoản ngân hàng nhằm giữ tâm lý thoải mái cho tuần mới.\n\n💬 Đó là kỷ luật cá nhân được MarketWatch (@marketwatch) áp dụng để bảo vệ tài khoản. Các sếp trong nhóm mình thấy cách làm này của MarketWatch (@marketwatch) có thực tế không?"
+      "caption": "📝 Trên kênh TikTok của TTrades (@ttrades_edu) (chuyên về: Giải thích bằng hình vẽ trực quan các pha bẫy giá (Inducement) trước khi Vàng chạy thật.), nhà giao dịch này có chia sẻ góc nhìn cá nhân xoay quanh thói quen rút lợi nhuận định kỳ để biến con số trên màn hình thành tiền thực tế.\n\n✅ Theo chia sẻ từ kênh TTrades (@ttrades_edu), nguyên tắc mà họ tự đặt ra cho bản thân là cuối mỗi tuần có lãi đều trích từ 40% – 50% phần lợi nhuận rút về tài khoản ngân hàng nhằm giữ tâm lý thoải mái cho tuần mới.\n\n💬 Đó là kỷ luật cá nhân được TTrades (@ttrades_edu) áp dụng để bảo vệ tài khoản. Các sếp trong nhóm mình thấy cách làm này của TTrades (@ttrades_edu) có thực tế không?"
     },
     {
-      "id_key": "tiktok_alex_g_alexgonzalezfx_breakeven_rule",
-      "kol": "Alex G (@alexgonzalezfx)",
-      "title": "Alex G (@alexgonzalezfx) chia sẻ góc nhìn về nguyên tắc bảo vệ vốn khi giá đã chạy đúng hướng kỳ vọng",
-      "source_url": "https://www.tiktok.com/@alexgonzalezfx",
-      "image_url": "https://i.ytimg.com/vi/bV7FxNXLeWU/maxresdefault.jpg",
-      "caption": "📝 Trên kênh TikTok của Alex G (@alexgonzalezfx) (chuyên về: Phong cách Swing Trading 'Set and Forget' — Nhận định xu hướng lớn cho Vàng và các cặp Forex.), nhà giao dịch này có chia sẻ góc nhìn cá nhân xoay quanh nguyên tắc bảo vệ vốn khi giá đã chạy đúng hướng kỳ vọng.\n\n✅ Theo chia sẻ từ kênh Alex G (@alexgonzalezfx), nguyên tắc mà họ tự đặt ra cho bản thân là dời điểm dừng lỗ (SL) về mức hòa vốn hoặc chốt trước một nửa khối lượng khi lệnh đã đạt tỷ lệ 1:1 để giải tỏa áp lực tâm lý.\n\n💬 Đó là kỷ luật cá nhân được Alex G (@alexgonzalezfx) áp dụng để bảo vệ tài khoản. Các sếp trong nhóm mình thấy cách làm này của Alex G (@alexgonzalezfx) có thực tế không?"
+      "id_key": "tiktok_reuters_reuters_session_timing",
+      "kol": "Reuters (@reuters)",
+      "title": "Reuters (@reuters) chia sẻ góc nhìn về cách lựa chọn khung giờ giao dịch cố định cho người bận công việc hành chính",
+      "source_url": "https://www.tiktok.com/@reuters",
+      "image_url": "https://i.ytimg.com/vi/TYbpk7WogHI/maxresdefault.jpg",
+      "caption": "📝 Trên kênh TikTok của Reuters (@reuters) (chuyên về: Tin tức chấn động địa chính trị (Trung Đông, Nga-Ukraine, Thương mại Mỹ-Trung) tác động tức thì lên giá Vàng.), nhà giao dịch này có chia sẻ góc nhìn cá nhân xoay quanh cách lựa chọn khung giờ giao dịch cố định cho người bận công việc hành chính.\n\n✅ Theo chia sẻ từ kênh Reuters (@reuters), nguyên tắc mà họ tự đặt ra cho bản thân là bỏ qua các nhịp đi ngang biên độ hẹp buổi sáng và chỉ tập trung theo dõi khoảng 45–60 phút đầu phiên Âu hoặc đầu phiên Mỹ khi thanh khoản lớn nhập cuộc.\n\n💬 Đó là kỷ luật cá nhân được Reuters (@reuters) áp dụng để bảo vệ tài khoản. Các sếp trong nhóm mình thấy cách làm này của Reuters (@reuters) có thực tế không?"
+    },
+    {
+      "id_key": "tiktok_doyle_exchange_doyleexchange_fixed_risk_pct",
+      "kol": "Doyle Exchange (@doyleexchange)",
+      "title": "Doyle Exchange (@doyleexchange) chia sẻ góc nhìn về bài toán cố định mức rủi ro tính bằng số tiền USD trên mỗi giao dịch",
+      "source_url": "https://www.tiktok.com/@doyleexchange",
+      "image_url": "https://i.ytimg.com/vi/s96BrHAScRc/hqdefault.jpg",
+      "caption": "📝 Trên kênh TikTok của Doyle Exchange (@doyleexchange) (chuyên về: Chiến lược Scalping khung M5/M15 bắt nhịp hồi tại vùng Cung Cầu.), nhà giao dịch này có chia sẻ góc nhìn cá nhân xoay quanh bài toán cố định mức rủi ro tính bằng số tiền USD trên mỗi giao dịch.\n\n✅ Theo chia sẻ từ kênh Doyle Exchange (@doyleexchange), nguyên tắc mà họ tự đặt ra cho bản thân là luôn xác định trước số tiền chấp nhận rủi ro tối đa cho 1 lệnh (ví dụ 1% – 2% tài khoản) rồi mới chia ngược ra số Lot tương ứng với khoảng cách SL.\n\n💬 Đó là kỷ luật cá nhân được Doyle Exchange (@doyleexchange) áp dụng để bảo vệ tài khoản. Các sếp trong nhóm mình thấy cách làm này của Doyle Exchange (@doyleexchange) có thực tế không?"
+    },
+    {
+      "id_key": "tiktok_nick_shawn_nickshawnfx_htf_alignment",
+      "kol": "Nick Shawn (@nickshawnfx)",
+      "title": "Nick Shawn (@nickshawnfx) chia sẻ góc nhìn về nguyên tắc đối chiếu xu hướng khung thời gian lớn trước khi tìm điểm vào ở khung nhỏ",
+      "source_url": "https://www.tiktok.com/@nickshawnfx",
+      "image_url": "https://i.ytimg.com/vi/yvhgwZKkJQ0/maxresdefault.jpg",
+      "caption": "📝 Trên kênh TikTok của Nick Shawn (@nickshawnfx) (chuyên về: Trường phái Hỗ trợ - Kháng cự tối giản và quản trị tỷ lệ R:R thực tế.), nhà giao dịch này có chia sẻ góc nhìn cá nhân xoay quanh nguyên tắc đối chiếu xu hướng khung thời gian lớn trước khi tìm điểm vào ở khung nhỏ.\n\n✅ Theo chia sẻ từ kênh Nick Shawn (@nickshawnfx), nguyên tắc mà họ tự đặt ra cho bản thân là kiểm tra cấu trúc đỉnh đáy trên khung H4 và H1 trước, sau đó mới hạ xuống M15 chờ nến rút chân cùng chiều xu hướng chính.\n\n💬 Đó là kỷ luật cá nhân được Nick Shawn (@nickshawnfx) áp dụng để bảo vệ tài khoản. Các sếp trong nhóm mình thấy cách làm này của Nick Shawn (@nickshawnfx) có thực tế không?"
     }
   ],
   "reddit_posts": [
+    {
+      "id_key": "reddit_thread_r/TradingView/comments/1xk3hku/support_inline_tooltips_in_labels_and_table_cells",
+      "sub": "TradingView",
+      "raw_title": "Support Inline Tooltips in Labels and Table Cells",
+      "raw_body": "Please allow Pine Script authors to define tooltips for individual text spans within labels and table cells, for example through inline markup or an API that associates each span with its tooltip text.\n\nThis would provide precise explanations for individual words, phrases, or values without cluttering dashboards. Inline tooltips should take precedence over the general tooltip while their associated text is hovered.\n\nRelated feature requests:\n\n* Tooltip or title display for plot(), hline(), line.new()\n* Tooltip for fill()\n* Tooltip for bgcolor()\n* Feature Request: Make strategy input tooltips wider",
+      "title": "r/TradingView: Hỗ trợ chú giải công cụ nội tuyến trong nhãn và ô bảng",
+      "image_url": "/home/runner/work/vt-markets-hub-bot/vt-markets-hub-bot/live_xauusd_chart.png",
+      "source_url": "https://www.reddit.com/r/TradingView/comments/1xk3hku/support_inline_tooltips_in_labels_and_table_cells/",
+      "caption": "📊 Điểm nhanh một chủ đề mới đang được các thành viên trên cộng đồng r/TradingView quốc tế đem ra thảo luận: \"Hỗ trợ chú giải công cụ nội tuyến trong nhãn và ô bảng\".\n\n💡 Trong bài viết, tác giả trên r/TradingView chia sẻ góc nhìn thực tế: \"Vui lòng cho phép tác giả Pine Script xác định chú giải công cụ cho từng khoảng văn bản trong nhãn và ô bảng, ví dụ: thông qua đánh dấu nội tuyến hoặc API liên kết từng khoảng với văn bản chú giải công cụ của nó.\n\nĐiều này sẽ cung cấp giải thích chính xác cho từng từ, cụm từ hoặc giá trị\"\n\n💬 Đối chiếu trên biểu đồ M15 đính kèm, hiện XAU/USD đang giao dịch quanh $3,875.6 (giữa vùng $3,868 và EMA20 $3,937, RSI H1 ở mức 17.5). Các sếp trong nhóm mình có góc nhìn thế nào về chủ đề trên r/TradingView?"
+    },
+    {
+      "id_key": "reddit_thread_r/Gold/comments/1xk3d0r/from_where_to_buy_golf",
+      "sub": "Gold",
+      "raw_title": "From where to buy golf",
+      "raw_body": "Im 18 and have quite a bit of money saved up that's not going anywhere not doing anything, I wanna buy assets that will increase like gold from where should I buy ? From general jewellery shops ? Or somewhere else and how do I verify everything is good and not getting ripped off \n\nPs I have never bought any jewellery nor know much about gold silver etc so pls guide me",
+      "title": "r/Gold: Mua golf ở đâu",
+      "image_url": "/home/runner/work/vt-markets-hub-bot/vt-markets-hub-bot/live_xauusd_chart.png",
+      "source_url": "https://www.reddit.com/r/Gold/comments/1xk3d0r/from_where_to_buy_golf/",
+      "caption": "📊 Điểm nhanh một chủ đề mới đang được các thành viên trên cộng đồng r/Gold quốc tế đem ra thảo luận: \"Mua golf ở đâu\".\n\n💡 Trong bài viết, tác giả trên r/Gold chia sẻ góc nhìn thực tế: \"Tôi 18 tuổi và có khá nhiều tiền tiết kiệm nên không đi đâu mà không làm gì cả, tôi muốn mua tài sản sẽ tăng như vàng thì nên mua ở đâu? Từ các cửa hàng trang sức nói chung? Hoặc ở một nơi khác và làm cách nào để xác minh mọi thứ đều tốt và không bị lừa\"\n\n💬 Đối chiếu trên biểu đồ M15 đính kèm, hiện XAU/USD đang giao dịch quanh $3,875.6 (giữa vùng $3,868 và EMA20 $3,937, RSI H1 ở mức 17.5). Các sếp trong nhóm mình có góc nhìn thế nào về chủ đề trên r/Gold?"
+    },
     {
       "id_key": "reddit_thread_r/wallstreetbets/comments/1xk29i4/anthropic_day_1_day_27_unlocks_did_internal",
       "sub": "wallstreetbets",
@@ -157,34 +177,14 @@
       "caption": "📊 Điểm nhanh một chủ đề mới đang được các thành viên trên cộng đồng r/wallstreetbets quốc tế đem ra thảo luận: \"Mở khóa Ngày 1 & Ngày 27 của Anthropic: Mô phỏng nội bộ có dự báo về sự sụp đổ bong bóng AI hay tôi đang suy nghĩ quá kỹ về nó?\".\n\n💡 Trong bài viết, tác giả trên r/wallstreetbets chia sẻ góc nhìn thực tế: \"Trong khi xem xét các điều khoản khóa trong hồ sơ S-1 của Anthropic, có hai điều khoản cụ thể nổi bật khác biệt đáng kể so với các thông lệ IPO tiêu chuẩn:\n\n* **Tính thanh khoản ngay lập tức của nhân viên:** Nhân viên không phải người sáng lập có thể bán tới **10% số cổ phiếu được giao của họ vào Ngày 1**, sau đó là một ngày khác\"\n\n💬 Đối chiếu trên biểu đồ M15 đính kèm, hiện XAU/USD đang giao dịch quanh $3,875.6 (giữa vùng $3,868 và EMA20 $3,937, RSI H1 ở mức 17.5). Các sếp trong nhóm mình có góc nhìn thế nào về chủ đề trên r/wallstreetbets?"
     },
     {
-      "id_key": "reddit_thread_r/algotrading/comments/1xjxf88/researching_nq_changed_how_i_think_about_trading",
-      "sub": "algotrading",
-      "raw_title": "Researching NQ changed how I think about trading edge",
-      "raw_body": "English is my second language, so I used GPT to help with the translation.\n\nI have been investing in stocks for more than 20 years. Day trading came much later, as a hobby I picked up toward the end of the year. I currently run one small Express account. After spending so many years investing in stocks, I wanted to develop a more systematic way to make money in falling markets as well. \n\nMy basic approach has always been to build knowledge about the market. I collect data, study its behavior, and organize the findings so I can return to them and test new ideas. Over time, that collection of market data, analysis, and research material has grown enough to fill a 40TB HDD.\n\nThrough this work, I became interested in two connected problems: where a strategy’s profit actually comes from, and how to judge whether that source of profit is still there.\n\n**1. Understanding where the profit comes from**\n\nMy early research focused on relatively simple trend strategies. In some cases, I spent a month developing and testing an approach and still struggled to reach PF 1.0 after costs. That is not a general criticism of trend following. It describes the approaches I built, under the conditions I ",
-      "title": "r/algotrading: Nghiên cứu NQ đã thay đổi cách tôi nghĩ về lợi thế giao dịch",
+      "id_key": "reddit_thread_r/Silverbugs/comments/1xk0c3i/i_am_pretty_much_ended",
+      "sub": "Silverbugs",
+      "raw_title": "I am pretty much ended",
+      "raw_body": "Here is my story.\n\n  \nWhen silver was mooning i decided to take out $500,000 equity from my house and purchased $500,000 worth of silver at the near peak. fast forward to today and my $500,000 has now become $218,000 today. Cutting my losses would hurt me so much.\n\n  \nThe whole idea was to double the 500,000 and move to thailand and take it easy. This won't be happening now clearly.\n\n  \nThose of you in a similar situation what did you do to get out of the mess? I have $200,000 i can buy more silver or gold thinking about doing that",
+      "title": "r/Silverbugs: Tôi gần như đã kết thúc",
       "image_url": "/home/runner/work/vt-markets-hub-bot/vt-markets-hub-bot/live_xauusd_chart.png",
-      "source_url": "https://www.reddit.com/r/algotrading/comments/1xjxf88/researching_nq_changed_how_i_think_about_trading/",
-      "caption": "📊 Điểm nhanh một chủ đề mới đang được các thành viên trên cộng đồng r/algotrading quốc tế đem ra thảo luận: \"Nghiên cứu NQ đã thay đổi cách tôi nghĩ về lợi thế giao dịch\".\n\n💡 Trong bài viết, tác giả trên r/algotrading chia sẻ góc nhìn thực tế: \"Tiếng Anh là ngôn ngữ thứ hai của tôi, vì vậy tôi đã sử dụng GPT để hỗ trợ dịch thuật.\n\nTôi đã đầu tư vào chứng khoán hơn 20 năm. Giao dịch trong ngày diễn ra muộn hơn nhiều, như một sở thích mà tôi có được vào cuối năm. Tôi hiện đang chạy một tài khoản Express nhỏ. Sau khi chi tiêu rất nhiều\"\n\n💬 Đối chiếu trên biểu đồ M15 đính kèm, hiện XAU/USD đang giao dịch quanh $3,875.6 (giữa vùng $3,868 và EMA20 $3,937, RSI H1 ở mức 17.5). Các sếp trong nhóm mình có góc nhìn thế nào về chủ đề trên r/algotrading?"
-    },
-    {
-      "id_key": "reddit_thread_r/RealDayTrading/comments/1xi1q9s/how_important_is_volume_for_confirmation_of_entry",
-      "sub": "RealDayTrading",
-      "raw_title": "How important is volume for confirmation of entry at key level?",
-      "raw_body": "Hi guys,  \nI have started trading the strategy from this reddit group for day trading.  \nI have a question how important is volume in key level bounces and how do you check it if its sufficient?  \nI will skip basics like RS, being above SMAs and so on, but currently, I feel my rules are just too strict and I may be missing some good setups. The crucial step that filters my trades seems to be volume on pullback to EMA8/VWAP, which I want it to be bigger than last 3 candles avg (the idea is that on pullback/consolidation, the volume should be declining and bounce should be at least big volume wise as that declining volume). For valid bounce, I take max 2 candles that need to validate the bounce, so first one tests the level, second or third one has to confirm volume, closure in trade direction both by candle color and volume, or of course 2 of those can be the level tester and third one has to prove. Also, I get in the trade when the candle that ticks all the rules closes.  \n  \nI am giving screenshot as an example of a trade that I took for reference, so it could be maybe used to pinpoint something, but the thing I am most curious is that volume for entry, how important it is and how",
-      "title": "r/RealDayTrading: Khối lượng quan trọng như thế nào đối với việc xác nhận mục nhập ở cấp độ quan trọng?",
-      "image_url": "/home/runner/work/vt-markets-hub-bot/vt-markets-hub-bot/live_xauusd_chart.png",
-      "source_url": "https://www.reddit.com/r/RealDayTrading/comments/1xi1q9s/how_important_is_volume_for_confirmation_of_entry/",
-      "caption": "📊 Điểm nhanh một chủ đề mới đang được các thành viên trên cộng đồng r/RealDayTrading quốc tế đem ra thảo luận: \"Khối lượng quan trọng như thế nào đối với việc xác nhận mục nhập ở cấp độ quan trọng?\".\n\n💡 Trong bài viết, tác giả trên r/RealDayTrading chia sẻ góc nhìn thực tế: \"Chào các bạn,  \nTôi đã bắt đầu giao dịch chiến lược từ nhóm reddit này để giao dịch trong ngày.  \nTôi có một câu hỏi về tầm quan trọng của khối lượng trong các lần bật lại ở cấp độ quan trọng và làm cách nào để kiểm tra xem nó có đủ không?  \nTôi sẽ bỏ qua những điều cơ bản như RS, trên SMA, v.v., nhưng hiện tại, tôi cảm thấy mình không ổn.\"\n\n💬 Đối chiếu trên biểu đồ M15 đính kèm, hiện XAU/USD đang giao dịch quanh $3,875.6 (giữa vùng $3,868 và EMA20 $3,937, RSI H1 ở mức 17.5). Các sếp trong nhóm mình có góc nhìn thế nào về chủ đề trên r/RealDayTrading?"
-    },
-    {
-      "id_key": "reddit_thread_r/FuturesTrading/comments/1xjn274/has_gold_always_been_this_trendy_or_is_this_a",
-      "sub": "FuturesTrading",
-      "raw_title": "Has Gold Always Been This Trendy, or Is This a Recent Phenomenon?",
-      "raw_body": "&#x200B;\n\nI've been trading gold recently, and over the past few months I've noticed that once it picks a direction, it tends to trend strongly for hours with very little meaningful reversal.\n\nI have around 6 months of backtesting and paper-trading data, and my strategy has been performing consistently well in these conditions.\n\nI'm curious whether this is something specific to the current market environment, perhaps driven by macroeconomic events, central bank activity, geopolitical tensions, etc., or whether gold has historically behaved this way in previous years too.\n\nFor traders with several years of experience:\n\n\\- Has gold always had these prolonged directional moves?\n\n\\- Were there previous periods where it behaved similarly?\n\n\\- Is the current trendiness unusually high compared to historical gold price action?\n\nWould love to hear insights from experienced gold traders, especially those who've traded through multiple market cycles.",
-      "title": "r/FuturesTrading: Vàng luôn hợp thời trang như vậy hay đây chỉ là một hiện tượng gần đây?",
-      "image_url": "/home/runner/work/vt-markets-hub-bot/vt-markets-hub-bot/live_xauusd_chart.png",
-      "source_url": "https://www.reddit.com/r/FuturesTrading/comments/1xjn274/has_gold_always_been_this_trendy_or_is_this_a/",
-      "caption": "📊 Điểm nhanh một chủ đề mới đang được các thành viên trên cộng đồng r/FuturesTrading quốc tế đem ra thảo luận: \"Vàng luôn hợp thời trang như vậy hay đây chỉ là một hiện tượng gần đây?\".\n\n💡 Trong bài viết, tác giả trên r/FuturesTrading chia sẻ góc nhìn thực tế: \"​\n\nGần đây tôi đã giao dịch vàng và trong vài tháng qua tôi nhận thấy rằng một khi nó chọn được một hướng, nó có xu hướng có xu hướng mạnh mẽ trong nhiều giờ với rất ít sự đảo chiều có ý nghĩa.\n\nTôi có khoảng 6 tháng kiểm tra lại dữ liệu giao dịch trên giấy và chiến lược của tôi đã được\"\n\n💬 Đối chiếu trên biểu đồ M15 đính kèm, hiện XAU/USD đang giao dịch quanh $3,875.6 (giữa vùng $3,868 và EMA20 $3,937, RSI H1 ở mức 17.5). Các sếp trong nhóm mình có góc nhìn thế nào về chủ đề trên r/FuturesTrading?"
+      "source_url": "https://www.reddit.com/r/Silverbugs/comments/1xk0c3i/i_am_pretty_much_ended/",
+      "caption": "📊 Điểm nhanh một chủ đề mới đang được các thành viên trên cộng đồng r/Silverbugs quốc tế đem ra thảo luận: \"Tôi gần như đã kết thúc\".\n\n💡 Trong bài viết, tác giả trên r/Silverbugs chia sẻ góc nhìn thực tế: \"Đây là câu chuyện của tôi.\n\n  \nKhi bạc đang lên, tôi quyết định rút vốn cổ phần trị giá 500.000 đô la từ nhà của mình và mua số bạc trị giá 500.000 đô la vào thời điểm gần đạt đỉnh. chuyển nhanh đến ngày hôm nay và 500.000 đô la của tôi giờ đã trở thành 218.000 đô la ngày hôm nay. Việc cắt lỗ sẽ khiến tôi tổn thương rất nhiều.\n\n  \nToàn bộ tôi\"\n\n💬 Đối chiếu trên biểu đồ M15 đính kèm, hiện XAU/USD đang giao dịch quanh $3,875.6 (giữa vùng $3,868 và EMA20 $3,937, RSI H1 ở mức 17.5). Các sếp trong nhóm mình có góc nhìn thế nào về chủ đề trên r/Silverbugs?"
     }
   ],
   "vt_posts": [

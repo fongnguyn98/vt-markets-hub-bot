@@ -43,7 +43,8 @@
     "https://www.investing.com/news/economic-indicators/german-economy-grows-by-02-in-q3-preliminary-data-shows-4986289",
     "ce_poll_gen_66998984",
     "https://www.marketwatch.com/story/why-gold-plunged-to-its-lowest-price-in-a-year-despite-renewed-iran-jitters-365be0e2?mod=mw_rss_topstories",
-    "ce_scn_gen_15305217"
+    "ce_scn_gen_15305217",
+    "ce_scn_gen_21760560"
   ],
   "category_counts": {
     "tintuc": 8,
@@ -73,6 +74,11 @@
       "t": 1793428743,
       "kind": "poll",
       "title": "Lệnh đang gồng lãi 15 pip cặp XAUUSD thì giá quay đầu rút sạch một nửa lợi nhuận"
+    },
+    {
+      "t": 1793431847,
+      "kind": "scenario",
+      "title": "Lệnh XAU đang lãi 12 pip mà còn 7 phút nữa ra thông báo lãi suất Fed, tài khoản "
     }
   ]
 }
