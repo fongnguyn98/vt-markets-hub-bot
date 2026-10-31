@@ -64,7 +64,7 @@ def _ask_gemini(prompt):
     key = os.environ.get("GEMINI_API_KEY", "").strip()
     if not key:
         return ""
-    model = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
+    model = os.environ.get("GEMINI_MODEL", "gemini-flash-latest")  # alias luôn trỏ tới bản Flash mới nhất, tránh model bị ngừng
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
     body = json.dumps({"contents": [{"parts": [{"text": prompt}]}],
                        "generationConfig": {"temperature": 0.8, "maxOutputTokens": 900}}).encode("utf-8")
