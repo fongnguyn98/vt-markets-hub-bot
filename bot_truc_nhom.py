@@ -549,12 +549,12 @@ def send_session_icebreaker(state, force=False, mode="auto"):
             return False
 
     buzz = load_or_refresh_buzz()
-    if mode in ("kol", "tiktok"):
-        post = content_engine.make_post("kol_insight" if mode == "kol" else "scenario", buzz)
+    kinds = {"tintuc": "news", "kol": "kol_insight", "tiktok": "scenario", "reddit": "reddit", "vt": "vt"}
+    if mode in kinds:
+        post = content_engine.make_post(kinds[mode], buzz)
         res = news_and_kol_radar.publish_post(DISCUSSION_CHAT_ID, post) if post else {"ok": False}
-    elif mode in ("tintuc", "reddit", "vt"):
-        _, post = news_and_kol_radar.pick_balanced_post(buzz, preferred_cat=mode)
-        res = news_and_kol_radar.publish_post(DISCUSSION_CHAT_ID, post) if post else {"ok": False}
+        if res.get("ok"):
+            content_engine.record(post.get("kind", mode), post.get("id_key", mode), post.get("title", ""))
     elif mode == "icebreaker" or not force:
         short_pool = buzz.get("short_icebreakers", []) or SESSION_ICEBREAKERS[slot_key]
         res = api_call("sendMessage", {

@@ -89,3 +89,4 @@ description: Quy trình tự động quét 4 Sheet nguồn Quốc tế (Website,
 - **Chào thành viên mới** ngay trong nhóm (1 tin duy nhất kể cả nhiều người vào cùng lúc), đồng thời vẫn báo nội bộ cho Sale.
 - **Câu hỏi chưa ai đáp:** sau 8 phút không có người khác trả lời, bot tự trả lời (dẫn nguồn khách quan, không khuyên mua/bán). Giới hạn 6 lần/ngày, cách nhau tối thiểu 15 phút, chỉ 07:00–23:00, bỏ qua câu hỏi quá 4 giờ.
 - Vẫn trả lời ngay khi được tag, gọi "bot" hoặc reply vào tin của bot.
+- Các lệnh admin (`/tintuc`, `/kol`, `/tiktok`, `/reddit`, `/vt`) dùng chung engine và bộ lọc với lịch tự động: chỉ đăng nội dung thật, không gán lời cho KOL/Reddit, không đăng lại bài cũ.

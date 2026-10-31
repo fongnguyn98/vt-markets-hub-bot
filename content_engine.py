@@ -308,40 +308,57 @@ def make_weekahead():
 
 def make_news(buzz):
     cat, post = radar.pick_balanced_post(buzz, preferred_cat="tintuc")
-    if post:
-        post = dict(post, kind="news", _preregistered=True)
-    return post
+    key = str((post or {}).get("id_key", ""))
+    if post and (key.startswith("http") or key.startswith("yt_forecast_")):  # ch? tin th?t, kh?ng r?i v? m?u KOL c?
+        return dict(post, kind="news")
+    return None
+
+
+BANNED_ATTRIBUTION = ("Raja Banks", "Smart Risk", "Brad Goh", "Rayner", "TJR", "r/")
+
+
+def make_reddit(buzz):
+    """Chỉ đăng thread Reddit thật (có nội dung); không có thì trả None."""
+    st = _state()
+    pool = [p for p in buzz.get("reddit_posts", []) if str(p.get("id_key", "")).startswith("reddit_thread_") and not _used(st, p["id_key"])]
+    if not pool:
+        return None
+    return dict(random.choice(pool), kind="reddit")
+
+
+def make_vt(buzz):
+    """Chỉ đăng bài VT thuần thông tin sản phẩm, chưa đăng, không gán lời cho KOL/Reddit."""
+    st = _state()
+    pool = [v for v in buzz.get("vt_posts", [])
+            if not _used(st, v.get("id_key", "")) and not any(b in v.get("caption", "") for b in BANNED_ATTRIBUTION)]
+    if not pool:
+        return None
+    return dict(random.choice(pool), kind="vt")
 
 
 def make_discussion(buzz, dt):
     """Slot tối: xoay vòng theo thứ để không bao giờ giống nhau 2 ngày liền."""
     wd = dt.weekday()
-    if wd in (0, 3):
-        _, post = radar.pick_balanced_post(buzz, preferred_cat="reddit")
-        if post:
-            return dict(post, kind="reddit", _preregistered=True)
-    elif wd == 2:
-        # Chỉ dùng bài VT thuần thông tin sản phẩm: loại bài gán lời cho KOL/Reddit khi chưa có nguồn xác thực
-        banned = ("Raja Banks", "Smart Risk", "Brad Goh", "Rayner", "TJR", "r/")
-        safe = dict(buzz, vt_posts=[v for v in buzz.get("vt_posts", []) if not any(b in v.get("caption", "") for b in banned)])
-        post = radar.pick_balanced_post(safe, preferred_cat="vt")[1] if safe["vt_posts"] else None
-        if post and post.get("id_key", "").startswith("vt_update"):
-            return dict(post, kind="vt", _preregistered=True)
-    return make_glossary()
+    post = make_reddit(buzz) if wd in (0, 3) else make_vt(buzz) if wd == 2 else None
+    return post or make_glossary()
 
 
-NEEDS_BUZZ = {"news", "kol_insight", "discussion"}
+NEEDS_BUZZ = {"news", "kol_insight", "discussion", "reddit", "vt"}
 
 
 def make_post(kind, buzz=None, dt=None):
     """Trả về post dict (có thể có key 'poll') hoặc None."""
     dt = dt or datetime.now()
     if kind == "news":
-        return make_news(buzz)
+        return make_news(buzz) or make_poll()
     if kind == "kol_insight":
         return make_kol_insight(buzz) or make_scenario()
     if kind == "discussion":
         return make_discussion(buzz, dt)
+    if kind == "reddit":
+        return make_reddit(buzz) or make_scenario()
+    if kind == "vt":
+        return make_vt(buzz) or make_glossary()
     if kind == "poll":
         return make_poll()
     if kind == "scenario":
