@@ -74,14 +74,16 @@ def _ask_gemini(prompt):
     return (data["candidates"][0]["content"]["parts"][0].get("text") or "").strip()
 
 
-def ask_llm(prompt):
-    """Gọi LLM với timeout cứng để không làm treo vòng getUpdates của bot."""
+def ask_llm(prompt, validate=None):
+    """Gọi LLM với timeout cứng để không làm treo vòng getUpdates của bot.
+    validate(ans) -> bool: câu trả lời không đạt thì thử nguồn LLM kế tiếp."""
     for fn in (_ask_gemini, _ask_g4f, _ask_pollinations):
         ex = ThreadPoolExecutor(max_workers=1)
         try:
             ans = ex.submit(fn, prompt).result(timeout=LLM_TIMEOUT)
-            if ans:
-                return ans.replace("**", "").strip()
+            ans = (ans or "").replace("**", "").strip()
+            if ans and (validate is None or validate(ans)):
+                return ans
         except (FutTimeout, Exception) as e:
             print(f"[LLM {fn.__name__}]: {e}")
         finally:
@@ -217,7 +219,8 @@ def make_scenario():
     topic = random.choice(SCENARIO_TOPICS)
     txt = ask_llm(
         f"Viết 1 câu hỏi tình huống ngắn (2-3 câu) cho nhóm trader Việt Nam, chủ đề: {topic}. {SAFETY_RULES} "
-        "Mô tả tình huống đời thường rồi hỏi các sếp sẽ xử lý thế nào và mời chia sẻ kinh nghiệm. Không dùng icon. Dưới 400 ký tự. Chỉ trả về nội dung bài."
+        "Mở đầu bằng 'Giả sử các sếp...' hoặc 'Tình huống:', mô tả tình huống đời thường rồi hỏi các sếp sẽ xử lý thế nào và mời chia sẻ kinh nghiệm. KHÔNG kể như chính bạn đang giao dịch hay có lệnh riêng, KHÔNG nhắc tiền mã hóa/coin, chỉ nói chung về giao dịch Vàng/ngoại tệ. Không dùng icon. Dưới 400 ký tự. Chỉ trả về nội dung bài.",
+        validate=lambda a: 60 <= len(a) <= 600 and "?" in a
     )
     if txt and 60 <= len(txt) <= 600 and "?" in txt:
         return {"id_key": f"ce_scn_gen_{abs(hash(txt)) % 10**8}", "kind": "scenario", "title": txt[:80], "caption": txt}
@@ -233,7 +236,8 @@ def make_glossary():
         txt = ask_llm(
             f"Giải thích thuật ngữ '{term}' trong giao dịch tài chính cho người mới, bằng tiếng Việt đời thường. {SAFETY_RULES} "
             "Cấu trúc: dòng đầu 'Giải thích nhanh: ...?', một đoạn giải thích kèm 1 ví dụ số tiền USD cụ thể, rồi 1 câu hỏi mở mời các sếp chia sẻ kinh nghiệm. "
-            "Không icon. Dưới 700 ký tự. Chỉ trả về nội dung bài."
+            "Không icon. Dưới 700 ký tự. Chỉ trả về nội dung bài.",
+            validate=lambda a: 150 <= len(a) <= 1000 and "?" in a
         )
         if txt and 150 <= len(txt) <= 1000 and "?" in txt:
             return {"id_key": f"ce_gloss_gen_{term}", "kind": "glossary", "title": f"Giải thích: {term}", "caption": txt}
@@ -267,7 +271,8 @@ def make_kol_insight(buzz):
             f"Chỉ dựa vào phụ đề trên, viết 1 bài đăng Telegram tiếng Việt cho nhóm trader. {SAFETY_RULES}\n"
             "Cấu trúc: (1) 1 câu mở đầu nêu video nói về vấn đề gì; (2) 2-3 ý chính mà người trong video thực sự nói, mỗi ý 1 dòng bắt đầu bằng dấu '•'; "
             "(3) 1 câu hỏi mở để các sếp chia sẻ kinh nghiệm hoặc quan điểm riêng. Luôn nêu rõ đó là quan điểm của kênh, không phải của nhóm. "
-            "Tuyệt đối không thêm thông tin ngoài phụ đề. Nếu phụ đề không có nội dung giao dịch/phân tích rõ ràng, chỉ trả lời đúng một chữ: SKIP. Dưới 900 ký tự."
+            "Tuyệt đối không thêm thông tin ngoài phụ đề. Nếu phụ đề không có nội dung giao dịch/phân tích rõ ràng, chỉ trả lời đúng một chữ: SKIP. Dưới 900 ký tự.",
+            validate=lambda a: a.strip().upper().startswith("SKIP") or 150 <= len(a) <= 1500
         )
         if not out or out.strip().upper().startswith("SKIP") or not (150 <= len(out) <= 1500):
             continue
@@ -306,12 +311,35 @@ def make_weekahead():
             "poll": {"question": item["q"], "options": item["o"]}}
 
 
+def _article_text(url):
+    try:
+        import trafilatura
+        html = radar.fetch_url(url, timeout=12)
+        return (trafilatura.extract(html, include_comments=False, include_tables=False) or "").strip()
+    except Exception:
+        return ""
+
+
 def make_news(buzz):
+    """Tin mới (<= 72h) từ RSS: LLM viết lại theo nội dung bài gốc; LLM lỗi thì dùng bản dựng sẵn."""
     cat, post = radar.pick_balanced_post(buzz, preferred_cat="tintuc")
     key = str((post or {}).get("id_key", ""))
-    if post and (key.startswith("http") or key.startswith("yt_forecast_")):  # ch? tin th?t, kh?ng r?i v? m?u KOL c?
-        return dict(post, kind="news")
-    return None
+    if not (post and key.startswith("http")):  # chỉ tin thật, không rơi về mẫu cũ
+        return None
+    post = dict(post, kind="news")
+    text = _article_text(key)
+    if len(text) > 400:
+        src = urllib.parse.urlparse(key).netloc.replace("www.", "")
+        out = ask_llm(
+            f"Dưới đây là nội dung bài báo từ {src}:\n---\n{text[:5000]}\n---\n"
+            f"Chỉ dựa vào bài báo, viết 1 bài đăng Telegram tiếng Việt cho nhóm trader. {SAFETY_RULES}\n"
+            f"Cấu trúc: (1) 1-2 câu nêu sự kiện/số liệu chính, nói rõ theo {src}; (2) 1-2 câu nói vì sao tin này đáng chú ý với thị trường (USD, lãi suất, Vàng) "
+            "chỉ khi bài báo có đề cập, không tự suy diễn; (3) 1 câu hỏi mở để các sếp chia sẻ góc nhìn. Không icon. Dưới 700 ký tự. Chỉ trả về nội dung bài.",
+            validate=lambda a: 150 <= len(a) <= 1100 and "?" in a
+        )
+        if out and 150 <= len(out) <= 1100 and "?" in out:
+            post["caption"] = out
+    return post
 
 
 BANNED_ATTRIBUTION = ("Raja Banks", "Smart Risk", "Brad Goh", "Rayner", "TJR", "r/")

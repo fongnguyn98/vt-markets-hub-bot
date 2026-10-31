@@ -7,6 +7,7 @@ import uuid
 import socket
 import ssl
 import random
+import calendar
 import urllib.request
 import urllib.parse
 from datetime import datetime
@@ -634,6 +635,12 @@ def fetch_real_macro_articles(market, posted_set=None):
                 if not img_url and entry.get("media_content"):
                     img_url = entry.media_content[0].get("url", "")
                 sc = score_article(title)
+                pub = entry.get("published_parsed") or entry.get("updated_parsed")
+                if pub:
+                    age_h = (time.time() - calendar.timegm(pub)) / 3600
+                    if age_h > 72:  # chỉ lấy tin mới (<= 72 giờ, đủ phủ cuối tuần)
+                        continue
+                    sc += max(0, 24 - age_h) / 2  # tin càng mới càng được ưu tiên
                 if sc >= 15 and link:
                     if "cnbc.com" in link or "fxempire.com" in link:
                         sc += 10
@@ -644,7 +651,8 @@ def fetch_real_macro_articles(market, posted_set=None):
     candidates.sort(key=lambda x: x["score"], reverse=True)
 
     # Ưu tiên số 1 cho mục Tin tức & Nhận định xu hướng: Lấy trực tiếp video KOL & Podcast YouTube chưa từng đăng
-    macro_posts = fetch_youtube_kol_news_forecasts(market, posted_set=posted_set)
+    # (Đã bỏ nguồn video YouTube cho mục tin tức: video cũ, phụ đề dịch máy rối và lẫn quảng cáo. Video KOL do content_engine.make_kol_insight xử lý.)
+    macro_posts = []
 
     for idx, art in enumerate(candidates[:4]):
         vi_title = translate_en_to_vi(art["title"])
@@ -951,6 +959,10 @@ def build_reddit_posts(market, chart_img_path, sheets=None, posted_set=None):
                 if any(bad in title_en.lower() for bad in ["meme", "shitpost", "upvote", "karma", "discord", "telegram", "scam", "removed by moderator", "daily discussion", "referral", "join moomoo"]):
                     continue
                 if sub.lower() in ("worldnews", "geopolitics", "news", "politics"):
+                    continue
+                if sum(1 for ch in title_en if ord(ch) > 127) > 2:  # bài không phải tiếng Anh
+                    continue
+                if any(bad in (title_en + " " + selftext_en[:200]).lower() for bad in ["deposit", "withdraw", "funded account", "promo", "discount", "giveaway", "course", "signal group", "for adoption", "free indicator", "building a", "i built", "my bot", "my app", "my website", "subreddit"]):
                     continue
                 if len(selftext_en) < 120:  # không có nội dung thật thì không đăng (tránh bịa "nhiều thành viên bình luận...")
                     continue
