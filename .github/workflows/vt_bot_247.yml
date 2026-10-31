@@ -12,14 +12,33 @@ permissions:
   contents: write
   actions: write
 
-concurrency:
-  group: vt-markets-hub-bot-247
-  cancel-in-progress: ${{ github.event_name == 'push' }}
-
 jobs:
+  cancel-previous-on-push:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel any older running or queued bot cycles
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for pass in 1 2; do
+            for id in $(gh run list --workflow vt_bot_247.yml --limit 20 --json databaseId,status --jq '.[] | select(.status != "completed") | .databaseId'); do
+              if [ "$id" != "${{ github.run_id }}" ]; then
+                echo "Cancelling old run $id (pass $pass)"
+                gh run cancel "$id" || true
+              fi
+            done
+            sleep 12
+          done
+
   run-bot-247:
+    needs: [cancel-previous-on-push]
+    if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 345
+    concurrency:
+      group: vt-markets-hub-bot-247
+      cancel-in-progress: false
     env:
       TZ: Asia/Ho_Chi_Minh
       PYTHONIOENCODING: utf-8
@@ -54,9 +73,6 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git pull --rebase --autostash origin main || true
-          for id in $(gh run list --workflow vt_bot_247.yml --status queued --json databaseId --jq '.[].databaseId'); do
-            if [ "$id" != "${{ github.run_id }}" ]; then gh run cancel "$id" || true; fi
-          done
 
       - name: Run VT Markets Hub Bot (5h25m cycle)
         run: |
