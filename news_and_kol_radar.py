@@ -679,6 +679,9 @@ def fetch_real_macro_articles(market, posted_set=None):
         macro_posts.append({
             "id_key": art["link"],
             "title": vi_title,
+            "raw_title": art.get("title", ""),
+            "raw_summary": art.get("summary", ""),
+            "source_name": art.get("source_name", ""),
             "image_url": og_img,
             "source_url": art["link"],
             "caption": caption
@@ -986,6 +989,9 @@ def build_reddit_posts(market, chart_img_path, sheets=None, posted_set=None):
                 )
                 dynamic_reddit.append({
                     "id_key": id_key,
+                    "sub": sub,
+                    "raw_title": title_en,
+                    "raw_body": selftext_en[:1200],
                     "title": f"r/{sub}: {vi_title}",
                     "image_url": chart_img_path,
                     "source_url": full_url,
@@ -1131,20 +1137,14 @@ def build_session_icebreakers(market):
     rsi1 = market["h1_rsi"]
 
     return [
-        f"Trên bảng điện TradingView hiện giá Vàng đang giao dịch quanh mốc ${gp:,.1f} (giữa vùng ${bb_low:,.0f} và ${ema20:,.0f}), sáng giờ các sếp trong nhóm mình có theo dõi kịch bản của chuyên gia nào không?",
-        f"Thống kê tự động trên TradingView đang ghi nhận XAU/USD ở ${gp:,.1f} và chỉ số RSI H1 ở mức {rsi1}, hôm nay các sếp đánh giá thị trường thế nào?",
-        f"Các sếp vừa đi làm vừa theo dõi thị trường hôm nay có tham khảo nhận định từ kênh phân tích nào không? Giá trên biểu đồ đang quanh ${gp:,.1f} rồi.",
-        f"Theo lịch kinh tế tối nay phiên Mỹ dự kiến có nhiều tin tức đáng chú ý trong khi Vàng đang ở mức ${gp:,.1f}, các sếp hôm nay chọn đứng ngoài quan sát hay có kế hoạch gì chưa?",
-        f"Sếp nào mới vào nhóm cần tìm hiểu kiến thức nền tảng hoặc cách tính năng hoàn phí tự động vận hành thì xem tài liệu tổng hợp ở bài ghim trên đầu nhóm nhé."
+        f"Vàng đang giằng co quanh mốc ${gp:,.1f} (kẹp giữa vùng ${bb_low:,.0f} và ${ema20:,.0f}), nhịp này các sếp đang canh biên nào hay tạm đứng ngoài chờ phiên tối?",
+        f"XAU/USD đang lình xình quanh ${gp:,.1f} với RSI H1 ở mức {rsi1}, hôm nay các sếp ưu tiên đánh ngắn ăn từng nhịp hay chờ bứt phá hẳn?",
+        f"Sắp vào khung giờ thanh khoản lớn nhất ngày trong khi Vàng đang neo ở ${gp:,.1f}, các sếp đã lên sẵn mốc chờ nào cho phiên hôm nay chưa?",
+        f"Anh em vừa đi làm vừa canh biểu đồ hôm nay thấy nhịp chạy của Vàng quanh ${gp:,.1f} dễ vào lệnh không, hay chọn nghỉ giữ sức chờ tin?",
+        "Sếp nào mới vào nhóm cần tài liệu nến Nhật, bảng tính lot hoặc cách bật hoàn phí Backcom tự động thì xem ngay ở bài ghim đầu nhóm nhé."
     ]
 
 
-# ==============================================================================
-# BỘ PHÂN LOẠI NGƯỜI HỎI (3 CẤP ĐỘ HIỂU BIẾT) & TIẾP CHUYỆN THÍCH ỨNG THÔNG MINH
-# - Cấp độ 1 (BEGINNER): Người mới tinh / chưa biết gì -> Trả lời bình dân, tiền thật, không thuật ngữ
-# - Cấp độ 2 (EXPERIENCED): Trader đã biết phân tích (dùng từ H1, M15, RSI, SL, cản, lot...) -> Trả lời sâu kèm số liệu TradingView-TA
-# - Cấp độ 3 (BROKER_LEAD): Khách hỏi về sàn, mở tài khoản, nạp rút, hoàn phí Backcom -> Giải đáp quyền lợi rõ ràng & kết nối Sale
-# ==============================================================================
 def classify_user_level(user_text):
     low = user_text.lower()
 
@@ -1187,40 +1187,33 @@ def generate_smart_trader_reply(user_text, reply_context="", market=None):
     dxy = market.get("dxy_price", 101.75)
 
     level, level_desc = classify_user_level(user_text)
-    ctx_snippet = f" (Đang trả lời bài viết: {reply_context[:180]})" if reply_context else ""
+    ctx_snippet = f" (Ngữ cảnh bài đang bàn: {reply_context[:180]})" if reply_context else ""
 
-    # NGUYÊN TẮC BẤT DI BẤT DỊCH: Bot & VT Markets TUYỆT ĐỐI KHÔNG đưa ra nhận định chủ quan hay khuyên Mua/Bán.
-    # Luôn trích dẫn theo cấu trúc: "Theo góc nhìn của chuyên gia A / nguồn tin B chia sẻ về chiến lược C..."
     if level == "BEGINNER":
         persona_instruction = (
-            f"Bạn là trợ lý tổng hợp thông tin cộng đồng 'VT Markets | Thảo Luận & Thực Chiến' (xưng 'mình', gọi người hỏi là 'sếp'). "
-            f"Người hỏi là NGƯỜI MỚI ({level_desc}). "
-            f"QUY TẮC PHÁP LÝ BẮT BUỘC: "
-            f"1) TUYỆT ĐỐI KHÔNG đưa ra nhận định thị trường chủ quan, không khuyên Mua hay Bán, không dùng từ 'Mình nghĩ', 'Mình khuyên sếp'. "
-            f"2) Hãy trả lời theo cấu trúc khách quan dẫn nguồn thứ 3: 'Theo chia sẻ của các chuyên gia quốc tế như Raja Banks / Brad Goh / Smart Risk (hoặc cộng đồng r/Gold)...' chia sẻ về phương pháp quản lý thời gian, tâm lý hoặc cài mức tự động dừng lỗ bảo hiểm để sếp tham khảo. "
-            f"3) Giải thích bình dân, dễ hiểu (không dùng thuật ngữ học thuật như RSI, EMA, Bollinger, pip, lot), dài 1-2 câu tiếng Việt tự nhiên, tuyệt đối KHÔNG dùng icon hay dấu sao (**)."
+            "Bạn là người đồng hành trong nhóm 'VT Markets | Thảo Luận & Thực Chiến' (xưng 'mình', gọi 'sếp'). "
+            f"Người hỏi là người mới ({level_desc}). "
+            "Hãy trả lời ĐI THẲNG VÀO CÂU HỎI một cách tự nhiên, dễ hiểu, thực tế (kèm ví dụ số tiền USD cụ thể nếu phù hợp). "
+            "CẤM mở đầu máy móc kiểu 'Theo chia sẻ của chuyên gia...'. Không khuyên Mua/Bán, không dùng thuật ngữ phức tạp, dài 1-2 câu gọn gàng, không icon, không dấu **."
         )
     elif level == "EXPERIENCED":
         persona_instruction = (
-            f"Bạn là trợ lý tổng hợp dữ liệu của cộng đồng 'VT Markets | Thảo Luận & Thực Chiến' (xưng 'mình', gọi người hỏi là 'sếp'). "
-            f"Người hỏi là một TRADER ĐÃ CÓ KINH NGHIỆM ({level_desc}). "
-            f"Số liệu công khai trên TradingView hiện tại: XAU/USD ở ${gp:,.1f}, EMA20 khung H1 ở ${ema20:,.0f}, RSI H1 ở mức {rsi1}, biên Bollinger M15 từ ${bb_low:,.0f} đến ${bb_up:,.0f}, DXY ở {dxy:.2f}. "
-            f"QUY TẮC PHÁP LÝ BẮT BUỘC: "
-            f"1) TUYỆT ĐỐI KHÔNG tự dự đoán giá tăng/giảm chủ quan (không được nói 'Mình nghĩ vàng sẽ quét đáy/kéo lên...'). "
-            f"2) Hãy trả lời khách quan theo cấu trúc dẫn nguồn: 'Theo góc nhìn phân tích trên FXEmpire / Investing kết hợp bảng số liệu tự động của TradingView hiện tại...' hoặc 'Theo phương pháp mà các KOL như TJR / Raja Banks hay chia sẻ khi gặp cấu trúc này...', nêu rõ đây là góc nhìn từ nguồn phân tích để sếp đối chiếu với kế hoạch riêng. "
-            f"3) Trả lời gói gọn trong 1-2 câu tiếng Việt tự nhiên, tuyệt đối KHÔNG dùng icon hay dấu sao (**)."
+            "Bạn là người đồng hành trong nhóm 'VT Markets | Thảo Luận & Thực Chiến' (xưng 'mình', gọi 'sếp'). "
+            f"Người hỏi là trader có kinh nghiệm ({level_desc}). "
+            f"Thông số thực tế lúc này: XAU/USD ${gp:,.1f}, EMA20 H1 ${ema20:,.0f}, RSI H1 {rsi1}, biên M15 ${bb_low:,.0f}-${bb_up:,.0f}, DXY {dxy:.2f}. "
+            "Hãy trả lời ĐI THẲNG VÀO TRỌNG TÂM CÂU HỎI, lồng ghép tự nhiên các mốc kỹ thuật trên để sếp đối chiếu kế hoạch riêng. "
+            "CẤM mở đầu rập khuôn kiểu 'Theo bảng thống kê tự động trên TradingView...' hay 'Theo chuyên gia...'. Không khuyên Mua/Bán chủ quan, dài 1-2 câu sắc gọn, không icon, không dấu **."
         )
     else:
         persona_instruction = (
-            f"Bạn là quản trị viên hỗ trợ thông tin của cộng đồng 'VT Markets | Thảo Luận & Thực Chiến' (xưng 'mình', gọi 'sếp'). "
-            f"Người hỏi đang quan tâm đến điều kiện giao dịch tại VT Markets ({level_desc}). "
-            f"Thông tin công bố chính thức: VT Markets cung cấp tài khoản Raw ECN có chênh lệch giá (spread) thấp, nạp rút qua ngân hàng Việt Nam và USDT tự động trong ngày, kết nối TradingView, và thành viên trong nhóm có thể xem hướng dẫn bật hoàn phí giao dịch tự động (Backcom) ở bài ghim trên đầu nhóm. "
-            f"Hãy trả lời khách quan, rõ ràng trong 1-2 câu tiếng Việt tự nhiên (không cam kết lợi nhuận, không dùng icon hay dấu sao **), và nhắn sếp đợi chút bộ phận hỗ trợ sẽ inbox hướng dẫn chi tiết."
+            "Bạn là quản trị viên hỗ trợ của nhóm 'VT Markets | Thảo Luận & Thực Chiến' (xưng 'mình', gọi 'sếp'). "
+            f"Người hỏi quan tâm đến điều kiện giao dịch tại VT Markets ({level_desc}). "
+            "Thông tin: tài khoản Raw ECN spread thấp, nạp rút ngân hàng nội địa & USDT tự động trong ngày, kết nối TradingView, hoàn phí Backcom tự động xem ở bài ghim đầu nhóm. "
+            "Hãy trả lời trực tiếp, rõ ràng trong 1-2 câu (không icon, không dấu **), và nhắn sếp đợi chút đội hỗ trợ sẽ inbox hướng dẫn ngay."
         )
 
-    full_prompt = f"{persona_instruction}{ctx_snippet}\nCâu hỏi của thành viên: \"{user_text[:300]}\"\nChỉ viết đúng câu trả lời khách quan dẫn nguồn thứ 3 bằng tiếng Việt tự nhiên (1-2 câu, xưng mình, gọi sếp, không icon):"
+    full_prompt = f"{persona_instruction}{ctx_snippet}\nCâu hỏi của thành viên: \"{user_text[:300]}\"\nViết câu trả lời trực diện, tự nhiên (1-2 câu, xưng mình, gọi sếp, không icon):"
 
-    # Ưu tiên số 1: Gọi trực tiếp mô hình GPT-4 qua g4f.Provider.Yqcloud & ChatGPT để tư duy linh hoạt 100% theo ngữ cảnh câu hỏi
     try:
         import g4f
         from g4f.client import Client as G4FClient
@@ -1244,7 +1237,6 @@ def generate_smart_trader_reply(user_text, reply_context="", market=None):
     except Exception as e:
         print("[G4F Reasoning Error]:", e)
 
-    # Ưu tiên số 2: Gọi Pollinations Reasoning LLM (`openai-fast`)
     for attempt in range(2):
         try:
             seed = random.randint(1000, 999999)
@@ -1261,20 +1253,19 @@ def generate_smart_trader_reply(user_text, reply_context="", market=None):
         except Exception:
             time.sleep(0.8)
 
-    # Dự phòng đa biến thể (100% khách quan dẫn nguồn thứ 3, không bao giờ tự nhận định chủ quan)
     if level == "BROKER_LEAD":
         return random.choice([
-            "Theo thông tin công bố trên trang chủ VT Markets thì cổng nạp rút ngân hàng nội địa và USDT đều xử lý tự động trong ngày kèm tài khoản Raw ECN có spread thấp sếp nhé, sếp xem thêm hướng dẫn bật hoàn phí Backcom ở bài ghim hoặc đợi chút anh em hỗ trợ nhắn chi tiết ạ.",
-            "Sếp có thể xem ở bài ghim trên đầu nhóm có hướng dẫn chi tiết cách bật chương trình hoàn phí giao dịch tự động (Backcom) tại VT Markets nhé, đợi xíu bộ phận hỗ trợ trong nhóm sẽ nhắn giải đáp cụ thể cho sếp ạ."
+            "Cổng nạp rút ngân hàng nội địa và USDT bên VT Markets đều xử lý tự động trong ngày, còn tài khoản Raw ECN có spread rất sát sếp nhé; sếp xem cách bật hoàn phí Backcom ở bài ghim hoặc đợi chút anh em hỗ trợ nhắn chi tiết ngay ạ.",
+            "Hướng dẫn bật hoàn phí giao dịch tự động (Backcom) và so sánh tài khoản Raw ECN đã có sẵn ở bài ghim đầu nhóm rồi sếp, đợi xíu bộ phận hỗ trợ sẽ nhắn riêng hướng dẫn cụ thể cho sếp nhé."
         ])
     if level == "EXPERIENCED":
         return random.choice([
-            f"Theo bảng thống kê tự động trên TradingView hiện XAU/USD đang ở ${gp:,.1f} dưới mốc EMA20 H1 (${ema20:,.0f}) với RSI H1 ở mức {rsi1}, còn theo góc nhìn mà các nhà phân tích trên FXEmpire chia sẻ thì họ thường đợi phản ứng giá rõ ràng tại biên ${bb_low:,.0f} hoặc ${ema20:,.0f} để sếp tham khảo thêm cho kế hoạch riêng nhé.",
-            f"Số liệu công khai trên TradingView đang ghi nhận DXY ở {dxy:.2f} và Vàng dao động giữa vùng ${bb_low:,.0f} – ${ema20:,.0f} (RSI H1 {rsi1}), theo phương pháp mà các KOL như TJR hay chia sẻ thì giai đoạn giá nằm giữa biên như vậy họ thường đứng ngoài chờ xác nhận để các sếp cùng tham khảo ạ."
+            f"Hiện XAU/USD đang neo quanh ${gp:,.1f} dưới đường EMA20 H1 (${ema20:,.0f}) với RSI H1 ở mức {rsi1}, vùng phản ứng đáng chú ý gần nhất đang nằm ở hai biên ${bb_low:,.0f} và ${ema20:,.0f} để sếp đối chiếu thêm với setup của mình nhé.",
+            f"Với DXY đang ở {dxy:.2f} và Vàng kẹp giữa vùng ${bb_low:,.0f} – ${ema20:,.0f} (RSI H1 {rsi1}), đoạn giữa biên này lực mua bán còn giằng co nên đợi giá quét hẳn một đầu rồi xác nhận nến sẽ rõ hướng hơn sếp ạ."
         ])
     return random.choice([
-        f"Theo kinh nghiệm mà các chuyên gia như Brad Goh hay Raja Banks thường chia sẻ cho người mới thì khi giá Vàng đang dao động quanh ${gp:,.0f}, họ luôn ưu tiên cài sẵn mức tự động dừng lỗ nhỏ để bảo vệ vốn trước tiên, sếp có thể xem thêm tài liệu cơ bản ở bài ghim đầu nhóm để tham khảo nhé.",
-        "Theo chia sẻ từ nhiều thành viên lâu năm trên diễn đàn r/Gold dành cho người mới bắt đầu, cách tiếp cận an toàn là tìm hiểu kỹ nguyên tắc quản lý rủi ro trong cuốn cẩm nang ở bài ghim đầu nhóm và luôn đặt sẵn mức giới hạn lỗ tự động cho từng giao dịch sếp ạ."
+        f"Khi Vàng đang dao động quanh ${gp:,.0f} như hiện tại, nguyên tắc an toàn nhất cho người mới là chia nhỏ khối lượng và luôn đặt sẵn mức cắt lỗ tự động ngay lúc vào lệnh, sếp xem thêm bộ tài liệu cơ bản ở bài ghim đầu nhóm nhé.",
+        "Giai đoạn mới bắt đầu sếp cứ ưu tiên đánh khối lượng nhỏ nhất và đặt sẵn điểm dừng lỗ cố định cho từng lệnh để làm quen nhịp thị trường trước, trong bài ghim đầu nhóm cũng có sẵn cẩm nang tính lot rất dễ áp dụng sếp ạ."
     ])
 
 

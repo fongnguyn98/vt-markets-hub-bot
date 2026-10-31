@@ -486,7 +486,7 @@ SCHEDULE = [
 
 def run_live_v2_showcase(state):
     """Chạy thử 1 lần duy nhất khi lên bản v2 trên GitHub Cloud: đăng ngay 1 bài Tin mới 24h + 1 Poll lên nhóm."""
-    if state.get("engine_v2_live_verified"):
+    if state.get("engine_v2_2_direct_verified"):
         return False
     log_info("[Live Test v2] Triggering one-time live test post to Telegram...")
     now = time.time()
@@ -505,21 +505,21 @@ def run_live_v2_showcase(state):
                     "caption": (news_post.get("caption") or "")[:500]
                 })
         time.sleep(3)
-        poll_post = content_engine.make_post("poll", buzz)
+        poll_post = content_engine.make_post("scenario", buzz)
         if poll_post:
             r2 = news_and_kol_radar.publish_post(DISCUSSION_CHAT_ID, poll_post)
             if r2.get("ok"):
                 content_engine.record("poll", poll_post.get("id_key", "live_poll"), poll_post.get("title", ""))
                 results.append({
-                    "kind": "poll",
+                    "kind": poll_post.get("kind", "scenario"),
                     "msg_id": r2.get("result", {}).get("message_id"),
-                    "poll": poll_post.get("poll")
+                    "caption": (poll_post.get("caption") or "")[:500]
                 })
     except Exception as e:
         log_info(f"[Live Test v2 Error]: {e}")
 
     if results:
-        state["engine_v2_live_verified"] = True
+        state["engine_v2_2_direct_verified"] = True
         state["last_live_test_result"] = {
             "ts": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "posts": results
