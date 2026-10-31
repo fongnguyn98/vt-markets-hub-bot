@@ -25,6 +25,7 @@ jobs:
       PYTHONIOENCODING: utf-8
       PYTHONUNBUFFERED: "1"
       VT_BOT_TOKEN: ${{ secrets.VT_BOT_TOKEN }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
     steps:
       - name: Checkout repository
@@ -62,7 +63,14 @@ jobs:
           git config user.name "VT-Markets-Bot-Cloud"
           git config user.email "bot@vtmarketshub.local"
           git add bot_state.json content_balance_state.json whitelist.json daily_buzz_pool.json || true
-          git diff --staged --quiet || (git pull --rebase origin main && git commit -m "chore: sync bot state [skip ci]" && git push origin main) || true
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: sync bot state [skip ci]"
+            for i in 1 2 3; do
+              git pull --rebase --autostash origin main || true
+              git push origin main && break
+              sleep $((i * 3))
+            done
+          fi
 
       - name: Self-trigger next 24/7 cycle immediately
         if: always()

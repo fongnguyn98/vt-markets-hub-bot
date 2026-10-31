@@ -84,3 +84,14 @@ description: Quy trình tự động quét 4 Sheet nguồn Quốc tế (Website,
      git push origin main
      ```
   4. Ngay khi `git push origin main`, GitHub Actions sẽ tự động kích hoạt bản mới trên máy chủ đám mây 24/7.
+
+## 6. Lưu Ý Vận Hành (Rút Ra Sau 1 Tuần Chạy Thật)
+- **Chỉ MỘT instance được gọi getUpdates:** KHÔNG chạy watchdog_bot.py / ot_truc_nhom.py trên máy local khi bản GitHub Actions đang chạy (gây lỗi 409 Conflict, bot local và cloud giành tin nhắn, state lệch nhau). Muốn test local: dừng workflow trước.
+- **Lưu state:** ot_state.json bị ghi liên tục nên khi git pull --rebase phải dùng --autostash và retry push; mọi slot (kể cả tin nhắn ngắn) và lúc thoát đều gọi sync_git_state().
+- **Đăng lỗi:** slot đăng lỗi sẽ chờ 10 phút (SLOT_RETRY_COOLDOWN) mới thử lại, tránh quét lại toàn bộ nguồn liên tục.
+- **Thư mục D: có thể tụt hậu so với GitHub** (bot cloud tự commit state): luôn git pull --rebase --autostash origin main trước khi sửa.
+
+## 7. Nội Dung Mới (v2 — thay thế mục lịch ở phần 4 và tỷ lệ 5 nhóm ở phần 1.6)
+- Engine: `content_engine.py`. Nhiều dạng bài: tin vĩ mô thật, tóm tắt video KOL **từ phụ đề thật** (không có phụ đề thì không đăng, tuyệt đối không gán lời cho KOL), poll (`sendPoll`), câu hỏi tình huống, giải thích thuật ngữ, Reddit (chỉ bài có nội dung thật), tổng kết cuối tuần.
+- Lịch T2-T6: 08:30 tin tức, 10:15 poll, 14:30 KOL insight, 16:00 tình huống, 19:15 xoay vòng Reddit / thuật ngữ / VT Markets. T7 10:00 tổng kết tuần, CN 19:00 poll đầu tuần. Bỏ slot 11:45 và 20:45.
+- LLM lỗi thì dùng kho dự phòng viết sẵn trong `content_engine.py` (poll, tình huống, thuật ngữ). Bot im ắng trên 5 giờ mới thả câu hỏi gợi chuyện.

@@ -216,11 +216,26 @@ def api_call(method, payload=None):
 # - Không có ảnh gốc (hoặc ảnh lỗi) -> Ưu tiên 1: Chụp biểu đồ XAU/USD thời gian thực -> Ưu tiên 2: Ảnh báo chí theo chủ đề
 # ==============================================================================
 def publish_post(chat_id, post_item):
+    # Dạng khảo sát (poll): gửi bằng sendPoll, không kèm ảnh
+    if post_item.get("poll"):
+        pl = post_item["poll"]
+        return api_call("sendPoll", {
+            "chat_id": chat_id,
+            "question": pl["question"][:300],
+            "options": [str(o)[:100] for o in pl["options"][:10]],
+            "is_anonymous": True,
+            "allows_multiple_answers": False
+        })
+
     caption = post_item.get("caption", "")
     image_url = post_item.get("image_url", "")
     source_url = post_item.get("source_url", "")
 
     full_caption = f"{caption}\n\n🔗 {source_url}" if source_url and source_url not in caption else caption
+
+    # Bài hội thoại thuần chữ (câu hỏi tình huống, giải thích thuật ngữ, tổng kết tuần): không cần ảnh
+    if post_item.get("kind") in ("scenario", "glossary", "recap"):
+        return api_call("sendMessage", {"chat_id": chat_id, "text": caption})
 
     # 1. Nếu là đường dẫn ảnh gốc (URL hoặc file local)
     if image_url:
@@ -933,7 +948,11 @@ def build_reddit_posts(market, chart_img_path, sheets=None, posted_set=None):
                 id_key = f"reddit_thread_{perma.strip('/')}"
                 if id_key in posted_set or full_url in posted_set:
                     continue
-                if any(bad in title_en.lower() for bad in ["meme", "shitpost", "upvote", "karma", "discord", "telegram", "scam"]):
+                if any(bad in title_en.lower() for bad in ["meme", "shitpost", "upvote", "karma", "discord", "telegram", "scam", "removed by moderator", "daily discussion", "referral", "join moomoo"]):
+                    continue
+                if sub.lower() in ("worldnews", "geopolitics", "news", "politics"):
+                    continue
+                if len(selftext_en) < 120:  # không có nội dung thật thì không đăng (tránh bịa "nhiều thành viên bình luận...")
                     continue
 
                 vi_title = translate_en_to_vi(title_en)

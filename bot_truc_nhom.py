@@ -8,6 +8,7 @@ import sys
 import random
 from datetime import datetime
 import news_and_kol_radar
+import content_engine
 
 if sys.stdout and hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
@@ -70,7 +71,7 @@ SESSION_ICEBREAKERS = {
     ]
 }
 
-QUIET_THRESHOLD_SECONDS = 3.5 * 3600  # 3.5 hours of silence before icebreaker
+QUIET_THRESHOLD_SECONDS = 5 * 3600  # 5 giờ nhóm im ắng mới thả câu hỏi gợi chuyện
 
 
 def load_whitelist():
@@ -392,25 +393,34 @@ def handle_member_message_lead(msg):
 
 
 def sync_git_state():
+    """Commit + push state an toàn: autostash (state bị ghi liên tục nên working tree luôn 'bẩn'), retry khi push bị từ chối."""
     try:
         import subprocess
         git_dir = os.path.join(BASE_DIR, ".git")
         if not os.path.exists(git_dir):
             return
-        kw = {"cwd": BASE_DIR, "capture_output": True}
+        kw = {"cwd": BASE_DIR, "capture_output": True, "text": True}
         if os.name == "nt":
             kw["creationflags"] = subprocess.CREATE_NO_WINDOW
-        subprocess.run(["git", "config", "user.name", "VT-Markets-Bot-Cloud"], timeout=8, **kw)
-        subprocess.run(["git", "config", "user.email", "bot@vtmarketshub.local"], timeout=8, **kw)
-        subprocess.run(["git", "add", "bot_state.json", "content_balance_state.json", "daily_buzz_pool.json"], timeout=10, **kw)
-        diff_res = subprocess.run(["git", "diff", "--staged", "--quiet"], timeout=8, **kw)
-        if diff_res.returncode != 0:
-            subprocess.run(["git", "commit", "-m", "chore: auto-sync posted history [skip ci]"], timeout=10, **kw)
-            subprocess.run(["git", "pull", "--rebase", "origin", "main"], timeout=20, **kw)
-            subprocess.run(["git", "push", "origin", "main"], timeout=20, **kw)
+
+        def git(*args, timeout=30):
+            return subprocess.run(["git", *args], timeout=timeout, **kw)
+
+        git("config", "user.name", "VT-Markets-Bot-Cloud", timeout=8)
+        git("config", "user.email", "bot@vtmarketshub.local", timeout=8)
+        git("add", "bot_state.json", "content_balance_state.json", "daily_buzz_pool.json", "whitelist.json", timeout=15)
+        if git("diff", "--staged", "--quiet", timeout=8).returncode == 0:
+            return
+        git("commit", "-m", "chore: auto-sync posted history [skip ci]", timeout=15)
+        for attempt in range(3):
+            git("pull", "--rebase", "--autostash", "origin", "main", timeout=60)
+            res = git("push", "origin", "main", timeout=60)
+            if res.returncode == 0:
+                return
+            time.sleep(2 + attempt * 3)
+        log_info(f"[Git Sync Warning]: push failed: {(res.stderr or '')[:200]}")
     except Exception as e:
         log_info(f"[Git Sync Warning]: {e}")
-
 
 def load_or_refresh_buzz(force_refresh=False):
     now = time.time()
@@ -432,6 +442,28 @@ def load_or_refresh_buzz(force_refresh=False):
         return {}
 
 
+_SLOT_FAIL_AT = {}
+SLOT_RETRY_COOLDOWN = 600  # ??ng l?i -> ??i 10 ph?t m?i th? l?i (tr?nh qu?t l?i to?n b? ngu?n li?n t?c v? ??t h?t b?i trong kho)
+
+
+def _slot_cooling(slot_id):
+    return time.time() - _SLOT_FAIL_AT.get(slot_id, 0) < SLOT_RETRY_COOLDOWN
+
+
+# Lịch đăng (phút trong ngày). Tối đa ~5 bài/ngày: 3 bài chất lượng + 2 bài ngắn/tương tác. Cuối tuần chỉ 1 bài/ngày.
+# (tag, bắt đầu, kết thúc [cửa sổ bù], loại nội dung, các thứ trong tuần: 0=T2 ... 6=CN)
+WEEKDAYS = {0, 1, 2, 3, 4}
+SCHEDULE = [
+    ("morning_slot", 510, 690, "news", WEEKDAYS),          # 08:30 tin vĩ mô thật kèm câu hỏi
+    ("short_1015", 615, 695, "poll", WEEKDAYS),            # 10:15 khảo sát nhanh
+    ("afternoon_kol", 870, 950, "kol_insight", WEEKDAYS),  # 14:30 tóm tắt video KOL từ phụ đề thật
+    ("short_1600", 960, 1125, "scenario", WEEKDAYS),       # 16:00 câu hỏi tình huống
+    ("evening_us", 1155, 1235, "discussion", WEEKDAYS),    # 19:15 xoay vòng Reddit / giải thích thuật ngữ / VT Markets
+    ("weekend_recap", 600, 780, "recap", {5}),             # T7 10:00 tổng kết tuần
+    ("weekend_ahead", 1140, 1260, "weekahead", {6}),       # CN 19:00 khảo sát đầu tuần
+]
+
+
 def check_scheduled_daily_posts(state):
     now = time.time()
     dt = datetime.now()
@@ -439,116 +471,40 @@ def check_scheduled_daily_posts(state):
     cur_mins = dt.hour * 60 + dt.minute
 
     executed = state.setdefault("executed_slots", [])
-    # Giữ danh sách tối đa 60 slot gần nhất
     if len(executed) > 60:
         state["executed_slots"] = executed[-60:]
         executed = state["executed_slots"]
 
-    # Giãn cách tối thiểu 20 phút giữa 2 bài tự động liên tiếp (tránh dồn bài khi máy tính vừa bật lại)
+    # Giãn cách tối thiểu 20 phút giữa 2 bài tự động liên tiếp
     if now - state.get("last_scheduled_time", 0) < 1200:
         return False
 
-    # 1. Khung 08:30 Sáng (Cửa sổ bù: 08:30 -> 11:30): Bài chia sẻ dài mở đầu ngày
-    morning_id = f"{date_str}_morning_slot"
-    if 510 <= cur_mins <= 690 and morning_id not in executed and state.get("last_scheduled_post") != morning_id:
-        log_info(f"Triggering scheduled slot: {morning_id}")
-        buzz = load_or_refresh_buzz(force_refresh=True)
-        _, post = news_and_kol_radar.pick_balanced_post(buzz, preferred_cat="auto")
-        if post:
-            res = news_and_kol_radar.publish_post(DISCUSSION_CHAT_ID, post)
-            if res.get("ok"):
-                executed.append(morning_id)
-                state["last_scheduled_post"] = morning_id
-                state["last_scheduled_time"] = now
-                state["last_group_activity"] = now
-                save_state(state)
-                sync_git_state()
-                log_info(f"Published {morning_id} OK (msg_id={res.get('result', {}).get('message_id')})")
-                return True
-
-    # 2. Khung 11:45 Trưa (Cửa sổ bù: 11:45 -> 14:15): Mẹo giữ lãi TikTok KOL hoặc Tối ưu lợi nhuận ròng VT Markets
-    noon_id = f"{date_str}_noon_slot"
-    if 705 <= cur_mins <= 855 and noon_id not in executed and state.get("last_scheduled_post") != noon_id:
-        log_info(f"Triggering scheduled slot: {noon_id}")
-        buzz = load_or_refresh_buzz(force_refresh=True)
-        cat_choice = "vt" if dt.day % 2 == 0 else "tiktok"
-        _, post = news_and_kol_radar.pick_balanced_post(buzz, preferred_cat=cat_choice)
-        if post:
-            res = news_and_kol_radar.publish_post(DISCUSSION_CHAT_ID, post)
-            if res.get("ok"):
-                executed.append(noon_id)
-                state["last_scheduled_post"] = noon_id
-                state["last_scheduled_time"] = now
-                state["last_group_activity"] = now
-                save_state(state)
-                sync_git_state()
-                log_info(f"Published {noon_id} OK (msg_id={res.get('result', {}).get('message_id')})")
-                return True
-
-    # 3. Khung 14:30 Chiều (Cửa sổ bù: 14:30 -> 15:50): Kiến thức thực chiến & Phương pháp vào lệnh YouTube KOL
-    afternoon_id = f"{date_str}_afternoon_kol"
-    if 870 <= cur_mins <= 950 and afternoon_id not in executed and state.get("last_scheduled_post") != afternoon_id:
-        log_info(f"Triggering scheduled slot: {afternoon_id}")
-        buzz = load_or_refresh_buzz(force_refresh=True)
-        _, post = news_and_kol_radar.pick_balanced_post(buzz, preferred_cat="kol")
-        if post:
-            res = news_and_kol_radar.publish_post(DISCUSSION_CHAT_ID, post)
-            if res.get("ok"):
-                executed.append(afternoon_id)
-                state["last_scheduled_post"] = afternoon_id
-                state["last_scheduled_time"] = now
-                state["last_group_activity"] = now
-                save_state(state)
-                sync_git_state()
-                log_info(f"Published {afternoon_id} OK (msg_id={res.get('result', {}).get('message_id')})")
-                return True
-
-    # 4. Khung 19:15 Tối (Cửa sổ bù: 19:15 -> 20:35): Chủ đề thảo luận thực chiến trước phiên Mỹ kèm Biểu đồ Nến M15
-    evening_id = f"{date_str}_evening_us"
-    if 1155 <= cur_mins <= 1235 and evening_id not in executed and state.get("last_scheduled_post") != evening_id:
-        log_info(f"Triggering scheduled slot: {evening_id}")
-        buzz = load_or_refresh_buzz(force_refresh=True)
-        _, post = news_and_kol_radar.pick_balanced_post(buzz, preferred_cat="reddit")
-        if post:
-            res = news_and_kol_radar.publish_post(DISCUSSION_CHAT_ID, post)
-            if res.get("ok"):
-                executed.append(evening_id)
-                state["last_scheduled_post"] = evening_id
-                state["last_scheduled_time"] = now
-                state["last_group_activity"] = now
-                save_state(state)
-                sync_git_state()
-                log_info(f"Published {evening_id} OK (msg_id={res.get('result', {}).get('message_id')})")
-                return True
-
-    # 5. Đan xen các dòng tin nhắn ngắn (1-2 câu, KHÔNG icon, không ảnh) trong khung giờ giao dịch:
-    # - 10:15 (cửa sổ 10:15 -> 11:35)
-    # - 16:00 (cửa sổ 16:00 -> 18:45)
-    # - 20:45 (cửa sổ 20:45 -> 23:30)
-    short_windows = [
-        (615, 695, "short_1015"),
-        (960, 1125, "short_1600"),
-        (1245, 1410, "short_2045"),
-    ]
-    for w_start, w_end, slot_tag in short_windows:
-        short_id = f"{date_str}_{slot_tag}"
-        if w_start <= cur_mins <= w_end and short_id not in executed and state.get("last_scheduled_post") != short_id:
-            log_info(f"Triggering short session message: {short_id}")
-            buzz = load_or_refresh_buzz()
-            short_pool = buzz.get("short_icebreakers", []) or SESSION_ICEBREAKERS["evening"]
-            res = api_call("sendMessage", {
-                "chat_id": DISCUSSION_CHAT_ID,
-                "text": random.choice(short_pool)
-            })
-            if res.get("ok"):
-                executed.append(short_id)
-                state["last_scheduled_post"] = short_id
-                state["last_scheduled_time"] = now
-                state["last_group_activity"] = now
-                save_state(state)
-                log_info(f"Published {short_id} OK (msg_id={res.get('result', {}).get('message_id')})")
-                return True
-
+    for tag, w_start, w_end, kind, days in SCHEDULE:
+        slot_id = f"{date_str}_{tag}"
+        if dt.weekday() not in days or not (w_start <= cur_mins <= w_end):
+            continue
+        if slot_id in executed or _slot_cooling(slot_id):
+            continue
+        log_info(f"Triggering scheduled slot: {slot_id} ({kind})")
+        post = None
+        try:
+            buzz = load_or_refresh_buzz(force_refresh=True) if kind in content_engine.NEEDS_BUZZ else None
+            post = content_engine.make_post(kind, buzz, dt)
+            res = news_and_kol_radar.publish_post(DISCUSSION_CHAT_ID, post) if post else {"ok": False}
+        except Exception as e:
+            log_info(f"[Slot {slot_id} error]: {e}")
+            res = {"ok": False}
+        if res.get("ok"):
+            content_engine.record(post.get("kind", kind), post.get("id_key", slot_id), post.get("title", ""))
+            executed.append(slot_id)
+            state["last_scheduled_post"] = slot_id
+            state["last_scheduled_time"] = now
+            state["last_group_activity"] = now
+            save_state(state)
+            sync_git_state()
+            log_info(f"Published {slot_id} OK (msg_id={res.get('result', {}).get('message_id')})")
+            return True
+        _SLOT_FAIL_AT[slot_id] = now
     return False
 
 
@@ -577,7 +533,10 @@ def send_session_icebreaker(state, force=False, mode="auto"):
             return False
 
     buzz = load_or_refresh_buzz()
-    if mode in ("tintuc", "kol", "tiktok", "reddit", "vt"):
+    if mode in ("kol", "tiktok"):
+        post = content_engine.make_post("kol_insight" if mode == "kol" else "scenario", buzz)
+        res = news_and_kol_radar.publish_post(DISCUSSION_CHAT_ID, post) if post else {"ok": False}
+    elif mode in ("tintuc", "reddit", "vt"):
         _, post = news_and_kol_radar.pick_balanced_post(buzz, preferred_cat=mode)
         res = news_and_kol_radar.publish_post(DISCUSSION_CHAT_ID, post) if post else {"ok": False}
     elif mode == "icebreaker" or not force:
@@ -908,6 +867,7 @@ def main():
         if max_runtime > 0 and (time.time() - start_ts) >= max_runtime:
             save_state(state)
             save_whitelist(wl)
+            sync_git_state()
             log_info(f"[VT Markets Bot] Reached max_runtime ({max_runtime}s). Saving state and exiting cleanly for next Cloud cycle.")
             break
 
