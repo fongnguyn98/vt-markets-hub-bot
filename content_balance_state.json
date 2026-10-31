@@ -44,7 +44,8 @@
     "ce_poll_gen_66998984",
     "https://www.marketwatch.com/story/why-gold-plunged-to-its-lowest-price-in-a-year-despite-renewed-iran-jitters-365be0e2?mod=mw_rss_topstories",
     "ce_scn_gen_15305217",
-    "ce_scn_gen_21760560"
+    "ce_scn_gen_21760560",
+    "ce_scn_gen_451789"
   ],
   "category_counts": {
     "tintuc": 8,
@@ -79,6 +80,11 @@
       "t": 1793431847,
       "kind": "scenario",
       "title": "Lệnh XAU đang lãi 12 pip mà còn 7 phút nữa ra thông báo lãi suất Fed, tài khoản "
+    },
+    {
+      "t": 1793449824,
+      "kind": "scenario",
+      "title": "Cập nhật nhanh: Lệnh vàng đang +20 pip khi mình đi làm văn phòng, chỉ còn 8 phút"
     }
   ]
 }
