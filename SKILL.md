@@ -33,7 +33,7 @@ Không có bài đạt thì bot im lặng. Không thêm bài dự phòng để l
 
 | File | Vai trò |
 |---|---|
-| `bot_truc_nhom.py` | Đăng từ hàng đợi, lời chào, kiểm duyệt, lệnh tiện ích, đo lường |
+| `bot_truc_nhom.py` | Đăng từ hàng đợi, kiểm duyệt, lệnh tiện ích, đo lường (không chào mừng công khai thành viên mới) |
 | `content_pipeline.py` | Tìm nguồn, lọc YAKE, trích dữ kiện theo mẫu Fabric, dựng bài, kho poll |
 | `validators.py` | Kiểm tra từng bài (RapidFuzz quote, số liệu, điểm chất lượng) và quy tắc đa dạng |
 | `content_queue.py`, `content_queue/`, `content_queue_state.json` | Hàng đợi và trạng thái |

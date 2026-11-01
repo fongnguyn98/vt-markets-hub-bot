@@ -58,14 +58,6 @@ ANSWERS_PER_USER_PER_DAY = 5
 STRIKE_WINDOW = 7 * 86400
 MUTE_SECONDS = 86400
 
-WELCOME_TEXT = (
-    "Chào {name}. Đây là tin tự động của bot nhóm VT Markets | Thảo Luận &amp; Thực Chiến. Nhóm do bot vận hành, không có nhân viên trực.\n\n"
-    "Ở đây bot review video và thread thảo luận về giao dịch, có link nguồn, rồi mở tranh luận và bỏ phiếu. Không có tín hiệu, không ai hứa lợi nhuận.\n\n"
-    "Cứ đọc thôi cũng được. Nếu muốn, hãy bỏ phiếu ở poll gần nhất, hoặc kể một câu bạn đang vướng gì; thành viên khác có thể trả lời bạn. "
-    "Gõ /thuvien để tìm bài cũ, /tinhlenh để tính khối lượng lệnh.\n\n"
-    "An toàn: không ai đại diện nhóm sẽ nhắn riêng cho bạn trước, xin tiền, giữ vốn hay vào lệnh hộ. Ai tự xưng như vậy thì đừng tin, gõ /baocao."
-)
-
 PINNED_TEXT = """VT Markets | Thảo Luận & Thực Chiến: review có nguồn, tranh luận có phe, tránh bẫy
 
 DÀNH CHO AI
@@ -329,16 +321,10 @@ def handle_violation(msg, reason, state):
 
 
 def welcome_new_members(members, state):
-    """Một tin chào, không lộ ID; tin chào cũ được xóa để nhóm đỡ loãng."""
-    if not members:
-        return
-    names = ", ".join(mention_public(m) for m in members[:5])
-    res = send_text(DISCUSSION_CHAT_ID, WELCOME_TEXT.format(name=names), parse_mode="HTML", disable_web_page_preview=True)
-    old = state.get("welcome_msg_id")
+    """Clean up any legacy welcome message without posting publicly."""
+    old = state.pop("welcome_msg_id", None)
     if old:
         api_call("deleteMessage", {"chat_id": DISCUSSION_CHAT_ID, "message_id": old})
-    if res.get("ok"):
-        state["welcome_msg_id"] = res["result"]["message_id"]
 
 
 def notify_explicit_lead(msg):
@@ -829,6 +815,10 @@ def main():
     save_state(state)
     log_info(f"[VT Markets Bot] Started PID={os.getpid()}. Offset={state.get('offset', 0)}")
     try:
+        if state.get("welcome_msg_id"):
+            api_call("deleteMessage", {"chat_id": DISCUSSION_CHAT_ID, "message_id": state.pop("welcome_msg_id")})
+            save_state(state)
+            sync_git_state()
         ensure_setup(state)
         if not state.get("v3_web_photo_showcase_posted"):
             if process_queue(state, force_window=True):

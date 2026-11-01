@@ -126,13 +126,14 @@ class Schedule(unittest.TestCase):
 
 
 class BotBehaviour(unittest.TestCase):
-    def test_welcome_has_no_user_id(self):
-        sent = {}
-        with mock.patch.object(bot, "api_call", side_effect=lambda m, p=None: sent.update(p or {}) or {"ok": True, "result": {"message_id": 1}}):
-            bot.welcome_new_members([{"id": 987654321, "first_name": "An", "username": "an123"}], {})
-        visible = sent["text"].replace("tg://user?id=987654321", "")
-        self.assertNotIn("987654321", visible)
-        self.assertNotIn("an123", visible)
+    def test_welcome_does_not_post_publicly(self):
+        calls = []
+        state = {"welcome_msg_id": 143}
+        with mock.patch.object(bot, "api_call", side_effect=lambda m, p=None: calls.append((m, p)) or {"ok": True}):
+            bot.welcome_new_members([{"id": 987654321, "first_name": "An", "username": "an123"}], state)
+        self.assertFalse(any(m == "sendMessage" for m, _ in calls))
+        self.assertEqual(calls, [("deleteMessage", {"chat_id": bot.DISCUSSION_CHAT_ID, "message_id": 143})])
+        self.assertNotIn("welcome_msg_id", state)
 
     def test_chart_link_allowed_referral_blocked(self):
         self.assertFalse(bot.detect_violation({"text": "chart của mình https://www.tradingview.com/x/abc/"})[0])
