@@ -1,3 +1,7 @@
 trafilatura
 youtube-transcript-api
+yt-dlp
 curl_cffi
+rapidfuzz
+yake
+feedparser

@@ -488,7 +488,7 @@ def next_item(qstate, now):
     history = qstate.get("history", [])
     last_kind = history[-1].get("kind") if history else ""
     pending = content_queue.pending_items(now)
-    pending.sort(key=lambda i: (i.get("kind") == last_kind, i.get("created_at", 0)))
+    pending.sort(key=lambda i: (i.get("kind") == last_kind, i.get("kind") == "poll", i.get("created_at", 0)))
     for item in pending:
         errors = validators.check_item(item) + validators.check_schedule(item, history, now)
         if not errors:
@@ -640,6 +640,12 @@ def handle_admin_command(msg, wl, state):
         if res.get("ok"):
             api_call("pinChatMessage", {"chat_id": DISCUSSION_CHAT_ID, "message_id": res["result"]["message_id"], "disable_notification": True})
         send_text(chat_id, "Đã ghim tin giới thiệu." if res.get("ok") else f"Không ghim được: {res.get('error')}")
+    elif cmd == "/donrac":
+        mids = [int(x) for x in parts[1:] if x.isdigit()]
+        if not mids:
+            mids = [p.get("msg_id") for p in state.get("last_live_test_result", {}).get("posts", []) if p.get("msg_id")]
+        deleted = sum(1 for mid in mids if api_call("deleteMessage", {"chat_id": DISCUSSION_CHAT_ID, "message_id": mid}).get("ok"))
+        send_text(chat_id, f"Đã gỡ {deleted}/{len(mids)} tin cũ khỏi nhóm thảo luận.")
     else:
         return False
     return True

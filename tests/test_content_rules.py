@@ -84,6 +84,25 @@ class CheckItem(unittest.TestCase):
         item = cp.build_poll({"id": "x", "group": "ky_luat", "q": "Hôm nay bạn ăn được bao nhiêu pip?", "o": ["Ít", "Nhiều"]})
         self.assertIn("poll_pip_or_income", v.check_item(item))
 
+    def test_word_number_in_english_source_allowed(self):
+        src = "Most traders risk too much on each trade and lose two percent of the account within fifteen minutes."
+        item = video(source_text=src, facts=[{"text": "x", "quote": "risk too much on each trade and lose two percent"}],
+                     generated_text="Người mới mất 2% chỉ trong 15 phút.")
+        self.assertEqual(v.check_item(item), [])
+
+    def test_punctuation_in_quote_allowed(self):
+        item = video(facts=[{"text": "x", "quote": "risk too much, on each trade, and lose 2 percent..."}])
+        self.assertEqual(v.check_item(item), [])
+
+    def test_mr_pips_case_title_allowed(self):
+        item = video(kind="case_study", title="Hồ sơ rủi ro: Mr. Pips",
+                     text=f"[Hồ sơ rủi ro: Mr. Pips] Vụ việc lớn.\nNguồn (AI): {URL}")
+        self.assertEqual(v.check_item(item), [])
+
+    def test_low_quality_score_rejected(self):
+        errs = v.check_item(video(quality_score=5))
+        self.assertTrue(any(e.startswith("low_quality_score") for e in errs))
+
 
 class Schedule(unittest.TestCase):
     now = 2_000_000_000

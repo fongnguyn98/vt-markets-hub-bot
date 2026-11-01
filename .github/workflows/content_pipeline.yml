@@ -29,6 +29,7 @@ jobs:
       PYTHONUNBUFFERED: "1"
       VT_BOT_TOKEN: ${{ secrets.VT_BOT_TOKEN }}
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      ALLOW_FREE_LLM_FALLBACK: "1"
 
     steps:
       - uses: actions/checkout@v4

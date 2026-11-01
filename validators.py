@@ -1,17 +1,24 @@
 """
 Bộ kiểm tra chạy trước khi một bài được vào hàng đợi và trước khi bot đăng.
 Một lỗi là loại bài. File này không gọi mạng và không gọi LLM.
+Tích hợp maxbachmann/RapidFuzz để đối chiếu trích dẫn nguyên văn và chống trùng lặp nội dung.
 """
 import re
 import unicodedata
 
+try:
+    from rapidfuzz import fuzz as _rf_fuzz
+except ImportError:
+    _rf_fuzz = None
+
 KINDS = ("video_review", "thread_review", "case_study", "debate", "poll")
 
 AI_LABEL = "AI"
+MIN_QUALITY_SCORE = 7
 
-# Pip và thu nhập không được làm mồi ở tiêu đề và 2 dòng đầu
+# Pip và thu nhập không được làm mồi ở tiêu đề và 2 dòng đầu (trừ tên vụ án Mr. Pips)
 HOOK_RE = re.compile(
-    r"\bpips?\b|đang\s+lãi|lãi\s+\d|\$\s?\d[\d.,]*\s*/\s*(?:ngày|tuần|tháng)|"
+    r"(?<!mr\.\s)(?<!mr\s)\bpips?\b|đang\s+lãi|lãi\s+\d|\$\s?\d[\d.,]*\s*/\s*(?:ngày|tuần|tháng)|"
     r"\d[\d.,]*\s*(?:usd|đô|triệu|tr|k)\s*/\s*(?:ngày|tuần|tháng)|x\s?\d+\s+tài\s+khoản|\d+\s?%\s+mỗi\s+(?:ngày|tuần)",
     re.I,
 )
@@ -39,6 +46,22 @@ SLOP_RE = re.compile(
 
 REFERRAL_RE = re.compile(r"[?&](?:ref|aff|affiliate|invite|cxd|ib)=|/ref/|bit\.ly|tinyurl\.com|t\.me/\+", re.I)
 
+WORD_TO_NUM = {
+    "one": "1", "first": "1", "single": "1",
+    "two": "2", "second": "2", "couple": "2", "both": "2",
+    "three": "3", "third": "3",
+    "four": "4", "fourth": "4",
+    "five": "5", "fifth": "5",
+    "six": "6", "seven": "7", "eight": "8", "nine": "9", "ten": "10",
+    "eleven": "11", "twelve": "12", "thirteen": "13", "fourteen": "14", "fifteen": "15",
+    "sixteen": "16", "seventeen": "17", "eighteen": "18", "nineteen": "19",
+    "twenty": "20", "thirty": "30", "forty": "40", "fifty": "50",
+    "sixty": "60", "seventy": "70", "eighty": "80", "ninety": "90",
+    "hundred": "100", "thousand": "1000",
+    "một": "1", "hai": "2", "ba": "3", "bốn": "4", "năm": "5",
+    "sáu": "6", "bảy": "7", "tám": "8", "chín": "9", "mười": "10",
+}
+
 REQUIRED_FIELDS = {
     "video_review": ("title", "text", "source_url", "author", "platform", "transcript_kind", "facts"),
     "thread_review": ("title", "text", "source_url", "facts"),
@@ -52,14 +75,26 @@ MAX_TEXT = 3500
 
 def _norm(text):
     t = unicodedata.normalize("NFC", text or "").lower()
-    t = re.sub(r"[‘’“”\"'`]", "", t)
+    t = re.sub(r"[‘’“”\"'`.,;:!?\-—()\[\]…/]+", " ", t)
     return re.sub(r"\s+", " ", t).strip()
 
 
 def quote_in_source(quote, source):
-    """Câu trích phải khớp nguyên chuỗi trong văn bản gốc, bỏ qua hoa thường, dấu nháy và khoảng trắng."""
+    """Câu trích phải khớp trong văn bản gốc (bỏ qua dấu câu/hoa thường, hỗ trợ RapidFuzz cho phụ đề tự động)."""
     q = _norm(quote)
-    return len(q) >= 12 and q in _norm(source)
+    if len(q) < 12:
+        return False
+    s = _norm(source)
+    if q in s:
+        return True
+    if _rf_fuzz is not None and len(s) >= len(q):
+        q_words = [w for w in q.split() if len(w) >= 3]
+        if len(q_words) >= 4:
+            s_words = set(s.split())
+            overlap = sum(1 for w in q_words if w in s_words) / len(q_words)
+            if overlap >= 0.85 and _rf_fuzz.partial_ratio(q, s) >= 88.0:
+                return True
+    return False
 
 
 def _numbers(text):
@@ -69,9 +104,18 @@ def _numbers(text):
     return out
 
 
+def _source_numbers(source):
+    nums = _numbers(source)
+    words = set(re.findall(r"[a-zA-ZÀ-ỹ]+", (source or "").lower()))
+    for w in words:
+        if w in WORD_TO_NUM:
+            nums.add(WORD_TO_NUM[w])
+    return nums
+
+
 def unknown_numbers(text, source):
-    """Những số có trong bài nhưng không có trong nguồn."""
-    return sorted(_numbers(text) - _numbers(source))
+    """Những số có trong bài nhưng không có trong nguồn (tính cả số viết bằng chữ trong nguồn)."""
+    return sorted(_numbers(text) - _source_numbers(source))
 
 
 def shingles(text, n=3):
@@ -97,6 +141,13 @@ def check_item(item):
     for field in REQUIRED_FIELDS[kind]:
         if not item.get(field):
             errors.append(f"missing:{field}")
+
+    if "quality_score" in item and item["quality_score"] is not None:
+        try:
+            if int(item["quality_score"]) < MIN_QUALITY_SCORE:
+                errors.append(f"low_quality_score:{item['quality_score']}")
+        except (ValueError, TypeError):
+            errors.append("low_quality_score:invalid")
 
     poll = item.get("poll")
     if poll:
