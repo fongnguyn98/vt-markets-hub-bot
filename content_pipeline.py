@@ -440,6 +440,74 @@ def fetch_article(url):
         return ""
 
 
+TOPIC_IMG_RE = re.compile(
+    r"\b(trad(?:e|ing|er)|stock|market|chart|forex|gold|finance|financial|invest|candlestick|exchange|wall.?street|algorithm|quant|broker|economy|fraud|ftc)\b",
+    re.I,
+)
+BAD_IMG_DOMAINS = (".vn/", "tiktok", "fbsbx", "lookaside", "watermark", "1x1", "logo", "icon", "teacherspayteachers", "karaoke", "ytimg.com", "avatar", "soccer", "football", "sport")
+
+TOPIC_WEB_PHOTOS = {
+    "phuong_phap": [
+        "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=85",
+        "https://images.unsplash.com/photo-1642790106117-e829e14a795f?auto=format&fit=crop&w=1200&q=85",
+        "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=1200&q=85",
+    ],
+    "quan_tri_rui_ro": [
+        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=85",
+        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=85",
+    ],
+    "tam_ly": [
+        "https://images.unsplash.com/photo-1535320903710-d993d3d77d29?auto=format&fit=crop&w=1200&q=85",
+        "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1200&q=85",
+    ],
+    "phan_tich_thi_truong": [
+        "https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=1200&q=85",
+        "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=1200&q=85",
+    ],
+    "kiem_chung": [
+        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=85",
+        "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&w=1200&q=85",
+    ],
+    "nhan_biet_bay": [
+        "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1200&q=85",
+        "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1200&q=85",
+    ],
+}
+
+
+def _verify_image_url(url):
+    if not url or not url.startswith("https://"):
+        return False
+    try:
+        req = urllib.request.Request(url, headers=HEADERS)
+        with urllib.request.urlopen(req, timeout=8) as resp:
+            ctype = (resp.headers.get("Content-Type") or "").lower()
+            data = resp.read(10000)
+            return resp.status == 200 and "image/" in ctype and len(data) > 4000
+    except Exception:
+        return False
+
+
+def find_web_image(query, topic="phuong_phap"):
+    """Tìm ảnh thật trên web (Bing Images EN-US hoặc kho ảnh nhiếp ảnh tài chính Unsplash theo chủ đề)."""
+    q = f"{query} stock trading chart market"
+    url = f"https://www.bing.com/images/search?q={urllib.parse.quote(q)}&qft=+filterui:photo-photo"
+    try:
+        req = urllib.request.Request(url, headers={**HEADERS, "Accept-Language": "en-US,en;q=0.9"})
+        html = urllib.request.urlopen(req, timeout=10).read().decode("utf-8", errors="ignore")
+        cards = re.findall(r'murl&quot;:&quot;(https://[^&]+?\.(?:jpg|jpeg|png))&quot;.*?t&quot;:&quot;([^&]+)&quot;', html, re.I)
+        for u, title in cards[:15]:
+            low = (u + " " + title).lower()
+            if any(b in low for b in BAD_IMG_DOMAINS) or not TOPIC_IMG_RE.search(low):
+                continue
+            if _verify_image_url(u):
+                return u
+    except Exception:
+        pass
+    pool = TOPIC_WEB_PHOTOS.get(topic, TOPIC_WEB_PHOTOS["phuong_phap"])
+    return random.choice(pool)
+
+
 # ----------------------------------------------------------------------------
 # Dựng bài
 # ----------------------------------------------------------------------------
@@ -528,6 +596,7 @@ def build_video_review(video, segs, kind):
     return {"id": f"video_{video['video_id']}", "kind": "video_review", "title": f"{video['author']}: {video['title']}",
             "author": video["author"], "platform": "YouTube", "transcript_kind": kind, "topic": data.get("topic", ""),
             "quality_score": int(data.get("quality_score", 8) or 8),
+            "image_url": f"https://i.ytimg.com/vi/{video['video_id']}/hqdefault.jpg",
             "source_url": url, "text": text, "facts": points + claims, "claims_text": claims_text,
             "generated_text": generated, "source_text": source[:20000], "code_numbers": code_numbers}
 
@@ -570,6 +639,7 @@ def build_thread_items(th, want_debate):
                            data.get("debate_question", ""), data.get("option_a", ""), data.get("option_b", "")])
     base = {"topic": data.get("topic", ""), "source_url": th["url"], "facts": sides, "generated_text": generated,
             "quality_score": int(data.get("quality_score", 8) or 8),
+            "image_url": find_web_image(th["title"], data.get("topic", "phuong_phap")),
             "source_text": source[:20000], "author": f"r/{th['sub']}"}
     if want_debate and data.get("debate_question") and data.get("option_a") and data.get("option_b"):
         text = "\n".join(x for x in [
@@ -634,6 +704,7 @@ def build_case(case, source):
     generated = "\n".join([data.get("what", ""), data.get("mechanism", ""), data.get("status", ""), data.get("lesson", ""),
                            data.get("question", "")] + [f["text"] for f in figures])
     return {"id": f"case_{case['id']}", "kind": "case_study", "title": data.get("title", case["id"]), "topic": "nhan_biet_bay",
+            "image_url": find_web_image(data.get("title", case["id"]), "nhan_biet_bay"),
             "source_url": case["url"], "text": text, "facts": figures, "generated_text": generated,
             "source_text": source[:20000], "code_numbers": []}
 

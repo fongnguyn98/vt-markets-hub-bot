@@ -20,5 +20,6 @@
  "title": "r/algotrading: lowering the barrier to build trading bots does not magically give you an edge",
  "text": "[Mổ xẻ thảo luận trên r/algotrading] Thảo luận về việc xây dựng bot giao dịch nhanh chóng nhưng thiếu kiểm nghiệm thực tiễn và rủi ro thực tế\n- Luận điểm phía A: Bạn cho rằng việc giảm rào cản xây dựng bot chỉ là công cụ hỗ trợ, không tạo lợi thế thực sự\n- Luận điểm phía B: Bạn nhấn mạnh rằng việc chạy bot nhanh chóng là thành công kỹ thuật nhưng không đảm bảo chiến lược có lợi nhuận\n- Góc khuất thực tế: Chưa đề cập đến chất lượng dữ liệu, kiểm thử đa kịch bản và rủi ro từ việc overfitting\n- Lưu ý thiên kiến sống sót: Người có lệnh thắng thường lên tiếng nhiều hơn người đã cháy tài khoản.\nBạn đã bao giờ gặp tình huống bot hoạt động tốt trong backtest nhưng thất bại khi giao dịch thực?\nNguồn (AI tóm tắt từ r/algotrading): https://www.reddit.com/r/algotrading/comments/1xhthb6/lowering_the_barrier_to_build_trading_bots_does/",
  "code_numbers": [],
- "created_at": 1793529429
+ "created_at": 1793529429,
+ "image_url": "https://images.unsplash.com/photo-1642790106117-e829e14a795f?auto=format&fit=crop&w=1200&q=85"
 }

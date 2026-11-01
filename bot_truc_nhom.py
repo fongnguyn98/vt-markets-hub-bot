@@ -513,10 +513,19 @@ def next_item(qstate, now):
 
 
 def publish_item(item):
-    """Bài chữ không kèm ảnh biểu đồ. Tranh luận gửi kèm poll gốc của Telegram."""
+    """Mọi bài viết đều đính kèm ảnh thật trên mạng (image_url). Tranh luận gửi kèm poll gốc của Telegram."""
     poll_msg_id = None
+    res = {"ok": False}
     if item.get("text"):
-        res = send_text(DISCUSSION_CHAT_ID, item["text"])
+        sent_photo = False
+        img_url = item.get("image_url", "")
+        if not img_url and item.get("kind") == "video_review":
+            img_url = f"https://i.ytimg.com/vi/{item.get('id', '').replace('video_', '')}/hqdefault.jpg"
+        if BOT_TOKEN and img_url and len(item["text"]) <= 1024:
+            res = api_call("sendPhoto", {"chat_id": DISCUSSION_CHAT_ID, "photo": img_url, "caption": item["text"]})
+            sent_photo = bool(res.get("ok"))
+        if not sent_photo:
+            res = send_text(DISCUSSION_CHAT_ID, item["text"])
         if not res.get("ok"):
             return res, None
     if item.get("poll"):
@@ -528,20 +537,20 @@ def publish_item(item):
     return res, poll_msg_id
 
 
-def process_queue(state, now=None):
+def process_queue(state, now=None, force_window=False):
     now = now or time.time()
     dt = datetime.fromtimestamp(now)
     if state.get("paused"):
         return False
-    if not in_window(dt):
+    if not force_window and not in_window(dt):
         return False
     qstate = content_queue.load_state()
     items = qstate.setdefault("items", {})
     history = qstate.setdefault("history", [])
 
-    if posts_today(history, dt) >= MAX_POSTS_PER_DAY:
+    if not force_window and posts_today(history, dt) >= MAX_POSTS_PER_DAY:
         return False
-    if history and now - history[-1].get("ts", 0) < MIN_POST_GAP:
+    if not force_window and history and now - history[-1].get("ts", 0) < MIN_POST_GAP:
         return False
     item = next_item(qstate, now)
     if not item:
@@ -821,6 +830,11 @@ def main():
     log_info(f"[VT Markets Bot] Started PID={os.getpid()}. Offset={state.get('offset', 0)}")
     try:
         ensure_setup(state)
+        if not state.get("v3_web_photo_showcase_posted"):
+            if process_queue(state, force_window=True):
+                state["v3_web_photo_showcase_posted"] = True
+                save_state(state)
+                sync_git_state()
     except Exception as e:
         log_info(f"[Setup error]: {e}")
 
