@@ -27,7 +27,7 @@ Pipeline chỉ thêm bài vào hàng đợi. Bot chỉ đăng từ hàng đợi 
 
 `content_pipeline.py` $\rightarrow$ tìm nguồn $\rightarrow$ lọc mật độ tín hiệu (`YAKE`) $\rightarrow$ lấy phụ đề hoặc toàn văn $\rightarrow$ LLM trả JSON kèm điểm chất lượng & câu gốc (`Fabric` pattern) $\rightarrow$ code kiểm câu gốc (`RapidFuzz`) rồi dựng bài ngắn gọn $\rightarrow$ `validators.py` $\rightarrow$ `content_queue/`
 
-`bot_truc_nhom.py` $\rightarrow$ xem trước ở nhóm nội bộ $\rightarrow$ sau 60 phút không chặn thì đăng $\rightarrow$ ghi `content_queue_state.json`
+`bot_truc_nhom.py` $\rightarrow$ chạy lớp kiểm duyệt tự động (`pre_publish_audit`: `validators.check_item` + `check_schedule` + `detect_violation`) $\rightarrow$ đạt chuẩn thì tự động đăng ngay trong khung giờ $\rightarrow$ ghi `content_queue_state.json`
 
 Không có bài đạt thì bot im lặng. Không thêm bài dự phòng để lấp lịch.
 

@@ -256,43 +256,38 @@ class QueueFlow(unittest.TestCase):
             self.assertFalse(bot.process_queue({}, self.t + offset))
         self.assertEqual(self.calls, [])
 
-    def test_preview_then_publish(self):
+    def test_audit_then_auto_publish_in_window(self):
         content_queue.add_item(video())
-        bot.process_queue({}, self.t)
+        self.assertFalse(bot.process_queue({}, self.t))  # 08:30 ngoài khung giờ
         self.assertEqual(self.group_posts(), [])
-        self.assertTrue(any(c[1]["chat_id"] == bot.INTERNAL_CHAT_ID for c in self.calls))
-        bot.process_queue({}, self.t + 1800)
-        self.assertEqual(self.group_posts(), [])
-        self.assertTrue(bot.process_queue({}, self.t + 3700))
+        self.assertTrue(bot.process_queue({}, self.t + 1800))  # 09:00 vào khung giờ -> kiểm duyệt tự động & đăng ngay
         self.assertEqual(len(self.group_posts()), 1)
 
-    def test_blocked_item_never_posts(self):
+    def test_delpost_callback_removes_published_post(self):
         content_queue.add_item(video())
-        bot.process_queue({}, self.t)
-        bot.handle_callback({"id": "1", "data": "block:video_abc", "message": {"chat": {"id": bot.INTERNAL_CHAT_ID}}}, {"user_ids": set(), "usernames": set()})
-        bot.process_queue({}, self.t + 3700)
-        self.assertEqual(self.group_posts(), [])
+        self.assertTrue(bot.process_queue({}, self.t + 1800))
+        bot.handle_callback({"id": "1", "data": "delpost:1", "message": {"chat": {"id": bot.INTERNAL_CHAT_ID}}}, {"user_ids": set(), "usernames": set()})
+        self.assertTrue(any(c[0] == "deleteMessage" and c[1]["message_id"] == 1 for c in self.calls))
 
     def test_paused_bot_does_nothing(self):
         content_queue.add_item(video())
-        bot.process_queue({"paused": True}, self.t)
-        self.assertEqual(self.calls, [])
-
-    def test_bad_item_in_queue_is_not_posted(self):
-        content_queue.add_item(video(title="Đang lãi 20 pip"))
-        bot.process_queue({}, self.t)
-        bot.process_queue({}, self.t + 3700)
+        bot.process_queue({"paused": True}, self.t + 1800)
         self.assertEqual(self.group_posts(), [])
+
+    def test_bad_item_in_queue_is_rejected_by_pre_publish_audit(self):
+        content_queue.add_item(video(title="Đang lãi 20 pip"))
+        self.assertFalse(bot.process_queue({}, self.t + 1800))
+        self.assertEqual(self.group_posts(), [])
+        self.assertEqual(content_queue.load_state()["items"]["video_abc"]["status"], "rejected")
 
     def test_debate_posts_poll_and_real_result(self):
         item = video(id="thread_1", kind="debate", author="r/Forex", poll={"question": "Nên chốt một phần hay giữ hết?", "options": ["A", "B"]})
         content_queue.add_item(item)
-        bot.process_queue({}, self.t)
-        bot.process_queue({}, self.t + 3700)
+        self.assertTrue(bot.process_queue({}, self.t + 1800))
         self.assertEqual([c[0] for c in self.group_posts()], ["sendMessage", "sendPoll"])
-        bot.check_debate_results(self.t + 3700 + 3600)
+        bot.check_debate_results(self.t + 1800 + 3600)
         self.assertFalse([c for c in self.calls if c[0] == "stopPoll"])
-        bot.check_debate_results(self.t + 3700 + bot.DEBATE_RESULT_AFTER + 1)
+        bot.check_debate_results(self.t + 1800 + bot.DEBATE_RESULT_AFTER + 1)
         self.assertEqual(len([c for c in self.calls if c[0] == "stopPoll"]), 1)
         self.assertIn("tổng 6 phiếu", self.group_posts()[-1][1]["text"])
 

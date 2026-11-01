@@ -467,16 +467,10 @@ def handle_member_command(msg):
 
 
 # ----------------------------------------------------------------------------
-# Đăng từ hàng đợi: gửi xem trước cho chủ nhóm, sau 60 phút không chặn thì đăng
+# Đăng tự động từ hàng đợi: qua cổng kiểm duyệt tự động (Pre-Publish Gate) là đăng ngay
 # ----------------------------------------------------------------------------
 def in_window(dt):
     mins = dt.hour * 60 + dt.minute
-    return any(a <= mins <= b for a, b in PUBLISH_WINDOWS)
-
-
-def prepare_window_start(dt):
-    """Xem trước được gửi sớm 60 phút để bài kịp đăng trong khung giờ."""
-    mins = dt.hour * 60 + dt.minute + VETO_SECONDS // 60
     return any(a <= mins <= b for a, b in PUBLISH_WINDOWS)
 
 
@@ -484,16 +478,38 @@ def posts_today(history, dt):
     return sum(1 for h in history if datetime.fromtimestamp(h.get("ts", 0)).date() == dt.date())
 
 
+def pre_publish_audit(item, history, now):
+    """Lớp kiểm duyệt tự động trước khi đăng: trả về (hard_errors, schedule_errors)."""
+    hard_errors = list(validators.check_item(item))
+    violated, reason = detect_violation({"text": item.get("text", "")})
+    if violated:
+        hard_errors.append(f"moderation:{reason}")
+    if hard_errors:
+        return hard_errors, []
+    sched_errors = list(validators.check_schedule(item, history, now))
+    return [], sched_errors
+
+
 def next_item(qstate, now):
     history = qstate.get("history", [])
+    items = qstate.setdefault("items", {})
     last_kind = history[-1].get("kind") if history else ""
     pending = content_queue.pending_items(now)
     pending.sort(key=lambda i: (i.get("kind") == last_kind, i.get("kind") == "poll", i.get("created_at", 0)))
+    changed = False
+    chosen = None
     for item in pending:
-        errors = validators.check_item(item) + validators.check_schedule(item, history, now)
-        if not errors:
-            return item
-    return None
+        hard_errors, sched_errors = pre_publish_audit(item, history, now)
+        if hard_errors:
+            items[item["id"]] = {"status": "rejected", "ts": int(now), "errors": hard_errors}
+            changed = True
+            continue
+        if not sched_errors:
+            chosen = item
+            break
+    if changed:
+        content_queue.save_state(qstate)
+    return chosen
 
 
 def publish_item(item):
@@ -517,54 +533,37 @@ def process_queue(state, now=None):
     dt = datetime.fromtimestamp(now)
     if state.get("paused"):
         return False
+    if not in_window(dt):
+        return False
     qstate = content_queue.load_state()
     items = qstate.setdefault("items", {})
     history = qstate.setdefault("history", [])
 
-    preview = next((k for k, v in items.items() if v.get("status") == "preview"), None)
-    if preview:
-        if now - items[preview]["ts"] < VETO_SECONDS or not in_window(dt):
-            return False
-        item = next((i for i in content_queue.all_items() if i["id"] == preview), None)
-        if not item:
-            items[preview] = {"status": "missing", "ts": int(now)}
-            content_queue.save_state(qstate)
-            return False
-        if validators.check_item(item):
-            items[preview] = {"status": "rejected", "ts": int(now)}
-            content_queue.save_state(qstate)
-            return False
-        res, poll_msg_id = publish_item(item)
-        if not res.get("ok"):
-            log_info(f"Không đăng được {preview}: {res.get('error')}")
-            items[preview]["ts"] = int(now)
-            content_queue.save_state(qstate)
-            return False
-        rec = {"status": "posted", "ts": int(now), "msg_id": res["result"]["message_id"]}
-        if item.get("kind") == "debate":
-            rec.update(poll_msg_id=poll_msg_id, result_due=int(now + DEBATE_RESULT_AFTER), poll_options=item["poll"]["options"])
-        items[preview] = rec
-        history.append({k: item.get(k, "") for k in ("id", "kind", "group", "author", "topic", "title", "text", "source_url")} | {"ts": int(now)})
-        qstate["history"] = history[-200:]
-        content_queue.save_state(qstate)
-        sync_git_state()
-        log_info(f"Đã đăng {preview}")
-        return True
-
-    if not prepare_window_start(dt) or posts_today(history, dt) >= MAX_POSTS_PER_DAY:
+    if posts_today(history, dt) >= MAX_POSTS_PER_DAY:
         return False
-    if history and now - history[-1].get("ts", 0) < MIN_POST_GAP - VETO_SECONDS:
+    if history and now - history[-1].get("ts", 0) < MIN_POST_GAP:
         return False
     item = next_item(qstate, now)
     if not item:
         return False
-    body = item.get("text") or item["poll"]["question"] + "\n" + "\n".join(item["poll"]["options"])
-    res = send_text(INTERNAL_CHAT_ID, f"Xem trước, tự đăng sau 60 phút nếu không chặn:\n\n{body}"[:4000], disable_web_page_preview=True,
-                    reply_markup={"inline_keyboard": [[{"text": "Chặn bài này", "callback_data": f"block:{item['id']}"[:64]}]]})
-    if res.get("ok"):
-        items[item["id"]] = {"status": "preview", "ts": int(now)}
-        content_queue.save_state(qstate)
-    return False
+    res, poll_msg_id = publish_item(item)
+    if not res.get("ok"):
+        log_info(f"Không đăng được {item['id']}: {res.get('error')}")
+        return False
+    msg_id = res["result"]["message_id"]
+    rec = {"status": "posted", "ts": int(now), "msg_id": msg_id}
+    if item.get("kind") == "debate":
+        rec.update(poll_msg_id=poll_msg_id, result_due=int(now + DEBATE_RESULT_AFTER), poll_options=item["poll"]["options"])
+    items[item["id"]] = rec
+    history.append({k: item.get(k, "") for k in ("id", "kind", "group", "author", "topic", "title", "text", "source_url")} | {"ts": int(now)})
+    qstate["history"] = history[-200:]
+    content_queue.save_state(qstate)
+    sync_git_state()
+    log_info(f"Đã đăng {item['id']}")
+    send_text(INTERNAL_CHAT_ID, f"Đã qua kiểm duyệt tự động & đăng bài: {item['id']} ({item['kind']})",
+              disable_web_page_preview=True,
+              reply_markup={"inline_keyboard": [[{"text": "Gỡ bài vừa đăng", "callback_data": f"delpost:{msg_id}"}]]})
+    return True
 
 
 def check_debate_results(now=None):
@@ -677,6 +676,10 @@ def handle_callback(cb, wl):
             answer = "Đã chặn bài"
         else:
             answer = "Bài đã đăng hoặc đã xử lý"
+    elif data.startswith("delpost:"):
+        mid = int(data.split(":", 1)[1])
+        ok = api_call("deleteMessage", {"chat_id": DISCUSSION_CHAT_ID, "message_id": mid}).get("ok")
+        answer = "Đã gỡ bài khỏi nhóm thảo luận" if ok else "Không gỡ được bài"
     if answer:
         api_call("answerCallbackQuery", {"callback_query_id": cb["id"], "text": answer})
         send_text(chat_id, answer)
