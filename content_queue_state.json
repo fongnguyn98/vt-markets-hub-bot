@@ -1,4 +1,22 @@
 {
- "items": {},
- "history": []
+ "items": {
+  "case_warrior_trading_ftc": {
+   "status": "posted",
+   "ts": 1793530640,
+   "msg_id": 141
+  }
+ },
+ "history": [
+  {
+   "id": "case_warrior_trading_ftc",
+   "kind": "case_study",
+   "group": "",
+   "author": "",
+   "topic": "nhan_biet_bay",
+   "title": "Warrior Trading day‑trading scheme",
+   "text": "[Hồ sơ rủi ro: Warrior Trading day-trading scheme] Warrior Trading và CEO Ross Cameron đã quảng cáo lợi nhuận giả tạo, khiến khách hàng chi hàng nghìn đô la cho hệ thống giao dịch không hiệu quả.\n\n- Cơ chế gây thiệt hại: Những lời hứa lợi nhuận nhanh, các ví dụ cá nhân thành công tạo ấn tượng tin cậy, trong khi thực tế hầu hết khách hàng thực sự mất tiền.\n- Số liệu ghi nhận: $3 million; $101,280.47 (bị cáo buộc)\n- Dấu hiệu nhận diện sớm: Bạn sẽ nhận thấy quảng cáo hứa hẹn lợi nhuận lớn, dùng ví dụ cá nhân thành công, và khuyến khích chi tiền ngay lập tức; nếu có lời hứa “đảm bảo” lợi nhuận trong tuần tiếp theo, đó là dấu hiệu cảnh báo.\n\nBạn sẽ làm gì để bảo vệ tài khoản khi gặp quảng cáo hứa lợi nhuận nhanh chóng và không có minh chứng thực tế?\nNguồn (FTC, AI tóm tắt từ hồ sơ gốc): https://www.ftc.gov/node/78867",
+   "source_url": "https://www.ftc.gov/node/78867",
+   "ts": 1793530640
+  }
+ ]
 }
