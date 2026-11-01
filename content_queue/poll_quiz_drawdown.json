@@ -1,0 +1,17 @@
+{
+ "id": "poll_quiz_drawdown",
+ "kind": "poll",
+ "group": "cau_do",
+ "title": "Tài khoản giảm 50%, cần lãi bao nhiêu % để về lại mức cũ?",
+ "topic": "cau_do",
+ "poll": {
+  "question": "Tài khoản giảm 50%, cần lãi bao nhiêu % để về lại mức cũ?",
+  "options": [
+   "50%",
+   "75%",
+   "100%",
+   "150%"
+  ]
+ },
+ "created_at": 1793527249
+}

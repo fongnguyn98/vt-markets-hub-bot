@@ -1,0 +1,17 @@
+{
+ "id": "poll_method_source",
+ "kind": "poll",
+ "group": "phuong_phap",
+ "title": "Bạn kiểm chứng một chiến lược mới trên mạng bằng cách nào?",
+ "topic": "phuong_phap",
+ "poll": {
+  "question": "Bạn kiểm chứng một chiến lược mới trên mạng bằng cách nào?",
+  "options": [
+   "Backtest trên dữ liệu",
+   "Chạy thử tài khoản demo",
+   "Vào lệnh nhỏ tiền thật",
+   "Thường không kiểm chứng"
+  ]
+ },
+ "created_at": 1793527249
+}
