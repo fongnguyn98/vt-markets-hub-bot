@@ -46,7 +46,8 @@
     "ce_scn_gen_15305217",
     "ce_scn_gen_21760560",
     "ce_scn_gen_451789",
-    "ce_gloss_gen_margin call"
+    "ce_gloss_gen_margin call",
+    "ce_scn_gen_75805046"
   ],
   "category_counts": {
     "tintuc": 8,
@@ -91,6 +92,11 @@
       "t": 1793500224,
       "kind": "glossary",
       "title": "Khái niệm: margin call"
+    },
+    {
+      "t": 1793520051,
+      "kind": "scenario",
+      "title": "Lệnh vàng đang lãi 17 pip thì còn đúng 10 phút nữa ra tin lãi suất Fed, các sếp "
     }
   ]
 }
