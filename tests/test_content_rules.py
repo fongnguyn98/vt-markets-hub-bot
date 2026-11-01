@@ -303,7 +303,7 @@ class QueueFlow(unittest.TestCase):
 
 class PipelineBuild(unittest.TestCase):
     def test_llm_no_key_makes_no_item(self):
-        with mock.patch.dict(os.environ, {"GEMINI_API_KEY": ""}):
+        with mock.patch.dict(os.environ, {"GEMINI_API_KEY": "", "ALLOW_FREE_LLM_FALLBACK": ""}):
             self.assertIsNone(cp.ask_json("x"))
 
     def test_video_review_from_real_quotes(self):
