@@ -1,5 +1,5 @@
 {
-  "offset": 500582444,
+  "offset": 500582446,
   "last_group_activity": 1793523190.1927645,
   "executed_slots": [
     "2026-10-25_morning_slot",
@@ -70,5 +70,6 @@
   "pending_questions": [],
   "admin_alerted": false,
   "intro_pinned": true,
-  "v3_web_photo_showcase_posted": true
+  "v3_web_photo_showcase_posted": true,
+  "welcome_msg_id": 143
 }

@@ -1,1 +1,11 @@
-{"events": [], "activity": []}
+{
+"events": [
+{
+"t": 1793540103,
+"e": "join",
+"u": "17bbe705170ff3cb",
+"link": ""
+}
+],
+"activity": []
+}
