@@ -1,14 +1,17 @@
-import urllib.request
-import urllib.parse
+import hashlib
+import html
 import json
-import time
 import os
 import re
+import subprocess
 import sys
-import random
+import time
+import urllib.error
+import urllib.request
 from datetime import datetime
-import news_and_kol_radar
-import content_engine
+
+import content_queue
+import validators
 
 if sys.stdout and hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
@@ -33,45 +36,94 @@ BOT_TOKEN = _load_bot_token()
 BASE_URL = f"https://api.telegram.org/bot{BOT_TOKEN}"
 
 OWNER_ID = 8598343729
+BOT_ID = 8793731768
 DISCUSSION_CHAT_ID = -1004375233328   # VT Markets | Thảo Luận & Thực Chiến
-INTERNAL_CHAT_ID = -1003750255534     # [NỘI BỘ] Báo Khách & Sale
+INTERNAL_CHAT_ID = -1003750255534     # Nhóm nội bộ của chủ nhóm
 CHANNEL_CHAT_ID = -1003971455443      # VT Rewards HUB (@vtrewardshub)
 
 WHITELIST_FILE = os.path.join(BASE_DIR, "whitelist.json")
 STATE_FILE = os.path.join(BASE_DIR, "bot_state.json")
-BUZZ_FILE = os.path.join(BASE_DIR, "daily_buzz_pool.json")
-LOG_FILE = os.path.join(BASE_DIR, "bot_runtime.log")
+METRICS_FILE = os.path.join(BASE_DIR, "metrics.json")
 PID_FILE = os.path.join(BASE_DIR, "bot.pid")
 
-os.makedirs(BASE_DIR, exist_ok=True)
+# Lịch đăng: hai khung giờ, tối đa 2 bài/ngày, cách nhau ít nhất 4 giờ. Hàng đợi rỗng thì bot im lặng.
+PUBLISH_WINDOWS = [(9 * 60, 11 * 60), (19 * 60 + 30, 21 * 60 + 30)]
+MAX_POSTS_PER_DAY = 2
+MIN_POST_GAP = 4 * 3600
+VETO_SECONDS = 3600
+DEBATE_RESULT_AFTER = 48 * 3600
+MIN_VOTES_FOR_SHARE = 5
+GIT_PULL_EVERY = 900
+ANSWERS_PER_USER_PER_DAY = 5
+STRIKE_WINDOW = 7 * 86400
+MUTE_SECONDS = 86400
+
+WELCOME_TEXT = (
+    "Chào {name}. Đây là tin tự động của bot nhóm VT Markets | Thảo Luận &amp; Thực Chiến. Nhóm do bot vận hành, không có nhân viên trực.\n\n"
+    "Ở đây bot review video và thread thảo luận về giao dịch, có link nguồn, rồi mở tranh luận và bỏ phiếu. Không có tín hiệu, không ai hứa lợi nhuận.\n\n"
+    "Cứ đọc thôi cũng được. Nếu muốn, hãy bỏ phiếu ở poll gần nhất, hoặc kể một câu bạn đang vướng gì; thành viên khác có thể trả lời bạn. "
+    "Gõ /thuvien để tìm bài cũ, /tinhlenh để tính khối lượng lệnh.\n\n"
+    "An toàn: không ai đại diện nhóm sẽ nhắn riêng cho bạn trước, xin tiền, giữ vốn hay vào lệnh hộ. Ai tự xưng như vậy thì đừng tin, gõ /baocao."
+)
+
+PINNED_TEXT = """VT Markets | Thảo Luận & Thực Chiến: review có nguồn, tranh luận có phe, tránh bẫy
+
+DÀNH CHO AI
+Người đang học hoặc giao dịch vàng, ngoại tệ, muốn lọc thông tin trên mạng trước khi tin.
+Không dành cho người tìm tín hiệu, gọi lệnh hay cách kiếm tiền nhanh.
+
+BẮT ĐẦU
+1. Đọc tin này.
+2. Bỏ phiếu ở poll gần nhất hoặc bình luận dưới một bài.
+3. Thử /tinhlenh, /chiphi, /kiemtra, /thuvien.
+
+LỊCH
+Bot đăng tối đa 2 bài/ngày, tối đa 2 poll/tuần. Ngày không có bài đạt kiểm tra thì bot im lặng.
+Kết quả tranh luận đăng sau 48 giờ.
+
+AI VẬN HÀNH
+Nhóm do bot tự động vận hành, không có nhân viên trực, không có ai cam kết trả lời.
+Bài do AI tóm tắt từ nguồn gốc và có thể sai; hãy mở link để kiểm tra. Trong nhóm không có tài khoản giả, không có số phiếu giả.
+
+CHỦ NHÓM KIẾM TIỀN THẾ NÀO
+Nhóm có liên kết với VT Markets. Chủ nhóm có thể nhận hoa hồng khi bạn mở tài khoản qua link của nhóm và giao dịch, nên có lợi khi bạn giao dịch nhiều hơn. Bạn không cần mở tài khoản ở đâu để ở lại nhóm.
+
+QUY TẮC
+Hỏi gì cũng được, nhắc tên sàn nào cũng được. Không gọi lệnh, không mời chào, không gửi link giới thiệu, không rủ nhắn riêng.
+Không kêu gọi vốn, không cam kết lợi nhuận, không ủy thác.
+Nếu tin của bạn bị gỡ, bot sẽ nói lý do. Thấy nhầm thì gõ /baocao; khóa tạm sẽ tự hết hạn.
+
+AN TOÀN
+Không ai đại diện nhóm nhắn riêng trước, nhận tiền, giữ vốn hay vào lệnh hộ.
+Ai hứa lấy lại tiền đã mất đều cần coi là dấu hiệu lừa đảo.
+
+RỦI RO
+Forex và CFD có thể làm mất toàn bộ vốn; phần lớn tài khoản cá nhân thua lỗ. Không có bằng chứng tham gia nhóm giúp giao dịch tốt hơn. Bot không tư vấn đầu tư.
+Đừng dùng tiền vay hoặc tiền bạn không thể mất."""
+
+CHECKLIST_TEXT = """Tự kiểm tra một lời mời đầu tư:
+1. Có ai hứa lãi cố định hoặc cam kết không lỗ không?
+2. Người mời có nhắn riêng trước và thúc bạn quyết định nhanh không?
+3. Có ảnh khoe lãi nhưng không có lịch sử lệnh kiểm tra được không?
+4. Lúc đầu rút được ít, sau đó bị yêu cầu nạp thêm mới rút được không?
+5. Có ai xin giữ vốn, đăng nhập tài khoản hoặc vào lệnh hộ không?
+6. Có ai hứa lấy lại tiền đã mất với một khoản phí không?
+Có từ một dấu hiệu trở lên thì nên dừng lại kiểm tra. Danh sách này không kết luận nền tảng nào an toàn."""
+
+ADVICE_REPLY = "Bot không trả lời có nên vào lệnh, mua, bán hay nạp tiền. Gõ /kiemtra hoặc /tinhlenh để tự kiểm tra rủi ro của mình."
+CRISIS_REPLY = ("Bot không tư vấn trường hợp này. Đừng vay thêm hoặc nạp thêm để gỡ, và đừng trả phí cho ai hứa lấy lại tiền đã mất. "
+                "Hãy nói với người thân bạn tin, và trình báo công an nếu bị lừa.")
+NO_ANSWER_REPLY = "Bot chưa có bài về chủ đề này. Thành viên khác có thể trả lời bạn."
+
+ADVICE_RE = re.compile(r"có\s+nên\s+(?:mua|bán|buy|sell|vào|nạp|giữ|gồng)|nên\s+(?:mua|bán|buy|sell)\s|sàn\s+nào\s+tốt|vàng\s+.{0,20}(?:lên|xuống)\s+không", re.I)
+CRISIS_RE = re.compile(r"cháy\s+tài\s+khoản|vay\s+(?:tiền|nóng)|gỡ\s+(?:lỗ|lại)|lấy\s+lại\s+tiền|mất\s+hết\s+tiền|bị\s+lừa", re.I)
+EXPLICIT_LEAD_RE = re.compile(r"mở\s+tài\s+khoản|backcom|hoàn\s+phí|raw\s+ecn|tư\s+vấn\s+(?:sàn|tài\s+khoản)", re.I)
+BLOCKED_LINK_RE = re.compile(r"(?:t\.me/(?!vtrewardshub)|telegram\.me/|zalo\.me/|wa\.me/|discord\.gg/|bit\.ly/|tinyurl\.com/|[?&](?:ref|aff|affiliate|invite)=)\S*", re.I)
+SCAM_RE = re.compile(r"kéo\s+tài\s+khoản|ib\s+mình\s+kéo|nhóm\s+tín\s+hiệu|nhóm\s+vip|bán\s+bot|cứu\s+cháy|nhận\s+ủy\s+thác|cam\s+kết\s+(?:lợi\s+nhuận|lãi)|kêu\s+gọi\s+(?:vốn|đầu\s+tư)", re.I)
 
 
 def log_info(msg_str):
-    ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    line = f"[{ts}] {msg_str}"
-    print(line, flush=True)
-
-
-# 1B: Tin nhắn ngắn đan xen trong phiên (1-2 câu tự nhiên, tuyệt đối không icon, trung lập 100%, không nhận định chủ quan)
-SESSION_ICEBREAKERS = {
-    "morning": [
-        "Sáng giờ phiên Á các sếp đã theo dõi bài phân tích của chuyên gia nào chưa hay vẫn đang đợi vào phiên Âu?",
-        "Mấy nay các sếp giao dịch kết quả ổn chứ, sáng nay các sếp đang quan sát mốc giá nào trên biểu đồ XAU/USD thế?",
-        "Hôm nay trên các kênh phân tích quốc tế có nhiều góc nhìn trái chiều về Vàng, các sếp trong nhóm mình nghiêng về kịch bản nào hơn?"
-    ],
-    "afternoon": [
-        "Bắt đầu bước vào khung giờ phiên Âu rồi các sếp, chiều nay có sếp nào đang theo dõi biểu đồ Vàng không?",
-        "Theo chia sẻ của nhiều trader trên diễn đàn r/Gold thì giờ giao phiên chiều họ thường ưu tiên kiểm tra kỹ mức dừng lỗ, chiều nay các sếp có kế hoạch gì chưa?",
-        "Chiều nay thị trường bắt đầu có thanh khoản hơn rồi, các sếp đánh giá các mốc kỹ thuật trên TradingView hôm nay thế nào?"
-    ],
-    "evening": [
-        "Chuẩn bị bước vào khung giờ phiên Mỹ theo lịch kinh tế, tối nay các sếp đang theo dõi vùng giá nào của XAU/USD thế?",
-        "Tối nay phiên Mỹ có nhiều tin tức đáng chú ý, các sếp chọn đứng ngoài quan sát hay đã hoàn thành mục tiêu trong ngày rồi?",
-        "Sếp nào mới vào nhóm cần xem tài liệu cơ bản hoặc cách bật chương trình hoàn phí tự động Backcom thì xem ở bài ghim trên đầu nhóm nhé."
-    ]
-}
-
-QUIET_THRESHOLD_SECONDS = 5 * 3600  # 5 giờ nhóm im ắng mới thả câu hỏi gợi chuyện
+    print(f"[{datetime.now():%Y-%m-%d %H:%M:%S}] {msg_str}", flush=True)
 
 
 def load_whitelist():
@@ -90,10 +142,7 @@ def load_whitelist():
 
 def save_whitelist(wl):
     with open(WHITELIST_FILE, "w", encoding="utf-8") as f:
-        json.dump({
-            "user_ids": sorted(list(wl["user_ids"])),
-            "usernames": sorted(list(wl["usernames"]))
-        }, f, ensure_ascii=False, indent=2)
+        json.dump({"user_ids": sorted(wl["user_ids"]), "usernames": sorted(wl["usernames"])}, f, ensure_ascii=False, indent=2)
 
 
 def load_state():
@@ -103,12 +152,7 @@ def load_state():
                 return json.load(f)
         except Exception:
             pass
-    return {
-        "offset": 0,
-        "last_group_activity": time.time(),
-        "last_icebreaker_time": 0,
-        "last_icebreaker_slot": ""
-    }
+    return {"offset": 0}
 
 
 def save_state(state):
@@ -132,6 +176,10 @@ def api_call(method, payload=None):
         return {"ok": False, "error": str(e)}
 
 
+def send_text(chat_id, text, **extra):
+    return api_call("sendMessage", {"chat_id": chat_id, "text": text, **extra})
+
+
 ADMIN_CACHE = {"ids": {OWNER_ID}, "updated_at": 0}
 
 
@@ -140,517 +188,418 @@ def get_discussion_admins():
     if now - ADMIN_CACHE["updated_at"] > 300:
         res = api_call("getChatAdministrators", {"chat_id": DISCUSSION_CHAT_ID})
         if res.get("ok"):
-            ids = {OWNER_ID}
-            for member in res.get("result", []):
-                u = member.get("user", {})
-                if u.get("id"):
-                    ids.add(u["id"])
-            ADMIN_CACHE["ids"] = ids
+            ADMIN_CACHE["ids"] = {OWNER_ID} | {m["user"]["id"] for m in res.get("result", []) if m.get("user", {}).get("id")}
             ADMIN_CACHE["updated_at"] = now
     return ADMIN_CACHE["ids"]
 
 
 def is_exempt_user(msg, wl):
-    sender_chat = msg.get("sender_chat", {})
-    if sender_chat.get("id") in (CHANNEL_CHAT_ID, DISCUSSION_CHAT_ID):
+    if msg.get("sender_chat", {}).get("id") in (CHANNEL_CHAT_ID, DISCUSSION_CHAT_ID) or msg.get("is_automatic_forward"):
         return True
-    if msg.get("is_automatic_forward"):
-        return True
-
     user = msg.get("from", {})
     uid = user.get("id")
     uname = (user.get("username") or "").lower().lstrip("@")
-
     if not uid:
         return False
-    if uid in wl["user_ids"] or (uname and uname in wl["usernames"]):
-        return True
-    if uid in get_discussion_admins():
-        return True
-    return False
+    return uid in wl["user_ids"] or (uname and uname in wl["usernames"]) or uid in get_discussion_admins()
 
 
-ALLOWED_DOMAINS = (
-    "vtmarkets.com",
-    "t.me/vtrewardshub",
-    "1dxcfv2spjkebxu27qfb079qs8mdtyqlw",
-)
-
-ALLOWED_MENTIONS = {
-    "@vtmarkets8386_bot",
-    "@vtrewardshub",
-    "@fonguyn",
-}
-
-COMPETITOR_AND_SCAM_PATTERNS = [
-    r"\bexness\b",
-    r"\bic\s*markets?\b",
-    r"\btickmill\b",
-    r"\bvantage\b",
-    r"\blitefinance\b",
-    r"\bmitrade\b",
-    r"\bxm\.com\b",
-    r"\bsàn\s+xm\b",
-    r"\bsàn\s+fbs\b",
-    r"\bxtb\b",
-    r"\bfxpro\b",
-    r"\bpepperstone\b",
-    r"\boctafx\b",
-    r"kéo\s+tài\s+khoản",
-    r"ủy\s+thác",
-    r"cam\s+kết\s+lợi\s+nhuận",
-    r"cam\s+kết\s+lãi",
-    r"bán\s+bot",
-    r"ib\s+mình\s+kéo",
-    r"nhóm\s+vip",
-    r"nhóm\s+tín\s+hiệu",
-    r"cứu\s+cháy",
-]
+# ----------------------------------------------------------------------------
+# Đo lường: lưu ID đã băm, chỉ lưu số đếm, không lưu nội dung tin nhắn
+# ----------------------------------------------------------------------------
+def hash_user(uid):
+    return hashlib.sha256(f"{BOT_TOKEN}:{uid}".encode()).hexdigest()[:16]
 
 
+def load_metrics():
+    if os.path.exists(METRICS_FILE):
+        try:
+            with open(METRICS_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {"events": [], "activity": []}
+
+
+def save_metrics(m):
+    m["events"] = m["events"][-5000:]
+    m["activity"] = m["activity"][-5000:]
+    with open(METRICS_FILE, "w", encoding="utf-8") as f:
+        json.dump(m, f, indent=0)
+
+
+def record_member_update(cm):
+    if cm.get("chat", {}).get("id") != DISCUSSION_CHAT_ID:
+        return
+    old, new = cm.get("old_chat_member", {}), cm.get("new_chat_member", {})
+    user = new.get("user", {})
+    if user.get("is_bot"):
+        return
+    inside = ("member", "administrator", "creator", "restricted")
+    was_in, is_in = old.get("status") in inside, new.get("status") in inside
+    if was_in == is_in:
+        return
+    m = load_metrics()
+    m["events"].append({"t": int(time.time()), "e": "join" if is_in else "leave", "u": hash_user(user.get("id")),
+                        "link": (cm.get("invite_link") or {}).get("name") or ""})
+    save_metrics(m)
+
+
+def record_activity(msg, is_reply_to_member):
+    m = load_metrics()
+    m["activity"].append({"t": int(time.time()), "u": hash_user(msg.get("from", {}).get("id")), "r": 1 if is_reply_to_member else 0})
+    save_metrics(m)
+
+
+def stats_text(now=None):
+    now = now or time.time()
+    m = load_metrics()
+    week = now - 7 * 86400
+    events = [e for e in m["events"] if e["t"] >= week]
+    joins = [e for e in events if e["e"] == "join"]
+    leaves = [e for e in events if e["e"] == "leave"]
+    join_at = {e["u"]: e["t"] for e in m["events"] if e["e"] == "join"}
+    fast = sum(1 for e in leaves if e["u"] in join_at and e["t"] - join_at[e["u"]] < 86400)
+    act = [a for a in m["activity"] if a["t"] >= week]
+    return (f"Số liệu 7 ngày:\nVào: {len(joins)}\nRời: {len(leaves)}\nRời trong 24 giờ sau khi vào: {fast}\n"
+            f"Người nhắn tin: {len({a['u'] for a in act})}\nLượt thành viên trả lời nhau: {sum(a['r'] for a in act)}\n"
+            f"Bài chờ đăng: {len(content_queue.pending_items())}")
+
+
+# ----------------------------------------------------------------------------
+# Kiểm duyệt: gỡ có giải thích, lần đầu không khóa, khóa có thời hạn
+# ----------------------------------------------------------------------------
 def detect_violation(msg):
     if any(k in msg for k in ("forward_origin", "forward_from", "forward_from_chat", "forward_sender_name")):
-        fwd_chat = msg.get("forward_from_chat", {})
-        fwd_origin = msg.get("forward_origin", {})
-        origin_chat_id = fwd_chat.get("id") or fwd_origin.get("chat", {}).get("id") or fwd_origin.get("sender_chat", {}).get("id")
-        if origin_chat_id not in (CHANNEL_CHAT_ID, DISCUSSION_CHAT_ID):
-            return True, "Chuyển tiếp (Forward) tin nhắn từ kênh/nhóm ngoài"
-
+        origin = msg.get("forward_from_chat", {}).get("id") or msg.get("forward_origin", {}).get("chat", {}).get("id")
+        if origin not in (CHANNEL_CHAT_ID, DISCUSSION_CHAT_ID):
+            return True, "tin chuyển tiếp từ nơi khác"
     text = (msg.get("text") or msg.get("caption") or "").strip()
-    lower_text = text.lower()
-
-    entities = (msg.get("entities") or []) + (msg.get("caption_entities") or [])
-    for ent in entities:
-        etype = ent.get("type")
-        if etype == "text_link":
-            url = (ent.get("url") or "").lower()
-            if not any(allow in url for allow in ALLOWED_DOMAINS):
-                return True, f"Chèn link ẩn lạ ({url})"
-        elif etype == "url":
-            offset = ent.get("offset", 0)
-            length = ent.get("length", 0)
-            extracted = text[offset:offset + length].lower()
-            if not any(allow in extracted for allow in ALLOWED_DOMAINS):
-                return True, f"Gửi đường link lạ ({extracted})"
-        elif etype == "mention":
-            offset = ent.get("offset", 0)
-            length = ent.get("length", 0)
-            mention = text[offset:offset + length].lower()
-            if mention not in ALLOWED_MENTIONS:
-                return True, f"Tag tài khoản/kênh lạ ({mention})"
-
-    url_matches = re.findall(r"(?:https?://|www\.|t\.me/|zalo\.me/|[a-z0-9\-]+\.(?:com|net|org|vn|io|me|gg|xyz))\S*", lower_text)
-    for m in url_matches:
-        if not any(allow in m for allow in ALLOWED_DOMAINS):
-            return True, f"Gửi link không nằm trong danh sách cho phép ({m})"
-
-    for pat in COMPETITOR_AND_SCAM_PATTERNS:
-        m = re.search(pat, lower_text)
-        if m:
-            return True, f"Từ khóa Seeding / Sàn đối thủ ('{m.group(0)}')"
-
+    urls = [e.get("url", "") for e in (msg.get("entities") or []) + (msg.get("caption_entities") or []) if e.get("type") == "text_link"]
+    for candidate in [text] + urls:
+        if BLOCKED_LINK_RE.search(candidate):
+            return True, "link mời nhóm khác hoặc link giới thiệu"
+    if SCAM_RE.search(text):
+        return True, "nội dung mời chào, kêu gọi vốn hoặc cam kết lợi nhuận"
     return False, ""
 
 
-HOT_LEAD_KEYWORDS = [
-    "backcom", "hoàn phí", "hoàn tiền", "mở tài khoản", "tài khoản",
-    "nạp", "rút", "vt markets", "vtmarket", "vt", "sàn", "copy trade",
-    "vtrade", "ib", "tư vấn", "hỗ trợ", "tài liệu", "ebook", "spread",
-    "raw ecn", "standard", "mt4", "mt5", "đòn bẩy", "lot", "cháy"
-]
-
-
-def format_user_html(user):
+def format_user_internal(user):
+    full = html.escape(f"{user.get('first_name') or ''} {user.get('last_name') or ''}".strip() or "Thành viên")
     uid = user.get("id", "")
-    first = user.get("first_name") or ""
-    last = user.get("last_name") or ""
-    full_name = f"{first} {last}".strip() or "Thành viên"
-    full_name_esc = (
-        full_name.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-    )
-    uname = user.get("username")
-    if uname:
-        return f'<a href="tg://user?id={uid}">{full_name_esc}</a> (@{uname} | ID: <code>{uid}</code>)'
-    return f'<a href="tg://user?id={uid}">{full_name_esc}</a> (ID: <code>{uid}</code>)'
+    uname = f"@{user['username']} | " if user.get("username") else ""
+    return f'<a href="tg://user?id={uid}">{full}</a> ({uname}ID: <code>{uid}</code>)'
 
 
-def handle_violation(msg, reason):
-    chat_id = msg["chat"]["id"]
-    message_id = msg["message_id"]
+def mention_public(user):
+    full = html.escape(f"{user.get('first_name') or ''} {user.get('last_name') or ''}".strip() or "bạn")
+    return f'<a href="tg://user?id={user.get("id", "")}">{full}</a>'
+
+
+def set_chat_permission(uid, allowed, until=None):
+    perms = {k: allowed for k in ("can_send_messages", "can_send_audios", "can_send_documents", "can_send_photos", "can_send_videos",
+                                  "can_send_video_notes", "can_send_voice_notes", "can_send_polls", "can_send_other_messages",
+                                  "can_add_web_page_previews")}
+    payload = {"chat_id": DISCUSSION_CHAT_ID, "user_id": uid, "permissions": perms}
+    if until:
+        payload["until_date"] = until
+    return api_call("restrictChatMember", payload)
+
+
+def handle_violation(msg, reason, state):
     user = msg.get("from", {})
     uid = user.get("id")
-    uname = user.get("username") or ""
-    text = (msg.get("text") or msg.get("caption") or "[Đính kèm Media/Forward]").strip()
-    text_esc = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    now = int(time.time())
+    api_call("deleteMessage", {"chat_id": msg["chat"]["id"], "message_id": msg["message_id"]})
 
-    # 1. Silent delete in Discussion Group
-    api_call("deleteMessage", {"chat_id": chat_id, "message_id": message_id})
+    strikes = state.setdefault("strikes", {})
+    recent = [t for t in strikes.get(str(uid), []) if now - t < STRIKE_WINDOW] + [now]
+    strikes[str(uid)] = recent
+    muted = len(recent) >= 2 and uid
+    if muted:
+        set_chat_permission(uid, False, until=now + MUTE_SECONDS)
+    suffix = " Đây là lần thứ hai nên tài khoản bị khóa chat 24 giờ, sau đó tự mở." if muted else " Lần tới có thể bị khóa chat 24 giờ."
+    send_text(DISCUSSION_CHAT_ID, f"Bot đã gỡ tin của {mention_public(user)} vì {html.escape(reason)}.{suffix} Nếu thấy nhầm, gõ /baocao.", parse_mode="HTML")
 
-    # 2. Mute user immediately (Phương án A)
-    if uid:
-        api_call("restrictChatMember", {
-            "chat_id": chat_id,
-            "user_id": uid,
-            "permissions": {
-                "can_send_messages": False,
-                "can_send_audios": False,
-                "can_send_documents": False,
-                "can_send_photos": False,
-                "can_send_videos": False,
-                "can_send_video_notes": False,
-                "can_send_voice_notes": False,
-                "can_send_polls": False,
-                "can_send_other_messages": False,
-                "can_add_web_page_previews": False
-            }
-        })
-
-    # 3. Alert Internal Group
-    alert_text = (
-        f"🛡️ <b>ĐÃ CHẶN SEEDING / XÓA RÁC &amp; KHÓA CHAT</b>\n\n"
-        f"👤 <b>Đối tượng:</b> {format_user_html(user)}\n"
-        f"⚠️ <b>Lý do:</b> {reason}\n"
-        f"🗑 <b>Nội dung đã xóa âm thầm:</b>\n<code>{text_esc[:500]}</code>\n\n"
-        f"<i>(Nhóm thảo luận vẫn sạch tuyệt đối. Nếu đây là khách thật vô tình gửi nhầm, bấm nút bên dưới để mở khóa chat).</i>"
-    )
-    buttons = []
-    if uid:
-        buttons.append([
-            {"text": "🔓 Mở khóa chat cho khách này", "callback_data": f"unmute:{uid}"},
-            {"text": "➕ Thêm vào Quân mình", "callback_data": f"wl_add:{uid}:{uname}"}
-        ])
-    api_call("sendMessage", {
-        "chat_id": INTERNAL_CHAT_ID,
-        "text": alert_text,
-        "parse_mode": "HTML",
-        "reply_markup": {"inline_keyboard": buttons} if buttons else {}
-    })
+    text_esc = html.escape((msg.get("text") or msg.get("caption") or "[Media/Forward]").strip()[:500])
+    buttons = [[{"text": "Mở khóa", "callback_data": f"unmute:{uid}"},
+                {"text": "Thêm vào danh sách miễn trừ", "callback_data": f"wl_add:{uid}:{user.get('username') or ''}"}]] if uid else []
+    send_text(INTERNAL_CHAT_ID, f"Đã gỡ tin\nNgười gửi: {format_user_internal(user)}\nLý do: {html.escape(reason)}\nNội dung: <code>{text_esc}</code>",
+              parse_mode="HTML", reply_markup={"inline_keyboard": buttons})
 
 
-def welcome_new_members(members):
-    """Chào thành viên mới ngay trong nhóm (1 tin duy nhất kể cả khi nhiều người vào cùng lúc)."""
+def welcome_new_members(members, state):
+    """Một tin chào, không lộ ID; tin chào cũ được xóa để nhóm đỡ loãng."""
     if not members:
         return
-    names = ", ".join(format_user_html(m) for m in members[:5])
-    text = (
-        f"Chào mừng {names} đã vào nhóm VT Markets | Thảo Luận & Thực Chiến.\n\n"
-        "Nhóm mình chia sẻ kiến thức, tin tức và kinh nghiệm giao dịch để anh em cùng tham khảo, "
-        "tài liệu cơ bản có ở bài ghim đầu nhóm. Các sếp đang theo dõi sản phẩm nào, Vàng, Dầu hay ngoại tệ, "
-        "và mới bắt đầu hay đã giao dịch một thời gian? Giới thiệu nhanh một câu để anh em làm quen nhé.\n\n"
-        "Lưu ý: mọi nội dung trong nhóm chỉ mang tính tham khảo, không phải lời khuyên đầu tư."
-    )
-    api_call("sendMessage", {"chat_id": DISCUSSION_CHAT_ID, "text": text, "parse_mode": "HTML"})
-
-
-def handle_new_members(msg, wl):
-    welcome_new_members([m for m in msg.get("new_chat_members", []) if not m.get("is_bot") and m.get("id") not in wl["user_ids"]])
-    for m in msg.get("new_chat_members", []):
-        if m.get("is_bot"):
-            continue
-        uid = m.get("id")
-        if uid in wl["user_ids"]:
-            continue
-        uname = m.get("username")
-        alert_text = (
-            f"👋 <b>THÀNH VIÊN MỚI VÀO NHÓM THẢO LUẬN</b>\n\n"
-            f"👤 <b>Khách hàng:</b> {format_user_html(m)}\n"
-            f"📍 <b>Nhóm:</b> VT Markets | Thảo Luận &amp; Thực Chiến\n\n"
-            f"💡 <i>Đội Sale có thể bấm vào tên khách để chủ động chào hỏi và gửi tặng Ebook / tư vấn Backcom 100%!</i>"
-        )
-        kb = []
-        if uname:
-            kb.append([{"text": "💬 Nhắn tin riêng cho khách", "url": f"https://t.me/{uname}"}])
-        api_call("sendMessage", {
-            "chat_id": INTERNAL_CHAT_ID,
-            "text": alert_text,
-            "parse_mode": "HTML",
-            "reply_markup": {"inline_keyboard": kb} if kb else {}
-        })
-
-
-def handle_member_message_lead(msg):
-    user = msg.get("from", {})
-    text = (msg.get("text") or msg.get("caption") or "").strip()
-    if not text:
-        return
-
-    lower_text = text.lower()
-    level_code, level_label = news_and_kol_radar.classify_user_level(text)
-    is_hot = (level_code == "BROKER_LEAD") or any(k in lower_text for k in HOT_LEAD_KEYWORDS) or ("?" in text)
-    header = (
-        "🔥 <b>PHÁT HIỆN KHÁCH HỎI / CẦN TƯ VẤN TRONG NHÓM</b>"
-        if is_hot else
-        "💬 <b>KHÁCH HÀNG TƯƠNG TÁC TRONG NHÓM THẢO LUẬN</b>"
-    )
-
-    text_esc = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-    msg_id = msg["message_id"]
-    msg_link = f"https://t.me/c/4375233328/{msg_id}"
-    uname = user.get("username")
-
-    alert_text = (
-        f"{header}\n\n"
-        f"👤 <b>Khách hàng:</b> {format_user_html(user)}\n"
-        f"🎯 <b>Phân loại trình độ/nhu cầu:</b> <code>{level_label}</code>\n"
-        f"📝 <b>Nội dung vừa nhắn:</b>\n<blockquote>{text_esc[:600]}</blockquote>\n\n"
-        f"👉 <i>Sale vào nhóm trả lời trực tiếp hoặc nhắn riêng chăm sóc đúng tâm lý khách ngay nhé!</i>"
-    )
-
-    row = [{"text": "👉 Nhảy tới tin nhắn trong nhóm", "url": msg_link}]
-    if uname:
-        row.append({"text": "💬 Nhắn riêng", "url": f"https://t.me/{uname}"})
-
-    api_call("sendMessage", {
-        "chat_id": INTERNAL_CHAT_ID,
-        "text": alert_text,
-        "parse_mode": "HTML",
-        "reply_markup": {"inline_keyboard": [row]}
-    })
-
-
-def sync_git_state():
-    """Commit + push state an toàn: autostash (state bị ghi liên tục nên working tree luôn 'bẩn'), retry khi push bị từ chối."""
-    try:
-        import subprocess
-        git_dir = os.path.join(BASE_DIR, ".git")
-        if not os.path.exists(git_dir):
-            return
-        kw = {"cwd": BASE_DIR, "capture_output": True, "text": True}
-        if os.name == "nt":
-            kw["creationflags"] = subprocess.CREATE_NO_WINDOW
-
-        def git(*args, timeout=30):
-            return subprocess.run(["git", *args], timeout=timeout, **kw)
-
-        git("config", "user.name", "VT-Markets-Bot-Cloud", timeout=8)
-        git("config", "user.email", "bot@vtmarketshub.local", timeout=8)
-        git("add", "bot_state.json", "content_balance_state.json", "daily_buzz_pool.json", "whitelist.json", timeout=15)
-        if git("diff", "--staged", "--quiet", timeout=8).returncode == 0:
-            return
-        git("commit", "-m", "chore: auto-sync posted history [skip ci]", timeout=15)
-        for attempt in range(3):
-            git("pull", "--rebase", "--autostash", "origin", "main", timeout=60)
-            res = git("push", "origin", "main", timeout=60)
-            if res.returncode == 0:
-                return
-            time.sleep(2 + attempt * 3)
-        log_info(f"[Git Sync Warning]: push failed: {(res.stderr or '')[:200]}")
-    except Exception as e:
-        log_info(f"[Git Sync Warning]: {e}")
-
-def load_or_refresh_buzz(force_refresh=False):
-    now = time.time()
-    if not force_refresh and os.path.exists(BUZZ_FILE):
-        try:
-            mtime = os.path.getmtime(BUZZ_FILE)
-            if now - mtime < 900:  # Refresh every 15 minutes max
-                with open(BUZZ_FILE, "r", encoding="utf-8") as f:
-                    return json.load(f)
-        except Exception:
-            pass
-    try:
-        return news_and_kol_radar.generate_daily_buzz()
-    except Exception as e:
-        print("[Buzz Refresh Error]:", e)
-        if os.path.exists(BUZZ_FILE):
-            with open(BUZZ_FILE, "r", encoding="utf-8") as f:
-                return json.load(f)
-        return {}
-
-
-_SLOT_FAIL_AT = {}
-SLOT_RETRY_COOLDOWN = 600  # ??ng l?i -> ??i 10 ph?t m?i th? l?i (tr?nh qu?t l?i to?n b? ngu?n li?n t?c v? ??t h?t b?i trong kho)
-
-
-def _slot_cooling(slot_id):
-    return time.time() - _SLOT_FAIL_AT.get(slot_id, 0) < SLOT_RETRY_COOLDOWN
-
-
-# Lịch đăng (phút trong ngày). Tối đa ~5 bài/ngày: 3 bài chất lượng + 2 bài ngắn/tương tác. Cuối tuần chỉ 1 bài/ngày.
-# (tag, bắt đầu, kết thúc [cửa sổ bù], loại nội dung, các thứ trong tuần: 0=T2 ... 6=CN)
-WEEKDAYS = {0, 1, 2, 3, 4}
-SCHEDULE = [
-    ("morning_slot", 510, 690, "news", WEEKDAYS),          # 08:30 tin vĩ mô thật (<=24h) kèm câu hỏi
-    ("short_1015", 615, 695, "poll", WEEKDAYS),            # 10:15 khảo sát nhanh
-    ("afternoon_kol", 870, 950, "kol_insight", WEEKDAYS),  # 14:30 tóm tắt video KOL từ phụ đề thật
-    ("short_1600", 960, 1125, "scenario", WEEKDAYS),       # 16:00 câu hỏi tình huống
-    ("evening_us", 1155, 1235, "discussion", WEEKDAYS),    # 19:15 xoay vòng Reddit / giải thích thuật ngữ / VT Markets
-    ("weekend_recap", 540, 810, "recap", {5}),             # T7 09:00-13:30 tổng kết tuần
-    ("sat_kol", 870, 1020, "kol_insight", {5}),            # T7 14:30-17:00 video KOL mới
-    ("sat_scenario", 1170, 1290, "scenario", {5}),         # T7 19:30-21:30 tình huống cuối tuần
-    ("sun_glossary", 570, 750, "glossary", {6}),           # CN 09:30-12:30 giải thích thuật ngữ
-    ("sun_kol", 900, 1050, "kol_insight", {6}),            # CN 15:00-17:30 video KOL mới
-    ("weekend_ahead", 1140, 1290, "weekahead", {6}),       # CN 19:00-21:30 khảo sát đầu tuần
-]
-
-
-def run_live_v2_showcase(state):
-    """Chạy thử 1 lần duy nhất khi lên bản v2 trên GitHub Cloud: đăng ngay 1 bài Tin mới 24h + 1 Poll lên nhóm."""
-    if state.get("engine_v2_2_direct_verified"):
-        return False
-    log_info("[Live Test v2] Triggering one-time live test post to Telegram...")
-    now = time.time()
-    results = []
-    try:
-        buzz = load_or_refresh_buzz(force_refresh=True)
-        news_post = content_engine.make_post("news", buzz)
-        if news_post:
-            r1 = news_and_kol_radar.publish_post(DISCUSSION_CHAT_ID, news_post)
-            if r1.get("ok"):
-                content_engine.record(news_post.get("kind", "news"), news_post.get("id_key", "live_news"), news_post.get("title", ""))
-                results.append({
-                    "kind": news_post.get("kind", "news"),
-                    "msg_id": r1.get("result", {}).get("message_id"),
-                    "source_url": news_post.get("source_url", ""),
-                    "caption": (news_post.get("caption") or "")[:500]
-                })
-        time.sleep(3)
-        poll_post = content_engine.make_post("scenario", buzz)
-        if poll_post:
-            r2 = news_and_kol_radar.publish_post(DISCUSSION_CHAT_ID, poll_post)
-            if r2.get("ok"):
-                content_engine.record("poll", poll_post.get("id_key", "live_poll"), poll_post.get("title", ""))
-                results.append({
-                    "kind": poll_post.get("kind", "scenario"),
-                    "msg_id": r2.get("result", {}).get("message_id"),
-                    "caption": (poll_post.get("caption") or "")[:500]
-                })
-    except Exception as e:
-        log_info(f"[Live Test v2 Error]: {e}")
-
-    if results:
-        state["engine_v2_2_direct_verified"] = True
-        state["last_live_test_result"] = {
-            "ts": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "posts": results
-        }
-        state["last_scheduled_time"] = now
-        state["last_group_activity"] = now
-        save_state(state)
-        sync_git_state()
-        try:
-            api_call("sendMessage", {
-                "chat_id": INTERNAL_CHAT_ID,
-                "text": (
-                    "✅ <b>ĐÃ CHẠY THỬ SKILL V2 TRÊN GITHUB CLOUD LÊN NHÓM THẢO LUẬN</b>\n\n"
-                    f"• Số bài vừa đăng test: <b>{len(results)} bài</b> (Tin mới 24h + Khảo sát Poll tương tác)\n"
-                    "• Toàn bộ lịch tự động & chăm sóc cộng đồng đã hoạt động 100% trên GitHub Actions."
-                ),
-                "parse_mode": "HTML"
-            })
-        except Exception:
-            pass
-        return True
-    return False
-
-
-def check_scheduled_daily_posts(state):
-    now = time.time()
-    dt = datetime.now()
-    date_str = dt.strftime("%Y-%m-%d")
-    cur_mins = dt.hour * 60 + dt.minute
-
-    executed = state.setdefault("executed_slots", [])
-    if len(executed) > 60:
-        state["executed_slots"] = executed[-60:]
-        executed = state["executed_slots"]
-
-    # Giãn cách tối thiểu 20 phút giữa 2 bài tự động liên tiếp
-    if now - state.get("last_scheduled_time", 0) < 1200:
-        return False
-
-    for tag, w_start, w_end, kind, days in SCHEDULE:
-        slot_id = f"{date_str}_{tag}"
-        if dt.weekday() not in days or not (w_start <= cur_mins <= w_end):
-            continue
-        if slot_id in executed or _slot_cooling(slot_id):
-            continue
-        log_info(f"Triggering scheduled slot: {slot_id} ({kind})")
-        post = None
-        try:
-            buzz = load_or_refresh_buzz(force_refresh=True) if kind in content_engine.NEEDS_BUZZ else None
-            post = content_engine.make_post(kind, buzz, dt)
-            res = news_and_kol_radar.publish_post(DISCUSSION_CHAT_ID, post) if post else {"ok": False}
-        except Exception as e:
-            log_info(f"[Slot {slot_id} error]: {e}")
-            res = {"ok": False}
-        if res.get("ok"):
-            content_engine.record(post.get("kind", kind), post.get("id_key", slot_id), post.get("title", ""))
-            executed.append(slot_id)
-            state["last_scheduled_post"] = slot_id
-            state["last_scheduled_time"] = now
-            state["last_group_activity"] = now
-            save_state(state)
-            sync_git_state()
-            log_info(f"Published {slot_id} OK (msg_id={res.get('result', {}).get('message_id')})")
-            return True
-        _SLOT_FAIL_AT[slot_id] = now
-    return False
-
-
-def send_session_icebreaker(state, force=False, mode="auto"):
-    now = time.time()
-    dt = datetime.now()
-    hour = dt.hour
-
-    if 8 <= hour < 14:
-        slot_key = "morning"
-    elif 14 <= hour < 18:
-        slot_key = "afternoon"
-    elif 18 <= hour <= 22:
-        slot_key = "evening"
-    else:
-        if not force:
-            return False
-        slot_key = "evening"
-
-    today_slot_id = f"{dt.strftime('%Y-%m-%d')}_{slot_key}"
-
-    if not force:
-        if (now - state.get("last_group_activity", 0)) < QUIET_THRESHOLD_SECONDS:
-            return False
-        if state.get("last_icebreaker_slot") == today_slot_id:
-            return False
-
-    buzz = load_or_refresh_buzz()
-    kinds = {"tintuc": "news", "kol": "kol_insight", "tiktok": "scenario", "reddit": "reddit", "vt": "vt"}
-    if mode in kinds:
-        post = content_engine.make_post(kinds[mode], buzz)
-        res = news_and_kol_radar.publish_post(DISCUSSION_CHAT_ID, post) if post else {"ok": False}
-        if res.get("ok"):
-            content_engine.record(post.get("kind", mode), post.get("id_key", mode), post.get("title", ""))
-    elif mode == "icebreaker" or not force:
-        short_pool = buzz.get("short_icebreakers", []) or SESSION_ICEBREAKERS[slot_key]
-        res = api_call("sendMessage", {
-            "chat_id": DISCUSSION_CHAT_ID,
-            "text": random.choice(short_pool)
-        })
-    else:
-        _, post = news_and_kol_radar.pick_balanced_post(buzz, preferred_cat="auto")
-        if post:
-            res = news_and_kol_radar.publish_post(DISCUSSION_CHAT_ID, post)
-        else:
-            short_pool = buzz.get("short_icebreakers", []) or SESSION_ICEBREAKERS[slot_key]
-            res = api_call("sendMessage", {
-                "chat_id": DISCUSSION_CHAT_ID,
-                "text": random.choice(short_pool)
-            })
-
+    names = ", ".join(mention_public(m) for m in members[:5])
+    res = send_text(DISCUSSION_CHAT_ID, WELCOME_TEXT.format(name=names), parse_mode="HTML", disable_web_page_preview=True)
+    old = state.get("welcome_msg_id")
+    if old:
+        api_call("deleteMessage", {"chat_id": DISCUSSION_CHAT_ID, "message_id": old})
     if res.get("ok"):
-        state["last_group_activity"] = now
-        state["last_icebreaker_time"] = now
-        state["last_icebreaker_slot"] = today_slot_id
-        save_state(state)
+        state["welcome_msg_id"] = res["result"]["message_id"]
+
+
+def notify_explicit_lead(msg):
+    """Chỉ báo khi thành viên tự hỏi về tài khoản. Trả lời trong nhóm, không nhắn riêng trước."""
+    text = (msg.get("text") or msg.get("caption") or "").strip()
+    if not EXPLICIT_LEAD_RE.search(text):
+        return
+    link = f"https://t.me/c/4375233328/{msg['message_id']}"
+    send_text(INTERNAL_CHAT_ID, f"Thành viên hỏi về tài khoản: {html.escape(text[:400])}\nTrả lời ngay trong nhóm nếu phù hợp, không nhắn riêng trước.\n{link}", parse_mode="HTML")
+
+
+# ----------------------------------------------------------------------------
+# Trả lời thành viên: không dùng LLM, chỉ tìm trong bài đã đăng
+# ----------------------------------------------------------------------------
+def search_library(query, history, limit=3):
+    words = {w for w in re.findall(r"\w+", query.lower()) if len(w) >= 3}
+    scored = []
+    for h in history:
+        hay = (h.get("title", "") + " " + h.get("text", "")).lower()
+        score = sum(1 for w in words if w in hay)
+        if score >= 2 or (len(words) == 1 and score == 1):
+            scored.append((score, h.get("ts", 0), h))
+    scored.sort(key=lambda x: (x[0], x[1]), reverse=True)
+    return [x[2] for x in scored[:limit]]
+
+
+def format_library(rows):
+    return "\n".join(f"- {r.get('title', '')[:90]}" + (f"\n  {r['source_url']}" if r.get("source_url") else "") for r in rows)
+
+
+def answer_text(text, history):
+    """Trả về (câu trả lời, có cần báo chủ nhóm không)."""
+    if CRISIS_RE.search(text):
+        return CRISIS_REPLY, True
+    if ADVICE_RE.search(text):
+        return ADVICE_REPLY, False
+    rows = search_library(text, history)
+    if rows:
+        return "Bài liên quan trong nhóm:\n" + format_library(rows), False
+    return NO_ANSWER_REPLY, False
+
+
+def should_bot_reply(msg):
+    if msg.get("from", {}).get("is_bot") or msg.get("sender_chat"):
+        return False
+    text = (msg.get("text") or msg.get("caption") or "").strip()
+    if not text or text.startswith("/"):
+        return False
+    if "@vtmarkets8386_bot" in text.lower() or re.search(r"\bbot\b", text.lower()):
         return True
+    r_from = (msg.get("reply_to_message") or {}).get("from", {})
+    return r_from.get("id") == BOT_ID
+
+
+def handle_bot_reply(msg, state):
+    uid = str(msg.get("from", {}).get("id"))
+    today = datetime.now().strftime("%Y-%m-%d")
+    counts = state.setdefault("answer_counts", {})
+    if counts.get("day") != today:
+        counts.clear()
+        counts["day"] = today
+    if counts.get(uid, 0) >= ANSWERS_PER_USER_PER_DAY:
+        return
+    counts[uid] = counts.get(uid, 0) + 1
+    text = re.sub(r"@vtmarkets8386_bot", "", msg.get("text") or msg.get("caption") or "", flags=re.I).strip()
+    reply, alert = answer_text(text, content_queue.load_state().get("history", []))
+    send_text(msg["chat"]["id"], reply, reply_to_message_id=msg["message_id"], disable_web_page_preview=True)
+    if alert:
+        send_text(INTERNAL_CHAT_ID, f"Thành viên có dấu hiệu cần chú ý: {html.escape(text[:400])}\nhttps://t.me/c/4375233328/{msg['message_id']}", parse_mode="HTML")
+
+
+def _num(s):
+    return float(s.replace(",", "."))
+
+
+def calc_lot(args):
+    """Vàng: 1 lot = 100 oz, giá đi 1 USD thì lãi/lỗ 100 USD trên 1 lot."""
+    capital, risk_pct, stop_usd = _num(args[0]), _num(args[1]), _num(args[2])
+    if capital <= 0 or risk_pct <= 0 or stop_usd <= 0:
+        raise ValueError
+    risk = capital * risk_pct / 100
+    return (f"Vốn {capital:g} USD, chấp nhận mất {risk_pct:g}% tức {risk:.2f} USD, giá vàng đi ngược {stop_usd:g} USD thì dừng:\n"
+            f"Khối lượng tối đa khoảng {risk / (stop_usd * 100):.2f} lot.\nHợp đồng tiêu chuẩn 100 oz; kiểm tra lại thông số của sàn bạn dùng. Đây là phép tính, không phải khuyến nghị.")
+
+
+def calc_cost(args):
+    lot, spread_usd = _num(args[0]), _num(args[1])
+    if lot <= 0 or spread_usd < 0:
+        raise ValueError
+    return f"{lot:g} lot vàng với spread {spread_usd:g} USD: chi phí spread khoảng {lot * spread_usd * 100:.2f} USD mỗi lần vào lệnh, chưa tính hoa hồng và phí qua đêm."
+
+
+def handle_member_command(msg):
+    text = (msg.get("text") or "").strip()
+    if not text.startswith("/"):
+        return False
+    parts = text.split()
+    cmd = parts[0].lower().split("@")[0]
+    chat_id, mid = msg["chat"]["id"], msg["message_id"]
+    if cmd == "/tinhlenh":
+        try:
+            out = calc_lot(parts[1:4])
+        except (ValueError, IndexError):
+            out = "Cách dùng: /tinhlenh vốn %rủi_ro khoảng_dừng_USD\nVí dụ: /tinhlenh 1000 1 5"
+    elif cmd == "/chiphi":
+        try:
+            out = calc_cost(parts[1:3])
+        except (ValueError, IndexError):
+            out = "Cách dùng: /chiphi lot spread_USD\nVí dụ: /chiphi 0.01 0.3"
+    elif cmd == "/kiemtra":
+        out = CHECKLIST_TEXT
+    elif cmd == "/thuvien":
+        history = content_queue.load_state().get("history", [])
+        query = " ".join(parts[1:])
+        rows = search_library(query, history) if query else history[-5:][::-1]
+        out = format_library(rows) or "Chưa có bài phù hợp. Cách dùng: /thuvien từ khóa"
+    elif cmd == "/baocao":
+        rt = msg.get("reply_to_message") or {}
+        detail = html.escape(" ".join(parts[1:]) or (rt.get("text") or rt.get("caption") or "(không có nội dung)"))[:800]
+        send_text(INTERNAL_CHAT_ID, f"Báo cáo từ {format_user_internal(msg.get('from', {}))}:\n{detail}", parse_mode="HTML")
+        out = "Bot đã chuyển báo cáo tới chủ nhóm. Chưa chắc được xem ngay."
+    else:
+        return False
+    send_text(chat_id, out, reply_to_message_id=mid, disable_web_page_preview=True)
+    return True
+
+
+# ----------------------------------------------------------------------------
+# Đăng từ hàng đợi: gửi xem trước cho chủ nhóm, sau 60 phút không chặn thì đăng
+# ----------------------------------------------------------------------------
+def in_window(dt):
+    mins = dt.hour * 60 + dt.minute
+    return any(a <= mins <= b for a, b in PUBLISH_WINDOWS)
+
+
+def prepare_window_start(dt):
+    """Xem trước được gửi sớm 60 phút để bài kịp đăng trong khung giờ."""
+    mins = dt.hour * 60 + dt.minute + VETO_SECONDS // 60
+    return any(a <= mins <= b for a, b in PUBLISH_WINDOWS)
+
+
+def posts_today(history, dt):
+    return sum(1 for h in history if datetime.fromtimestamp(h.get("ts", 0)).date() == dt.date())
+
+
+def next_item(qstate, now):
+    history = qstate.get("history", [])
+    last_kind = history[-1].get("kind") if history else ""
+    pending = content_queue.pending_items(now)
+    pending.sort(key=lambda i: (i.get("kind") == last_kind, i.get("created_at", 0)))
+    for item in pending:
+        errors = validators.check_item(item) + validators.check_schedule(item, history, now)
+        if not errors:
+            return item
+    return None
+
+
+def publish_item(item):
+    """Bài chữ không kèm ảnh biểu đồ. Tranh luận gửi kèm poll gốc của Telegram."""
+    poll_msg_id = None
+    if item.get("text"):
+        res = send_text(DISCUSSION_CHAT_ID, item["text"])
+        if not res.get("ok"):
+            return res, None
+    if item.get("poll"):
+        res = api_call("sendPoll", {"chat_id": DISCUSSION_CHAT_ID, "question": item["poll"]["question"][:300],
+                                    "options": item["poll"]["options"][:10], "is_anonymous": True, "allows_multiple_answers": False})
+        if not res.get("ok"):
+            return res, None
+        poll_msg_id = res["result"]["message_id"]
+    return res, poll_msg_id
+
+
+def process_queue(state, now=None):
+    now = now or time.time()
+    dt = datetime.fromtimestamp(now)
+    if state.get("paused"):
+        return False
+    qstate = content_queue.load_state()
+    items = qstate.setdefault("items", {})
+    history = qstate.setdefault("history", [])
+
+    preview = next((k for k, v in items.items() if v.get("status") == "preview"), None)
+    if preview:
+        if now - items[preview]["ts"] < VETO_SECONDS or not in_window(dt):
+            return False
+        item = next((i for i in content_queue.all_items() if i["id"] == preview), None)
+        if not item:
+            items[preview] = {"status": "missing", "ts": int(now)}
+            content_queue.save_state(qstate)
+            return False
+        if validators.check_item(item):
+            items[preview] = {"status": "rejected", "ts": int(now)}
+            content_queue.save_state(qstate)
+            return False
+        res, poll_msg_id = publish_item(item)
+        if not res.get("ok"):
+            log_info(f"Không đăng được {preview}: {res.get('error')}")
+            items[preview]["ts"] = int(now)
+            content_queue.save_state(qstate)
+            return False
+        rec = {"status": "posted", "ts": int(now), "msg_id": res["result"]["message_id"]}
+        if item.get("kind") == "debate":
+            rec.update(poll_msg_id=poll_msg_id, result_due=int(now + DEBATE_RESULT_AFTER), poll_options=item["poll"]["options"])
+        items[preview] = rec
+        history.append({k: item.get(k, "") for k in ("id", "kind", "group", "author", "topic", "title", "text", "source_url")} | {"ts": int(now)})
+        qstate["history"] = history[-200:]
+        content_queue.save_state(qstate)
+        sync_git_state()
+        log_info(f"Đã đăng {preview}")
+        return True
+
+    if not prepare_window_start(dt) or posts_today(history, dt) >= MAX_POSTS_PER_DAY:
+        return False
+    if history and now - history[-1].get("ts", 0) < MIN_POST_GAP - VETO_SECONDS:
+        return False
+    item = next_item(qstate, now)
+    if not item:
+        return False
+    body = item.get("text") or item["poll"]["question"] + "\n" + "\n".join(item["poll"]["options"])
+    res = send_text(INTERNAL_CHAT_ID, f"Xem trước, tự đăng sau 60 phút nếu không chặn:\n\n{body}"[:4000], disable_web_page_preview=True,
+                    reply_markup={"inline_keyboard": [[{"text": "Chặn bài này", "callback_data": f"block:{item['id']}"[:64]}]]})
+    if res.get("ok"):
+        items[item["id"]] = {"status": "preview", "ts": int(now)}
+        content_queue.save_state(qstate)
     return False
 
 
+def check_debate_results(now=None):
+    now = now or time.time()
+    qstate = content_queue.load_state()
+    changed = False
+    for item_id, rec in qstate.get("items", {}).items():
+        if rec.get("status") != "posted" or not rec.get("result_due") or now < rec["result_due"] or rec.get("result_posted"):
+            continue
+        res = api_call("stopPoll", {"chat_id": DISCUSSION_CHAT_ID, "message_id": rec["poll_msg_id"]})
+        rec["result_posted"] = True
+        changed = True
+        if not res.get("ok"):
+            log_info(f"Không lấy được kết quả poll {item_id}: {res.get('error')}")
+            continue
+        send_text(DISCUSSION_CHAT_ID, format_poll_result(res["result"]), reply_to_message_id=rec["poll_msg_id"])
+    if changed:
+        content_queue.save_state(qstate)
+
+
+def format_poll_result(poll):
+    total = poll.get("total_voter_count", 0)
+    lines = [f"- {o['text']}: {o['voter_count']} phiếu" for o in poll.get("options", [])]
+    note = "Quá ít phiếu nên không rút ra kết luận." if total < MIN_VOTES_FOR_SHARE else "Đây là ý kiến của người đã bỏ phiếu, không đại diện cho ai và không phải khuyến nghị."
+    return "\n".join([f"Kết quả tranh luận, tổng {total} phiếu:"] + lines + [note])
+
+
+# ----------------------------------------------------------------------------
+# Lệnh của chủ nhóm
+# ----------------------------------------------------------------------------
 def handle_admin_command(msg, wl, state):
     text = (msg.get("text") or "").strip()
     chat_id = msg["chat"]["id"]
     if not text.startswith("/"):
         return False
-
     parts = text.split()
     cmd = parts[0].lower().split("@")[0]
 
@@ -661,287 +610,83 @@ def handle_admin_command(msg, wl, state):
         else:
             wl["usernames"].add(target.lower().lstrip("@"))
         save_whitelist(wl)
-        api_call("sendMessage", {
-            "chat_id": chat_id,
-            "text": f"✅ Đã thêm <b>{target}</b> vào danh sách Quân mình (Miễn trừ xóa link &amp; không báo khách).",
-            "parse_mode": "HTML"
-        })
-        return True
-
-    if cmd == "/xoa" and len(parts) >= 2:
+        send_text(chat_id, f"Đã thêm {target} vào danh sách miễn trừ.")
+    elif cmd == "/xoa" and len(parts) >= 2:
         target = parts[1].strip()
         if target.lstrip("-").isdigit():
             wl["user_ids"].discard(int(target))
         else:
             wl["usernames"].discard(target.lower().lstrip("@"))
         save_whitelist(wl)
-        api_call("sendMessage", {
-            "chat_id": chat_id,
-            "text": f"🗑 Đã xóa <b>{target}</b> khỏi danh sách Quân mình.",
-            "parse_mode": "HTML"
-        })
-        return True
-
-    if cmd == "/danhsach":
-        ulist = ", ".join(f"@{u}" for u in sorted(wl["usernames"])) or "(Trống)"
-        idlist = ", ".join(str(i) for i in sorted(wl["user_ids"])) or "(Trống)"
-        api_call("sendMessage", {
-            "chat_id": chat_id,
-            "text": (
-                f"📋 <b>DANH SÁCH QUÂN MÌNH (MIỄN TRỪ):</b>\n"
-                f"• <b>Usernames:</b> {ulist}\n"
-                f"• <b>User IDs:</b> <code>{idlist}</code>\n\n"
-                f"<i>Các lệnh đăng bài tự động (Cân bằng 5 nhóm nội dung):</i>\n"
-                f"<code>/them @username</code> — Thêm quân mình\n"
-                f"<code>/xoa @username</code> — Xóa khỏi danh sách\n"
-                f"<code>/tintuc</code> — Đăng ngay bài Giải mã Tin tức Vĩ mô + Chỉ báo TradingView-TA\n"
-                f"<code>/kol</code> — Đăng ngay bài Phương pháp thực chiến từ YouTube KOL Quốc tế\n"
-                f"<code>/tiktok</code> — Đăng ngay bài Mẹo thực chiến từ TikTok KOL Quốc tế\n"
-                f"<code>/reddit</code> — Đăng ngay Chủ đề tranh luận Reddit kèm Biểu đồ Nến XAU/USD M15 thực tế\n"
-                f"<code>/vt</code> — Đăng ngay bài Cập nhật Tính năng &amp; Điều kiện giao dịch VT Markets VN\n"
-                f"<code>/goichuyen</code> — Thả ngay tin nhắn gợi chuyện ngắn theo khung giờ giao dịch"
-            ),
-            "parse_mode": "HTML"
-        })
-        return True
-
-    if cmd == "/goichuyen":
-        send_session_icebreaker(state, force=True, mode="icebreaker")
-        api_call("sendMessage", {
-            "chat_id": chat_id,
-            "text": "🔥 Đã thả tin nhắn gợi chuyện theo khung giờ giao dịch lên nhóm Thảo Luận!",
-            "parse_mode": "HTML"
-        })
-        return True
-
-    if cmd == "/tintuc":
-        news_and_kol_radar.generate_daily_buzz()
-        send_session_icebreaker(state, force=True, mode="tintuc")
-        api_call("sendMessage", {
-            "chat_id": chat_id,
-            "text": "📰 Đã đăng bài phân tích Tin tức Vĩ mô (100% Tiếng Việt) lên nhóm Thảo Luận!",
-            "parse_mode": "HTML"
-        })
-        return True
-
-    if cmd == "/kol":
-        send_session_icebreaker(state, force=True, mode="kol")
-        api_call("sendMessage", {
-            "chat_id": chat_id,
-            "text": "🎯 Đã đăng bài phương pháp từ YouTube KOL Quốc tế lên nhóm Thảo Luận!",
-            "parse_mode": "HTML"
-        })
-        return True
-
-    if cmd == "/tiktok":
-        send_session_icebreaker(state, force=True, mode="tiktok")
-        api_call("sendMessage", {
-            "chat_id": chat_id,
-            "text": "🎬 Đã đăng bài mẹo thực chiến từ TikTok KOL Quốc tế lên nhóm Thảo Luận!",
-            "parse_mode": "HTML"
-        })
-        return True
-
-    if cmd == "/reddit":
-        send_session_icebreaker(state, force=True, mode="reddit")
-        api_call("sendMessage", {
-            "chat_id": chat_id,
-            "text": "💬 Đã đăng Chủ đề tranh luận từ Reddit lên nhóm Thảo Luận!",
-            "parse_mode": "HTML"
-        })
-        return True
-
-    if cmd == "/vt":
-        send_session_icebreaker(state, force=True, mode="vt")
-        api_call("sendMessage", {
-            "chat_id": chat_id,
-            "text": "⚡ Đã đăng bài cập nhật Tính năng / Điều kiện giao dịch thực tế của VT Markets VN lên nhóm Thảo Luận!",
-            "parse_mode": "HTML"
-        })
-        return True
-
-    return False
+        send_text(chat_id, f"Đã xóa {target} khỏi danh sách miễn trừ.")
+    elif cmd == "/danhsach":
+        send_text(chat_id, ("Danh sách miễn trừ: " + (", ".join(f"@{u}" for u in sorted(wl["usernames"])) or "(trống)") + "\n"
+                            "Lệnh: /them, /xoa, /tamdung, /tieptuc, /thongke, /hangdoi, /ghim"))
+    elif cmd == "/tamdung":
+        state["paused"] = True
+        save_state(state)
+        send_text(chat_id, "Bot đã dừng đăng bài. Gõ /tieptuc để bật lại.")
+    elif cmd == "/tieptuc":
+        state["paused"] = False
+        save_state(state)
+        send_text(chat_id, "Bot đăng bài trở lại.")
+    elif cmd == "/thongke":
+        send_text(chat_id, stats_text())
+    elif cmd == "/hangdoi":
+        rows = content_queue.pending_items()
+        send_text(chat_id, "\n".join(f"- {i['kind']}: {i.get('title', '')[:80]}" for i in rows) or "Hàng đợi trống.")
+    elif cmd == "/ghim":
+        res = send_text(DISCUSSION_CHAT_ID, PINNED_TEXT)
+        if res.get("ok"):
+            api_call("pinChatMessage", {"chat_id": DISCUSSION_CHAT_ID, "message_id": res["result"]["message_id"], "disable_notification": True})
+        send_text(chat_id, "Đã ghim tin giới thiệu." if res.get("ok") else f"Không ghim được: {res.get('error')}")
+    else:
+        return False
+    return True
 
 
 def handle_callback(cb, wl):
-    cb_id = cb["id"]
     data = cb.get("data") or ""
-    msg = cb.get("message", {})
-    chat_id = msg.get("chat", {}).get("id")
-
+    chat_id = cb.get("message", {}).get("chat", {}).get("id")
+    answer = ""
     if data.startswith("unmute:"):
         uid = int(data.split(":")[1])
-        api_call("restrictChatMember", {
-            "chat_id": DISCUSSION_CHAT_ID,
-            "user_id": uid,
-            "permissions": {
-                "can_send_messages": True,
-                "can_send_audios": True,
-                "can_send_documents": True,
-                "can_send_photos": True,
-                "can_send_videos": True,
-                "can_send_video_notes": True,
-                "can_send_voice_notes": True,
-                "can_send_polls": True,
-                "can_send_other_messages": True,
-                "can_add_web_page_previews": False
-            }
-        })
-        api_call("answerCallbackQuery", {"callback_query_id": cb_id, "text": "Đã mở khóa chat cho thành viên!"})
-        api_call("sendMessage", {
-            "chat_id": chat_id,
-            "text": f"🔓 Đã mở lại quyền chat cho User ID <code>{uid}</code> trong nhóm Thảo Luận.",
-            "parse_mode": "HTML"
-        })
-
+        set_chat_permission(uid, True)
+        answer = "Đã mở khóa"
     elif data.startswith("wl_add:"):
         parts = data.split(":")
         uid = int(parts[1])
-        uname = parts[2].lower().lstrip("@") if len(parts) > 2 else ""
         wl["user_ids"].add(uid)
-        if uname:
-            wl["usernames"].add(uname)
+        if len(parts) > 2 and parts[2]:
+            wl["usernames"].add(parts[2].lower().lstrip("@"))
         save_whitelist(wl)
-        api_call("restrictChatMember", {
-            "chat_id": DISCUSSION_CHAT_ID,
-            "user_id": uid,
-            "permissions": {
-                "can_send_messages": True,
-                "can_send_audios": True,
-                "can_send_documents": True,
-                "can_send_photos": True,
-                "can_send_videos": True,
-                "can_send_video_notes": True,
-                "can_send_voice_notes": True,
-                "can_send_polls": True,
-                "can_send_other_messages": True,
-                "can_add_web_page_previews": True
-            }
-        })
-        api_call("answerCallbackQuery", {"callback_query_id": cb_id, "text": "Đã thêm vào Quân mình & mở khóa chat!"})
-        api_call("sendMessage", {
-            "chat_id": chat_id,
-            "text": f"✅ Đã thêm User ID <code>{uid}</code> {('(@'+uname+')') if uname else ''} vào danh sách <b>Quân mình</b> và mở khóa chat.",
-            "parse_mode": "HTML"
-        })
-
-
-BOT_ID = 8793731768
-
-
-def should_bot_reply(msg):
-    if msg.get("from", {}).get("is_bot"):
-        return False
-    if msg.get("sender_chat"):
-        return False
-    text = (msg.get("text") or msg.get("caption") or "").strip()
-    if not text or text.startswith("/"):
-        return False
-
-    lower_text = text.lower()
-    if "@vtmarkets8386_bot" in lower_text or re.search(r"\b(bot|trợ\s+lý)\b", lower_text):
-        return True
-
-    reply_to = msg.get("reply_to_message")
-    if reply_to:
-        r_from = reply_to.get("from", {})
-        if r_from.get("id") == BOT_ID or (r_from.get("username") or "").lower() == "vtmarkets8386_bot":
-            return True
-    return False
-
-
-def handle_smart_bot_reply(msg):
-    chat_id = msg["chat"]["id"]
-    msg_id = msg["message_id"]
-    text = (msg.get("text") or msg.get("caption") or "").strip()
-    clean_text = re.sub(r"@vtmarkets8386_bot", "", text, flags=re.I).strip() or text
-
-    reply_to = msg.get("reply_to_message") or {}
-    reply_context = (reply_to.get("text") or reply_to.get("caption") or "").strip()
-
-    api_call("sendChatAction", {"chat_id": chat_id, "action": "typing"})
-    time.sleep(2.2)
-
-    reply_text = news_and_kol_radar.generate_smart_trader_reply(clean_text, reply_context=reply_context)
-    if reply_text:
-        res = api_call("sendMessage", {
-            "chat_id": chat_id,
-            "text": reply_text,
-            "reply_to_message_id": msg_id
-        })
-        log_info(f"Replied to user message {msg_id} (ok={res.get('ok')})")
-
-
-QUESTION_HINTS = ("làm sao", "thế nào", "như nào", "là gì", "bao nhiêu", "có nên", "ai biết", "ai rành", "giúp mình", "cho hỏi", "hỏi chút")
-PENDING_WAIT = 8 * 60          # đợi 8 phút xem anh em trong nhóm có trả lời không
-PENDING_MAX_AGE = 4 * 3600     # quá 4 giờ thì bỏ qua (trả lời muộn là vô duyên)
-DAILY_AUTO_ANSWER_LIMIT = 6
-AUTO_ANSWER_MIN_GAP = 15 * 60
-
-
-def looks_like_question(text):
-    t = (text or "").strip()
-    if len(t) < 15 or t.startswith("/") or re.search(r"https?://", t):
-        return False
-    low = t.lower()
-    return "?" in t or any(h in low for h in QUESTION_HINTS)
-
-
-def track_question(msg, state):
-    """Ghi nhận câu hỏi chưa ai trả lời; xoá khỏi hàng đợi khi có người khác trả lời."""
-    rt = msg.get("reply_to_message")
-    sender = msg.get("from", {}).get("id")
-    pend = state.setdefault("pending_questions", [])
-    if rt and sender != rt.get("from", {}).get("id"):
-        state["pending_questions"] = pend = [q for q in pend if q["mid"] != rt.get("message_id")]
-    text = (msg.get("text") or "").strip()
-    if not msg.get("from", {}).get("is_bot") and looks_like_question(text):
-        pend.append({"mid": msg["message_id"], "ts": time.time(), "uid": sender, "text": text[:400]})
-        state["pending_questions"] = pend[-20:]
-
-
-def check_pending_questions(state):
-    """Câu hỏi nhóm chưa ai đáp sau 8 phút -> bot tự trả lời (có giới hạn/ngày, không trả lời ban đêm)."""
-    pend = state.get("pending_questions") or []
-    if not pend:
-        return False
-    now = time.time()
-    dt = datetime.now()
-    today = dt.strftime("%Y-%m-%d")
-    counts = state.get("auto_answers", {})
-    if counts.get("day") != today:
-        counts = {"day": today, "n": 0}
-    keep, answered = [], False
-    for q in pend:
-        age = now - q["ts"]
-        if age > PENDING_MAX_AGE:
-            continue
-        can = (7 <= dt.hour < 23 and age >= PENDING_WAIT and not answered
-               and counts["n"] < DAILY_AUTO_ANSWER_LIMIT
-               and now - state.get("last_auto_answer", 0) >= AUTO_ANSWER_MIN_GAP)
-        if can:
-            log_info(f"Auto-answering unanswered question {q['mid']} (waited {int(age)}s)")
-            handle_smart_bot_reply({"chat": {"id": DISCUSSION_CHAT_ID}, "message_id": q["mid"], "text": q["text"]})
-            counts["n"] += 1
-            state["last_auto_answer"] = now
-            answered = True
-            continue
-        keep.append(q)
-    state["pending_questions"] = keep
-    state["auto_answers"] = counts
-    save_state(state)
-    return answered
+        set_chat_permission(uid, True)
+        answer = "Đã thêm vào danh sách miễn trừ"
+    elif data.startswith("block:"):
+        item_id = data.split(":", 1)[1]
+        qstate = content_queue.load_state()
+        if qstate.setdefault("items", {}).get(item_id, {}).get("status") == "preview":
+            qstate["items"][item_id] = {"status": "blocked", "ts": int(time.time())}
+            content_queue.save_state(qstate)
+            answer = "Đã chặn bài"
+        else:
+            answer = "Bài đã đăng hoặc đã xử lý"
+    if answer:
+        api_call("answerCallbackQuery", {"callback_query_id": cb["id"], "text": answer})
+        send_text(chat_id, answer)
 
 
 def process_update(upd, wl, state):
     if "callback_query" in upd:
         handle_callback(upd["callback_query"], wl)
         return
+    if "chat_member" in upd:
+        record_member_update(upd["chat_member"])
+        return
 
     msg = upd.get("message") or upd.get("edited_message")
     if not msg:
         return
-
     chat_id = msg.get("chat", {}).get("id")
     chat_type = msg.get("chat", {}).get("type")
     sender_id = msg.get("from", {}).get("id")
@@ -950,30 +695,74 @@ def process_update(upd, wl, state):
         if handle_admin_command(msg, wl, state):
             return
 
-    if chat_id == DISCUSSION_CHAT_ID:
-        state["last_group_activity"] = time.time()
+    if chat_id != DISCUSSION_CHAT_ID:
+        return
+    if "new_chat_members" in msg:
+        welcome_new_members([m for m in msg["new_chat_members"] if not m.get("is_bot") and m.get("id") not in wl["user_ids"]], state)
+        save_state(state)
+        return
+
+    exempt = is_exempt_user(msg, wl)
+    if not exempt:
+        violated, reason = detect_violation(msg)
+        if violated:
+            handle_violation(msg, reason, state)
+            save_state(state)
+            return
+    if handle_member_command(msg):
+        return
+    if msg.get("from", {}).get("is_bot") or msg.get("sender_chat") or "message" not in upd:
+        return
+
+    r_from = (msg.get("reply_to_message") or {}).get("from", {})
+    is_member_reply = bool(r_from) and not r_from.get("is_bot") and r_from.get("id") != sender_id and not exempt
+    if not exempt:
+        record_activity(msg, is_member_reply)
+        notify_explicit_lead(msg)
+    if should_bot_reply(msg):
+        handle_bot_reply(msg, state)
         save_state(state)
 
-        if "new_chat_members" in msg:
-            handle_new_members(msg, wl)
+
+# ----------------------------------------------------------------------------
+# Git: pipeline ghi bài mới, bot ghi trạng thái
+# ----------------------------------------------------------------------------
+def _git(*args, timeout=30):
+    kw = {"cwd": BASE_DIR, "capture_output": True, "text": True}
+    if os.name == "nt":
+        kw["creationflags"] = subprocess.CREATE_NO_WINDOW
+    return subprocess.run(["git", *args], timeout=timeout, **kw)
+
+
+def sync_git_state():
+    """Commit + push state an toàn: autostash vì state bị ghi liên tục, retry khi push bị từ chối."""
+    try:
+        if not os.path.exists(os.path.join(BASE_DIR, ".git")):
             return
-
-        exempt = is_exempt_user(msg, wl)
-        if not exempt:
-            violated, reason = detect_violation(msg)
-            if violated:
-                handle_violation(msg, reason)
+        _git("config", "user.name", "VT-Markets-Bot-Cloud", timeout=8)
+        _git("config", "user.email", "bot@vtmarketshub.local", timeout=8)
+        _git("add", "bot_state.json", "content_queue_state.json", "metrics.json", "whitelist.json", timeout=15)
+        if _git("diff", "--staged", "--quiet", timeout=8).returncode == 0:
+            return
+        _git("commit", "-m", "chore: auto-sync bot state [skip ci]", timeout=15)
+        res = None
+        for attempt in range(3):
+            _git("pull", "--rebase", "--autostash", "origin", "main", timeout=60)
+            res = _git("push", "origin", "main", timeout=60)
+            if res.returncode == 0:
                 return
+            time.sleep(2 + attempt * 3)
+        log_info(f"[Git Sync Warning]: push failed: {(res.stderr or '')[:200]}")
+    except Exception as e:
+        log_info(f"[Git Sync Warning]: {e}")
 
-        if should_bot_reply(msg):
-            handle_smart_bot_reply(msg)
-        elif not exempt:
-            track_question(msg, state)
-        else:
-            track_question({**msg, "text": ""}, state)  # admin/whitelist trả lời cũng được tính là đã có người đáp
 
-        if not exempt:
-            handle_member_message_lead(msg)
+def pull_new_content():
+    try:
+        if os.path.exists(os.path.join(BASE_DIR, ".git")):
+            _git("pull", "--rebase", "--autostash", "origin", "main", timeout=60)
+    except Exception as e:
+        log_info(f"[Git Pull Warning]: {e}")
 
 
 def main():
@@ -986,26 +775,15 @@ def main():
     wl = load_whitelist()
     save_whitelist(wl)
     state = load_state()
-    if "last_group_activity" not in state:
-        state["last_group_activity"] = time.time()
     save_state(state)
-
-    log_info(f"[VT Markets Bot] Started PID={os.getpid()}. Running 1A (Anti-Seeding) + 1B (Scheduled/Catch-up & Icebreaker) + 1C (Lead Routing). Offset={state.get('offset', 0)}")
-
-    # Kiểm tra và đăng bù ngay lập tức nếu vừa khởi động trong khung giờ có lịch (ví dụ khung 08:30 -> 11:30 sáng)
-    try:
-        run_live_v2_showcase(state)
-        check_scheduled_daily_posts(state)
-        send_session_icebreaker(state, force=False)
-    except Exception as e:
-        log_info(f"[Startup Schedule Check Error]: {e}")
+    log_info(f"[VT Markets Bot] Started PID={os.getpid()}. Offset={state.get('offset', 0)}")
 
     start_ts = time.time()
+    last_pull = 0
     max_runtime = 0
     if "--max-runtime-seconds" in sys.argv:
         try:
-            idx = sys.argv.index("--max-runtime-seconds")
-            max_runtime = int(sys.argv[idx + 1])
+            max_runtime = int(sys.argv[sys.argv.index("--max-runtime-seconds") + 1])
         except Exception:
             max_runtime = 19500  # 5h25m default for GitHub Actions
 
@@ -1014,13 +792,13 @@ def main():
             save_state(state)
             save_whitelist(wl)
             sync_git_state()
-            log_info(f"[VT Markets Bot] Reached max_runtime ({max_runtime}s). Saving state and exiting cleanly for next Cloud cycle.")
+            log_info(f"[VT Markets Bot] Reached max_runtime ({max_runtime}s). Exiting cleanly for next Cloud cycle.")
             break
 
         res = api_call("getUpdates", {
             "offset": state.get("offset", 0),
             "timeout": 10,
-            "allowed_updates": ["message", "edited_message", "callback_query"]
+            "allowed_updates": ["message", "edited_message", "callback_query", "chat_member"]
         })
         if res.get("ok"):
             updates = res.get("result", [])
@@ -1034,18 +812,17 @@ def main():
                 save_state(state)
         else:
             err_msg = str(res.get("error", ""))
-            if "409" in err_msg or "Conflict" in err_msg:
-                time.sleep(15)
-            else:
-                time.sleep(3)
+            time.sleep(15 if "409" in err_msg or "Conflict" in err_msg else 3)
 
-        # Check scheduled daily posts + 1B Dynamic Icebreaker
         try:
-            check_scheduled_daily_posts(state)
-            check_pending_questions(state)
-            send_session_icebreaker(state, force=False)
+            if time.time() - last_pull >= GIT_PULL_EVERY:
+                last_pull = time.time()
+                sync_git_state()
+                pull_new_content()
+            process_queue(state)
+            check_debate_results()
         except Exception as e:
-            log_info(f"[Error in 1B / Scheduled posts]: {e}")
+            log_info(f"[Error in queue]: {e}")
 
 
 if __name__ == "__main__":
