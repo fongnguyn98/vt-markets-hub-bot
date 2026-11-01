@@ -52,7 +52,9 @@ Tối đa 2 bài/ngày, cách nhau ít nhất 4 giờ, trong hai khung 09:00-11:
 ## Lệnh
 
 - Thành viên: `/tinhlenh`, `/chiphi`, `/kiemtra`, `/thuvien`, `/baocao`.
-- Chủ nhóm, gõ trong nhóm nội bộ: `/tamdung`, `/tieptuc`, `/thongke`, `/hangdoi`, `/ghim`, `/them`, `/xoa`, `/danhsach`.
+- Chủ nhóm, gõ trong nhóm nội bộ khi cần: `/tamdung`, `/tieptuc`, `/thongke`, `/hangdoi`, `/ghim`, `/them`, `/xoa`, `/danhsach`.
+
+Không cần gõ lệnh để vận hành: bot tự ghim tin giới thiệu một lần, tự kiểm tra quyền admin và chỉ báo khi thiếu, sáng thứ Hai tự gửi số liệu tuần. Pipeline tự chạy mỗi 6 giờ và khi code pipeline đổi trên `main`.
 
 ## Kiểm duyệt
 

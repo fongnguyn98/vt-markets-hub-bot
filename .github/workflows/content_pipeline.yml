@@ -4,6 +4,13 @@ on:
   schedule:
     - cron: '30 */6 * * *'
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - content_pipeline.py
+      - validators.py
+      - .github/workflows/content_pipeline.yml
 
 permissions:
   contents: write

@@ -168,6 +168,42 @@ class BotBehaviour(unittest.TestCase):
         self.assertIn("Rời trong 24 giờ sau khi vào: 1", out)
 
 
+class AutoSetup(unittest.TestCase):
+    def run_setup(self, status, state):
+        calls = []
+
+        def api(method, payload=None):
+            calls.append(method)
+            if method == "getChatMember":
+                return {"ok": True, "result": {"status": status, "can_pin_messages": True, "can_restrict_members": True}}
+            return {"ok": True, "result": {"message_id": 9}}
+        with mock.patch.object(bot, "api_call", side_effect=api), mock.patch.object(bot, "save_state"):
+            bot.ensure_setup(state)
+        return calls
+
+    def test_pins_only_once(self):
+        state = {}
+        self.assertIn("pinChatMessage", self.run_setup("administrator", state))
+        self.assertTrue(state["intro_pinned"])
+        self.assertNotIn("pinChatMessage", self.run_setup("administrator", state))
+
+    def test_not_admin_alerts_once_and_does_not_pin(self):
+        state = {}
+        first = self.run_setup("member", state)
+        self.assertNotIn("pinChatMessage", first)
+        self.assertIn("sendMessage", first)
+        self.assertNotIn("sendMessage", self.run_setup("member", state))
+
+    def test_weekly_report_once_on_monday(self):
+        monday = time.mktime((2026, 11, 2, 9, 30, 0, 0, 0, -1))
+        state = {}
+        with mock.patch.object(bot, "send_text", return_value={"ok": True}) as send, mock.patch.object(bot, "save_state"),                 mock.patch.object(bot, "stats_text", return_value="x"):
+            self.assertFalse(bot.send_weekly_report(state, monday - 86400))
+            self.assertTrue(bot.send_weekly_report(state, monday))
+            self.assertFalse(bot.send_weekly_report(state, monday + 3600))
+        send.assert_called_once()
+
+
 class QueueFlow(unittest.TestCase):
     def setUp(self):
         self.dir = tempfile.TemporaryDirectory()

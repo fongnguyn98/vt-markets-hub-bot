@@ -765,6 +765,39 @@ def pull_new_content():
         log_info(f"[Git Pull Warning]: {e}")
 
 
+def ensure_setup(state):
+    """Việc thiết lập tự làm một lần; chỉ báo chủ nhóm khi bot thiếu quyền hoặc không làm được."""
+    res = api_call("getChatMember", {"chat_id": DISCUSSION_CHAT_ID, "user_id": BOT_ID})
+    member = res.get("result", {}) if res.get("ok") else {}
+    if member.get("status") != "administrator" or not member.get("can_pin_messages") or not member.get("can_restrict_members"):
+        if not state.get("admin_alerted"):
+            send_text(INTERNAL_CHAT_ID, "Bot cần quyền admin trong nhóm thảo luận, gồm ghim tin và hạn chế thành viên, để ghim tin giới thiệu, gỡ spam và đo lượt vào, rời.")
+            state["admin_alerted"] = True
+            save_state(state)
+        return
+    state["admin_alerted"] = False
+    if state.get("intro_pinned"):
+        return
+    sent = send_text(DISCUSSION_CHAT_ID, PINNED_TEXT)
+    if sent.get("ok"):
+        pinned = api_call("pinChatMessage", {"chat_id": DISCUSSION_CHAT_ID, "message_id": sent["result"]["message_id"], "disable_notification": True})
+        state["intro_pinned"] = bool(pinned.get("ok"))
+    save_state(state)
+
+
+def send_weekly_report(state, now=None):
+    """Sáng thứ Hai tự gửi số liệu tuần vào nhóm nội bộ."""
+    dt = datetime.fromtimestamp(now or time.time())
+    week = dt.strftime("%G-W%V")
+    if dt.weekday() != 0 or dt.hour < 9 or state.get("last_report_week") == week:
+        return False
+    if send_text(INTERNAL_CHAT_ID, stats_text(now)).get("ok"):
+        state["last_report_week"] = week
+        save_state(state)
+        return True
+    return False
+
+
 def main():
     try:
         with open(PID_FILE, "w", encoding="utf-8") as f:
@@ -777,6 +810,10 @@ def main():
     state = load_state()
     save_state(state)
     log_info(f"[VT Markets Bot] Started PID={os.getpid()}. Offset={state.get('offset', 0)}")
+    try:
+        ensure_setup(state)
+    except Exception as e:
+        log_info(f"[Setup error]: {e}")
 
     start_ts = time.time()
     last_pull = 0
@@ -821,6 +858,7 @@ def main():
                 pull_new_content()
             process_queue(state)
             check_debate_results()
+            send_weekly_report(state)
         except Exception as e:
             log_info(f"[Error in queue]: {e}")
 
