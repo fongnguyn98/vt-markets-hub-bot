@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-31 14:30:29",
+  "updated_at": "2026-11-01 08:00:30",
   "sources_count": {
     "Website": 56,
     "YouTube": 70,
@@ -24,6 +24,16 @@
   "live_chart_path": "/home/runner/work/vt-markets-hub-bot/vt-markets-hub-bot/live_xauusd_chart.png",
   "macro_posts": [
     {
+      "id_key": "https://www.marketwatch.com/story/we-are-in-our-70s-should-we-pay-off-our-2-5-mortgage-or-build-up-our-savings-5a35e9c1?mod=mw_rss_topstories",
+      "title": "Chúng tôi đang ở độ tuổi 70. Chúng ta nên trả hết khoản thế chấp 2,5% của mình - hay gửi tiền vào tài khoản tiết kiệm lãi suất cao?",
+      "raw_title": "We’re in our 70s. Should we pay off our 2.5% mortgage — or put the money in a high-yield savings account?",
+      "raw_summary": "“Let’s say 10 years from now, when I’m 84, we need a substantial amount of cash.”",
+      "source_name": "MarketWatch",
+      "image_url": "https://images.mktw.net/im-65126339",
+      "source_url": "https://www.marketwatch.com/story/we-are-in-our-70s-should-we-pay-off-our-2-5-mortgage-or-build-up-our-savings-5a35e9c1?mod=mw_rss_topstories",
+      "caption": "📌 Theo bản tin thị trường trên MarketWatch (Chúng tôi đang ở độ tuổi 70. Chúng ta nên trả hết khoản thế chấp 2,5% của mình - hay gửi tiền vào tài khoản tiết kiệm lãi suất cao?), tác giả bài viết cho rằng sự hạ nhiệt của lợi suất trái phiếu Mỹ đang được một bộ phận nhà đầu tư xem là yếu tố hỗ trợ tâm lý cho Vàng quanh vùng $3,868 – $3,875.6.\n\n📊 Trong khi đó, số liệu công khai trên TradingView ghi nhận chỉ số DXY đang ở mức 101.96 còn giá Vàng dao động giữa biên $3,868 và đường trung bình EMA20 H1 ($3,937) với RSI ở mức 17.5.\n\n💬 Bài viết trên MarketWatch nghiêng về kịch bản quan sát phản ứng giá tại hai mốc biên này trước khi xu hướng mới hình thành. Các sếp có đồng tình với góc nhìn của tác giả bài báo không?"
+    },
+    {
       "id_key": "https://www.investing.com/news/economy-news/china-reports-sharp-increase-in-gold-nickel-and-strategic-minerals--xinhua-4989148",
       "title": "Trung Quốc báo cáo tăng mạnh về vàng, niken và khoáng sản chiến lược - Tân Hoa Xã",
       "raw_title": "China reports sharp increase in gold, nickel and strategic minerals - Xinhua",
@@ -31,57 +41,56 @@
       "source_name": "Investing.com Economy",
       "image_url": "https://content-media.investing.com/news/LYNXNPEC3L1A6_M.jpg",
       "source_url": "https://www.investing.com/news/economy-news/china-reports-sharp-increase-in-gold-nickel-and-strategic-minerals--xinhua-4989148",
-      "caption": "Theo bản tin trên Investing.com Economy, tác giả chia sẻ góc nhìn: \"Trung Quốc báo cáo tăng mạnh về vàng, niken và khoáng sản chiến lược - Tân Hoa Xã.\" Số liệu trên TradingView hiện ghi nhận Vàng ở $3,875.6 (giữa vùng $3,868 và $3,937), các sếp thấy nhận định trên của Investing.com Economy có sát thực tế không?"
+      "caption": "Trang Investing.com Economy vừa có bài viết \"Trung Quốc báo cáo tăng mạnh về vàng, niken và khoáng sản chiến lược - Tân Hoa Xã\" phân tích tác động của đồng USD (DXY hiện ở 101.96) lên giá Vàng quanh vùng $3,868 – $3,900. Các sếp đánh giá kịch bản mà chuyên gia bên Investing.com Economy đưa ra hôm nay thế nào?"
     },
     {
-      "id_key": "https://www.investing.com/news/forex-news/asian-currencies-mixed-as-dollar-retreats-yen-steadies-ahead-of-boj-decision-4985749",
-      "title": "Đồng đô la tăng trong tháng 10 khi đặt cược tăng lãi suất vẫn ở mức cao, đồng euro và đồng yên trượt dốc",
-      "raw_title": "Dollar rises for October as rate hike bets remain elevated, euro and yen slip",
-      "raw_summary": "",
-      "source_name": "Investing.com Forex",
-      "image_url": "https://content-media.investing.com/news/LYNXMPEM4A0SE_1200_L.jpg",
-      "source_url": "https://www.investing.com/news/forex-news/asian-currencies-mixed-as-dollar-retreats-yen-steadies-ahead-of-boj-decision-4985749",
-      "caption": "📰 Theo bài phân tích vừa đăng tải trên Investing.com Forex (Đồng đô la tăng trong tháng 10 khi đặt cược tăng lãi suất vẫn ở mức cao, đồng euro và đồng yên trượt dốc), các chuyên gia tại đây nhận định việc dữ liệu lạm phát và lao động Mỹ giữ ổn định đang khiến giới đầu tư giảm kỳ vọng FED sớm hạ lãi suất, từ đó tạo áp lực điều chỉnh lên giá Vàng quanh vùng $3,875.6.\n\n📊 Đối chiếu trên bảng thống kê tự động của TradingView, hiện có 14/26 chỉ báo kỹ thuật nghiêng về chiều bán dưới đường trung bình EMA20 ($3,937), trong khi chỉ số RSI khung H1 đang hiển thị ở mức 17.5 gần biên dưới $3,868.\n\n💬 Từ các dữ liệu trên, đội ngũ phân tích của Investing.com Forex chia sẻ góc nhìn rằng thị trường có thể xuất hiện các nhịp giằng co quanh vùng $3,868 – $3,937. Các sếp đánh giá thế nào về nhận định này của Investing.com Forex?"
+      "id_key": "https://www.marketwatch.com/story/my-abusive-ex-husband-promised-20-000-for-our-kids-education-now-he-refuses-to-pay-is-he-legally-obligated-325ef50f?mod=mw_rss_topstories",
+      "title": "Người chồng cũ bạo hành của tôi hứa tặng 20.000 đô la cho việc học hành của các con chúng tôi. Bây giờ anh ta từ chối trả tiền. Anh ta có bị ràng buộc về mặt pháp lý không?",
+      "raw_title": "My abusive ex-husband promised $20,000 for our kids’ education. Now he refuses to pay. Is he legally obligated?",
+      "raw_summary": "“Before our divorce, my former mother-in-law entrusted him with $20,000 for each of our daughters to invest on their behalf.”",
+      "source_name": "MarketWatch",
+      "image_url": "https://images.mktw.net/im-95596293",
+      "source_url": "https://www.marketwatch.com/story/my-abusive-ex-husband-promised-20-000-for-our-kids-education-now-he-refuses-to-pay-is-he-legally-obligated-325ef50f?mod=mw_rss_topstories",
+      "caption": "Theo bản tin trên MarketWatch, tác giả chia sẻ góc nhìn: \"“Trước khi chúng tôi ly hôn, mẹ chồng cũ của tôi đã giao cho ông ấy 20.\" Số liệu trên TradingView hiện ghi nhận Vàng ở $3,875.6 (giữa vùng $3,868 và $3,937), các sếp thấy nhận định trên của MarketWatch có sát thực tế không?"
     },
     {
-      "id_key": "https://www.investing.com/news/economic-indicators/fed-needs-at-least-two-more-rate-hikes-logan-says-4988462",
-      "title": "FED cần ít nhất hai lần tăng lãi suất nữa, Logan nói",
-      "raw_title": "Fed needs at least two more rate hikes, Logan says",
+      "id_key": "https://www.investing.com/news/commodities-news/citi-sees-european-gas-prices-rising-in-2027-as-middle-east-risks-spur-price-gains-4989323",
+      "title": "Citi dự đoán giá khí đốt châu Âu sẽ tăng vào năm 2027 do Trung Đông có nguy cơ thúc đẩy tăng giá",
+      "raw_title": "Citi sees European gas prices rising in 2027 as Middle East risks spur price gains",
       "raw_summary": "",
-      "source_name": "Investing.com Indicators",
-      "image_url": "https://content-media.investing.com/trkd-images/LYNXNPEM9T1SG_L.jpg",
-      "source_url": "https://www.investing.com/news/economic-indicators/fed-needs-at-least-two-more-rate-hikes-logan-says-4988462",
-      "caption": "📰 Theo bài phân tích vừa đăng tải trên Investing.com Indicators (FED cần ít nhất hai lần tăng lãi suất nữa, Logan nói), các chuyên gia tại đây nhận định việc dữ liệu lạm phát và lao động Mỹ giữ ổn định đang khiến giới đầu tư giảm kỳ vọng FED sớm hạ lãi suất, từ đó tạo áp lực điều chỉnh lên giá Vàng quanh vùng $3,875.6.\n\n📊 Đối chiếu trên bảng thống kê tự động của TradingView, hiện có 14/26 chỉ báo kỹ thuật nghiêng về chiều bán dưới đường trung bình EMA20 ($3,937), trong khi chỉ số RSI khung H1 đang hiển thị ở mức 17.5 gần biên dưới $3,868.\n\n💬 Từ các dữ liệu trên, đội ngũ phân tích của Investing.com Indicators chia sẻ góc nhìn rằng thị trường có thể xuất hiện các nhịp giằng co quanh vùng $3,868 – $3,937. Các sếp đánh giá thế nào về nhận định này của Investing.com Indicators?"
-    },
-    {
-      "id_key": "https://www.investing.com/news/economic-indicators/germany-october-inflation-slows-more-than-expected-to-28-4987753",
-      "title": "Lạm phát tháng 10 của Đức chậm hơn dự kiến ​​xuống 2,8%",
-      "raw_title": "Germany October inflation slows more than expected to 2.8%",
-      "raw_summary": "",
-      "source_name": "Investing.com Indicators",
-      "image_url": "https://content-media.investing.com/news/LYNXMPED0C0KP_M.jpg",
-      "source_url": "https://www.investing.com/news/economic-indicators/germany-october-inflation-slows-more-than-expected-to-28-4987753",
-      "caption": "Trang Investing.com Indicators vừa có bài viết \"Lạm phát tháng 10 của Đức chậm hơn dự kiến ​​xuống 2,8%\" phân tích tác động của đồng USD (DXY hiện ở 101.96) lên giá Vàng quanh vùng $3,868 – $3,900. Các sếp đánh giá kịch bản mà chuyên gia bên Investing.com Indicators đưa ra hôm nay thế nào?"
+      "source_name": "Investing.com Commodities",
+      "image_url": "https://content-media.investing.com/news/moved_LYNXMPEI5M0AS_L.jpg",
+      "source_url": "https://www.investing.com/news/commodities-news/citi-sees-european-gas-prices-rising-in-2027-as-middle-east-risks-spur-price-gains-4989323",
+      "caption": "Trang Investing.com Commodities vừa có bài viết \"Citi dự đoán giá khí đốt châu Âu sẽ tăng vào năm 2027 do Trung Đông có nguy cơ thúc đẩy tăng giá\" phân tích tác động của đồng USD (DXY hiện ở 101.96) lên giá Vàng quanh vùng $3,868 – $3,900. Các sếp đánh giá kịch bản mà chuyên gia bên Investing.com Commodities đưa ra hôm nay thế nào?"
     }
   ],
   "kol_posts": [
     {
-      "id_key": "kol_yt_vid_sPyOWwKEsnU",
-      "kol": "guilherme / ICT Gems & Concepts",
-      "video_id": "sPyOWwKEsnU",
-      "title": "guilherme / ICT Gems & Concepts: CNTT giải thích những khoảng trống giá trị hợp lý thực sự #ictgems #forex #trading",
-      "source_url": "https://www.youtube.com/watch?v=sPyOWwKEsnU",
-      "image_url": "https://i.ytimg.com/vi/sPyOWwKEsnU/hqdefault.jpg",
-      "caption": "📌 Trên kênh YouTube của guilherme / ICT Gems & Concepts, chuyên gia này vừa có bài chia sẻ xoay quanh chủ đề \"CNTT giải thích những khoảng trống giá trị hợp lý thực sự #ictgems #forex #trading\" (thuộc thế mạnh của kênh là: Cắt gọn những kiến thức cốt lõi nhất về bẫy thanh khoản phiên Á - Âu - Mỹ.).\n\n💡 Theo góc nhìn cá nhân mà guilherme / ICT Gems & Concepts trình bày trong video, thay vì vào lệnh dàn trải ở mọi nhịp sóng, chiến lược của chuyên gia này tập trung đợi giá tiếp cận đúng vùng cấu trúc trên khung H1/M15 và chỉ hành động khi có nến xác nhận rõ ràng kèm mức dừng lỗ cố định.\n\n💬 Đó là nguyên tắc giao dịch riêng được guilherme / ICT Gems & Concepts áp dụng. Các sếp trong nhóm mình đánh giá cách tiếp cận này của guilherme / ICT Gems & Concepts có phù hợp khi giao dịch XAU/USD không?"
+      "id_key": "kol_yt_vid_7HD5ZG2MmeQ",
+      "kol": "The Trading Channel (Steven Hart)",
+      "video_id": "7HD5ZG2MmeQ",
+      "title": "The Trading Channel (Steven Hart): Giải thích chiến lược giao dịch vàng",
+      "source_url": "https://www.youtube.com/watch?v=7HD5ZG2MmeQ",
+      "image_url": "https://i.ytimg.com/vi/7HD5ZG2MmeQ/hqdefault.jpg",
+      "caption": "📌 Trên kênh YouTube của The Trading Channel (Steven Hart), chuyên gia này vừa có bài chia sẻ xoay quanh chủ đề \"Giải thích chiến lược giao dịch vàng\" (thuộc thế mạnh của kênh là: Chuyên sâu Price Action đa khung thời gian, đọc cấu trúc sóng, Fibonacci và điểm vào lệnh R:R cao.).\n\n💡 Theo góc nhìn cá nhân mà The Trading Channel (Steven Hart) trình bày trong video, thay vì vào lệnh dàn trải ở mọi nhịp sóng, chiến lược của chuyên gia này tập trung đợi giá tiếp cận đúng vùng cấu trúc trên khung H1/M15 và chỉ hành động khi có nến xác nhận rõ ràng kèm mức dừng lỗ cố định.\n\n💬 Đó là nguyên tắc giao dịch riêng được The Trading Channel (Steven Hart) áp dụng. Các sếp trong nhóm mình đánh giá cách tiếp cận này của The Trading Channel (Steven Hart) có phù hợp khi giao dịch XAU/USD không?"
     },
     {
-      "id_key": "kol_yt_vid_OiXEpjO7rOs",
-      "kol": "Fractal Flow - Pro Trading Strategies",
-      "video_id": "OiXEpjO7rOs",
-      "title": "Fractal Flow - Pro Trading Strategies: Hướng dẫn TUYỆT VỜI cho người mới bắt đầu về MẪU BIỂU ĐỒ",
-      "source_url": "https://www.youtube.com/watch?v=OiXEpjO7rOs",
-      "image_url": "https://i.ytimg.com/vi/OiXEpjO7rOs/hqdefault.jpg",
-      "caption": "📌 Trên kênh YouTube của Fractal Flow - Pro Trading Strategies, chuyên gia này vừa có bài chia sẻ xoay quanh chủ đề \"Hướng dẫn TUYỆT VỜI cho người mới bắt đầu về MẪU BIỂU ĐỒ\" (thuộc thế mạnh của kênh là: Chuyên sâu về cấu trúc thị trường nâng cao, Volume Profile và hành vi giá.).\n\n💡 Theo góc nhìn cá nhân mà Fractal Flow - Pro Trading Strategies trình bày trong video, thay vì vào lệnh dàn trải ở mọi nhịp sóng, chiến lược của chuyên gia này tập trung đợi giá tiếp cận đúng vùng cấu trúc trên khung H1/M15 và chỉ hành động khi có nến xác nhận rõ ràng kèm mức dừng lỗ cố định.\n\n💬 Đó là nguyên tắc giao dịch riêng được Fractal Flow - Pro Trading Strategies áp dụng. Các sếp trong nhóm mình đánh giá cách tiếp cận này của Fractal Flow - Pro Trading Strategies có phù hợp khi giao dịch XAU/USD không?"
+      "id_key": "kol_yt_vid_ulIMYxRo0zY",
+      "kol": "Trades by Matt",
+      "video_id": "ulIMYxRo0zY",
+      "title": "Trades by Matt: Giao dịch 6",
+      "source_url": "https://www.youtube.com/watch?v=ulIMYxRo0zY",
+      "image_url": "https://i.ytimg.com/vi/ulIMYxRo0zY/hqdefault.jpg",
+      "caption": "📌 Trên kênh YouTube của Trades by Matt, chuyên gia này vừa có bài chia sẻ xoay quanh chủ đề \"Giao dịch 6\" (thuộc thế mạnh của kênh là: Thực chiến giao dịch theo phiên Mỹ và kỷ luật cắt lỗ dứt khoát.).\n\n💡 Theo góc nhìn cá nhân mà Trades by Matt trình bày trong video, thay vì vào lệnh dàn trải ở mọi nhịp sóng, chiến lược của chuyên gia này tập trung đợi giá tiếp cận đúng vùng cấu trúc trên khung H1/M15 và chỉ hành động khi có nến xác nhận rõ ràng kèm mức dừng lỗ cố định.\n\n💬 Đó là nguyên tắc giao dịch riêng được Trades by Matt áp dụng. Các sếp trong nhóm mình đánh giá cách tiếp cận này của Trades by Matt có phù hợp khi giao dịch XAU/USD không?"
+    },
+    {
+      "id_key": "kol_yt_vid_jg3TMHR19Oo",
+      "kol": "TJR (Tyler / TJR Trades)",
+      "video_id": "jg3TMHR19Oo",
+      "title": "TJR (Tyler / TJR Trades): Tại sao giao dịch vàng không còn dành cho tôi nữa #shorts #tjr",
+      "source_url": "https://www.youtube.com/watch?v=jg3TMHR19Oo",
+      "image_url": "https://i.ytimg.com/vi/jg3TMHR19Oo/hqdefault.jpg",
+      "caption": "📌 Trên kênh YouTube của TJR (Tyler / TJR Trades), chuyên gia này vừa có bài chia sẻ xoay quanh chủ đề \"Tại sao giao dịch vàng không còn dành cho tôi nữa #shorts #tjr\" (thuộc thế mạnh của kênh là: KOL cực nổi tiếng trong giới trẻ về SMC/ICT, Liquidity Sweep, tâm lý thực chiến phiên New York và cách đọc cấu trúc giá cực cuốn.).\n\n💡 Theo góc nhìn cá nhân mà TJR (Tyler / TJR Trades) trình bày trong video, thay vì vào lệnh dàn trải ở mọi nhịp sóng, chiến lược của chuyên gia này tập trung đợi giá tiếp cận đúng vùng cấu trúc trên khung H1/M15 và chỉ hành động khi có nến xác nhận rõ ràng kèm mức dừng lỗ cố định.\n\n💬 Đó là nguyên tắc giao dịch riêng được TJR (Tyler / TJR Trades) áp dụng. Các sếp trong nhóm mình đánh giá cách tiếp cận này của TJR (Tyler / TJR Trades) có phù hợp khi giao dịch XAU/USD không?"
     },
     {
       "id_key": "kol_yt_vid_YK9Cs3y-otE",
@@ -91,15 +100,6 @@
       "source_url": "https://www.youtube.com/watch?v=YK9Cs3y-otE",
       "image_url": "https://i.ytimg.com/vi/YK9Cs3y-otE/hqdefault.jpg",
       "caption": "📌 Trên kênh YouTube của Mack (Price Action Trading System - PATS), chuyên gia này vừa có bài chia sẻ xoay quanh chủ đề \"Giao dịch xoay vòng vàng và bạc\" (thuộc thế mạnh của kênh là: Chuyên gia đếm nhịp sóng hồi 2 chân (Two-Legged Pullback) kinh điển.).\n\n💡 Theo góc nhìn cá nhân mà Mack (Price Action Trading System - PATS) trình bày trong video, thay vì vào lệnh dàn trải ở mọi nhịp sóng, chiến lược của chuyên gia này tập trung đợi giá tiếp cận đúng vùng cấu trúc trên khung H1/M15 và chỉ hành động khi có nến xác nhận rõ ràng kèm mức dừng lỗ cố định.\n\n💬 Đó là nguyên tắc giao dịch riêng được Mack (Price Action Trading System - PATS) áp dụng. Các sếp trong nhóm mình đánh giá cách tiếp cận này của Mack (Price Action Trading System - PATS) có phù hợp khi giao dịch XAU/USD không?"
-    },
-    {
-      "id_key": "kol_yt_vid_Krwh3FE9Q70",
-      "kol": "Financial Wisdom",
-      "video_id": "Krwh3FE9Q70",
-      "title": "Financial Wisdom: Chiến lược xu hướng vàng và bạc đơn giản (nghiên cứu trong 50 năm) Tiếp theo ở đâu?",
-      "source_url": "https://www.youtube.com/watch?v=Krwh3FE9Q70",
-      "image_url": "https://i.ytimg.com/vi/Krwh3FE9Q70/hqdefault.jpg",
-      "caption": "📌 Trên kênh YouTube của Financial Wisdom, chuyên gia này vừa có bài chia sẻ xoay quanh chủ đề \"Chiến lược xu hướng vàng và bạc đơn giản (nghiên cứu trong 50 năm) Tiếp theo ở đâu?\" (thuộc thế mạnh của kênh là: Tóm tắt phương pháp giao dịch của các huyền thoại Phố Wall (Wyckoff, Livermore, Darvas, Minervini).).\n\n💡 Theo góc nhìn cá nhân mà Financial Wisdom trình bày trong video, thay vì vào lệnh dàn trải ở mọi nhịp sóng, chiến lược của chuyên gia này tập trung đợi giá tiếp cận đúng vùng cấu trúc trên khung H1/M15 và chỉ hành động khi có nến xác nhận rõ ràng kèm mức dừng lỗ cố định.\n\n💬 Đó là nguyên tắc giao dịch riêng được Financial Wisdom áp dụng. Các sếp trong nhóm mình đánh giá cách tiếp cận này của Financial Wisdom có phù hợp khi giao dịch XAU/USD không?"
     },
     {
       "id_key": "kol_yt_smartrisk_idm",
@@ -113,78 +113,78 @@
   ],
   "tiktok_posts": [
     {
-      "id_key": "tiktok_ttrades_ttrades_edu_weekly_withdrawal",
-      "kol": "TTrades (@ttrades_edu)",
-      "title": "TTrades (@ttrades_edu) chia sẻ góc nhìn về thói quen rút lợi nhuận định kỳ để biến con số trên màn hình thành tiền thực tế",
-      "source_url": "https://www.tiktok.com/@ttrades_edu",
-      "image_url": "https://i.ytimg.com/vi/bV7FxNXLeWU/maxresdefault.jpg",
-      "caption": "📝 Trên kênh TikTok của TTrades (@ttrades_edu) (chuyên về: Giải thích bằng hình vẽ trực quan các pha bẫy giá (Inducement) trước khi Vàng chạy thật.), nhà giao dịch này có chia sẻ góc nhìn cá nhân xoay quanh thói quen rút lợi nhuận định kỳ để biến con số trên màn hình thành tiền thực tế.\n\n✅ Theo chia sẻ từ kênh TTrades (@ttrades_edu), nguyên tắc mà họ tự đặt ra cho bản thân là cuối mỗi tuần có lãi đều trích từ 40% – 50% phần lợi nhuận rút về tài khoản ngân hàng nhằm giữ tâm lý thoải mái cho tuần mới.\n\n💬 Đó là kỷ luật cá nhân được TTrades (@ttrades_edu) áp dụng để bảo vệ tài khoản. Các sếp trong nhóm mình thấy cách làm này của TTrades (@ttrades_edu) có thực tế không?"
-    },
-    {
-      "id_key": "tiktok_reuters_reuters_session_timing",
-      "kol": "Reuters (@reuters)",
-      "title": "Reuters (@reuters) chia sẻ góc nhìn về cách lựa chọn khung giờ giao dịch cố định cho người bận công việc hành chính",
-      "source_url": "https://www.tiktok.com/@reuters",
-      "image_url": "https://i.ytimg.com/vi/TYbpk7WogHI/maxresdefault.jpg",
-      "caption": "📝 Trên kênh TikTok của Reuters (@reuters) (chuyên về: Tin tức chấn động địa chính trị (Trung Đông, Nga-Ukraine, Thương mại Mỹ-Trung) tác động tức thì lên giá Vàng.), nhà giao dịch này có chia sẻ góc nhìn cá nhân xoay quanh cách lựa chọn khung giờ giao dịch cố định cho người bận công việc hành chính.\n\n✅ Theo chia sẻ từ kênh Reuters (@reuters), nguyên tắc mà họ tự đặt ra cho bản thân là bỏ qua các nhịp đi ngang biên độ hẹp buổi sáng và chỉ tập trung theo dõi khoảng 45–60 phút đầu phiên Âu hoặc đầu phiên Mỹ khi thanh khoản lớn nhập cuộc.\n\n💬 Đó là kỷ luật cá nhân được Reuters (@reuters) áp dụng để bảo vệ tài khoản. Các sếp trong nhóm mình thấy cách làm này của Reuters (@reuters) có thực tế không?"
-    },
-    {
-      "id_key": "tiktok_doyle_exchange_doyleexchange_fixed_risk_pct",
-      "kol": "Doyle Exchange (@doyleexchange)",
-      "title": "Doyle Exchange (@doyleexchange) chia sẻ góc nhìn về bài toán cố định mức rủi ro tính bằng số tiền USD trên mỗi giao dịch",
-      "source_url": "https://www.tiktok.com/@doyleexchange",
-      "image_url": "https://i.ytimg.com/vi/s96BrHAScRc/hqdefault.jpg",
-      "caption": "📝 Trên kênh TikTok của Doyle Exchange (@doyleexchange) (chuyên về: Chiến lược Scalping khung M5/M15 bắt nhịp hồi tại vùng Cung Cầu.), nhà giao dịch này có chia sẻ góc nhìn cá nhân xoay quanh bài toán cố định mức rủi ro tính bằng số tiền USD trên mỗi giao dịch.\n\n✅ Theo chia sẻ từ kênh Doyle Exchange (@doyleexchange), nguyên tắc mà họ tự đặt ra cho bản thân là luôn xác định trước số tiền chấp nhận rủi ro tối đa cho 1 lệnh (ví dụ 1% – 2% tài khoản) rồi mới chia ngược ra số Lot tương ứng với khoảng cách SL.\n\n💬 Đó là kỷ luật cá nhân được Doyle Exchange (@doyleexchange) áp dụng để bảo vệ tài khoản. Các sếp trong nhóm mình thấy cách làm này của Doyle Exchange (@doyleexchange) có thực tế không?"
-    },
-    {
-      "id_key": "tiktok_nick_shawn_nickshawnfx_htf_alignment",
-      "kol": "Nick Shawn (@nickshawnfx)",
-      "title": "Nick Shawn (@nickshawnfx) chia sẻ góc nhìn về nguyên tắc đối chiếu xu hướng khung thời gian lớn trước khi tìm điểm vào ở khung nhỏ",
-      "source_url": "https://www.tiktok.com/@nickshawnfx",
+      "id_key": "tiktok_tjr_tjrtrades_fixed_risk_pct",
+      "kol": "TJR (@tjrtrades)",
+      "title": "TJR (@tjrtrades) chia sẻ góc nhìn về bài toán cố định mức rủi ro tính bằng số tiền USD trên mỗi giao dịch",
+      "source_url": "https://www.tiktok.com/@tjrtrades",
       "image_url": "https://i.ytimg.com/vi/yvhgwZKkJQ0/maxresdefault.jpg",
-      "caption": "📝 Trên kênh TikTok của Nick Shawn (@nickshawnfx) (chuyên về: Trường phái Hỗ trợ - Kháng cự tối giản và quản trị tỷ lệ R:R thực tế.), nhà giao dịch này có chia sẻ góc nhìn cá nhân xoay quanh nguyên tắc đối chiếu xu hướng khung thời gian lớn trước khi tìm điểm vào ở khung nhỏ.\n\n✅ Theo chia sẻ từ kênh Nick Shawn (@nickshawnfx), nguyên tắc mà họ tự đặt ra cho bản thân là kiểm tra cấu trúc đỉnh đáy trên khung H4 và H1 trước, sau đó mới hạ xuống M15 chờ nến rút chân cùng chiều xu hướng chính.\n\n💬 Đó là kỷ luật cá nhân được Nick Shawn (@nickshawnfx) áp dụng để bảo vệ tài khoản. Các sếp trong nhóm mình thấy cách làm này của Nick Shawn (@nickshawnfx) có thực tế không?"
+      "caption": "📝 Trên kênh TikTok của TJR (@tjrtrades) (chuyên về: KOL số 1 về clip ngắn phân tích Liquidity Sweep (Quét thanh khoản), điểm vào lệnh phiên Mỹ và tâm lý chống FOMO.), nhà giao dịch này có chia sẻ góc nhìn cá nhân xoay quanh bài toán cố định mức rủi ro tính bằng số tiền USD trên mỗi giao dịch.\n\n✅ Theo chia sẻ từ kênh TJR (@tjrtrades), nguyên tắc mà họ tự đặt ra cho bản thân là luôn xác định trước số tiền chấp nhận rủi ro tối đa cho 1 lệnh (ví dụ 1% – 2% tài khoản) rồi mới chia ngược ra số Lot tương ứng với khoảng cách SL.\n\n💬 Đó là kỷ luật cá nhân được TJR (@tjrtrades) áp dụng để bảo vệ tài khoản. Các sếp trong nhóm mình thấy cách làm này của TJR (@tjrtrades) có thực tế không?"
+    },
+    {
+      "id_key": "tiktok_patrick_wieland_patrickwieland_weekly_withdrawal",
+      "kol": "Patrick Wieland (@patrickwieland)",
+      "title": "Patrick Wieland (@patrickwieland) chia sẻ góc nhìn về thói quen rút lợi nhuận định kỳ để biến con số trên màn hình thành tiền thực tế",
+      "source_url": "https://www.tiktok.com/@patrickwieland",
+      "image_url": "https://i.ytimg.com/vi/yvhgwZKkJQ0/maxresdefault.jpg",
+      "caption": "📝 Trên kênh TikTok của Patrick Wieland (@patrickwieland) (chuyên về: Video phản ứng trực tiếp khi thị trường mở cửa phiên New York và khi ra tin CPI/NFP.), nhà giao dịch này có chia sẻ góc nhìn cá nhân xoay quanh thói quen rút lợi nhuận định kỳ để biến con số trên màn hình thành tiền thực tế.\n\n✅ Theo chia sẻ từ kênh Patrick Wieland (@patrickwieland), nguyên tắc mà họ tự đặt ra cho bản thân là cuối mỗi tuần có lãi đều trích từ 40% – 50% phần lợi nhuận rút về tài khoản ngân hàng nhằm giữ tâm lý thoải mái cho tuần mới.\n\n💬 Đó là kỷ luật cá nhân được Patrick Wieland (@patrickwieland) áp dụng để bảo vệ tài khoản. Các sếp trong nhóm mình thấy cách làm này của Patrick Wieland (@patrickwieland) có thực tế không?"
+    },
+    {
+      "id_key": "tiktok_phantom_trading_phantomtradingfx_weekly_withdrawal",
+      "kol": "Phantom Trading (@phantomtradingfx)",
+      "title": "Phantom Trading (@phantomtradingfx) chia sẻ góc nhìn về thói quen rút lợi nhuận định kỳ để biến con số trên màn hình thành tiền thực tế",
+      "source_url": "https://www.tiktok.com/@phantomtradingfx",
+      "image_url": "https://i.ytimg.com/vi/s96BrHAScRc/hqdefault.jpg",
+      "caption": "📝 Trên kênh TikTok của Phantom Trading (@phantomtradingfx) (chuyên về: Phân tích Supply & Demand (Vùng Cung - Cầu) và cấu trúc sóng chuẩn mực.), nhà giao dịch này có chia sẻ góc nhìn cá nhân xoay quanh thói quen rút lợi nhuận định kỳ để biến con số trên màn hình thành tiền thực tế.\n\n✅ Theo chia sẻ từ kênh Phantom Trading (@phantomtradingfx), nguyên tắc mà họ tự đặt ra cho bản thân là cuối mỗi tuần có lãi đều trích từ 40% – 50% phần lợi nhuận rút về tài khoản ngân hàng nhằm giữ tâm lý thoải mái cho tuần mới.\n\n💬 Đó là kỷ luật cá nhân được Phantom Trading (@phantomtradingfx) áp dụng để bảo vệ tài khoản. Các sếp trong nhóm mình thấy cách làm này của Phantom Trading (@phantomtradingfx) có thực tế không?"
+    },
+    {
+      "id_key": "tiktok_alex_g_alexgonzalezfx_fixed_risk_pct",
+      "kol": "Alex G (@alexgonzalezfx)",
+      "title": "Alex G (@alexgonzalezfx) chia sẻ góc nhìn về bài toán cố định mức rủi ro tính bằng số tiền USD trên mỗi giao dịch",
+      "source_url": "https://www.tiktok.com/@alexgonzalezfx",
+      "image_url": "https://i.ytimg.com/vi/s96BrHAScRc/hqdefault.jpg",
+      "caption": "📝 Trên kênh TikTok của Alex G (@alexgonzalezfx) (chuyên về: Phong cách Swing Trading 'Set and Forget' — Nhận định xu hướng lớn cho Vàng và các cặp Forex.), nhà giao dịch này có chia sẻ góc nhìn cá nhân xoay quanh bài toán cố định mức rủi ro tính bằng số tiền USD trên mỗi giao dịch.\n\n✅ Theo chia sẻ từ kênh Alex G (@alexgonzalezfx), nguyên tắc mà họ tự đặt ra cho bản thân là luôn xác định trước số tiền chấp nhận rủi ro tối đa cho 1 lệnh (ví dụ 1% – 2% tài khoản) rồi mới chia ngược ra số Lot tương ứng với khoảng cách SL.\n\n💬 Đó là kỷ luật cá nhân được Alex G (@alexgonzalezfx) áp dụng để bảo vệ tài khoản. Các sếp trong nhóm mình thấy cách làm này của Alex G (@alexgonzalezfx) có thực tế không?"
     }
   ],
   "reddit_posts": [
     {
-      "id_key": "reddit_thread_r/TradingView/comments/1xk3hku/support_inline_tooltips_in_labels_and_table_cells",
-      "sub": "TradingView",
-      "raw_title": "Support Inline Tooltips in Labels and Table Cells",
-      "raw_body": "Please allow Pine Script authors to define tooltips for individual text spans within labels and table cells, for example through inline markup or an API that associates each span with its tooltip text.\n\nThis would provide precise explanations for individual words, phrases, or values without cluttering dashboards. Inline tooltips should take precedence over the general tooltip while their associated text is hovered.\n\nRelated feature requests:\n\n* Tooltip or title display for plot(), hline(), line.new()\n* Tooltip for fill()\n* Tooltip for bgcolor()\n* Feature Request: Make strategy input tooltips wider",
-      "title": "r/TradingView: Hỗ trợ chú giải công cụ nội tuyến trong nhãn và ô bảng",
-      "image_url": "/home/runner/work/vt-markets-hub-bot/vt-markets-hub-bot/live_xauusd_chart.png",
-      "source_url": "https://www.reddit.com/r/TradingView/comments/1xk3hku/support_inline_tooltips_in_labels_and_table_cells/",
-      "caption": "📊 Điểm nhanh một chủ đề mới đang được các thành viên trên cộng đồng r/TradingView quốc tế đem ra thảo luận: \"Hỗ trợ chú giải công cụ nội tuyến trong nhãn và ô bảng\".\n\n💡 Trong bài viết, tác giả trên r/TradingView chia sẻ góc nhìn thực tế: \"Vui lòng cho phép tác giả Pine Script xác định chú giải công cụ cho từng khoảng văn bản trong nhãn và ô bảng, ví dụ: thông qua đánh dấu nội tuyến hoặc API liên kết từng khoảng với văn bản chú giải công cụ của nó.\n\nĐiều này sẽ cung cấp giải thích chính xác cho từng từ, cụm từ hoặc giá trị\"\n\n💬 Đối chiếu trên biểu đồ M15 đính kèm, hiện XAU/USD đang giao dịch quanh $3,875.6 (giữa vùng $3,868 và EMA20 $3,937, RSI H1 ở mức 17.5). Các sếp trong nhóm mình có góc nhìn thế nào về chủ đề trên r/TradingView?"
-    },
-    {
-      "id_key": "reddit_thread_r/Gold/comments/1xk3d0r/from_where_to_buy_golf",
-      "sub": "Gold",
-      "raw_title": "From where to buy golf",
-      "raw_body": "Im 18 and have quite a bit of money saved up that's not going anywhere not doing anything, I wanna buy assets that will increase like gold from where should I buy ? From general jewellery shops ? Or somewhere else and how do I verify everything is good and not getting ripped off \n\nPs I have never bought any jewellery nor know much about gold silver etc so pls guide me",
-      "title": "r/Gold: Mua golf ở đâu",
-      "image_url": "/home/runner/work/vt-markets-hub-bot/vt-markets-hub-bot/live_xauusd_chart.png",
-      "source_url": "https://www.reddit.com/r/Gold/comments/1xk3d0r/from_where_to_buy_golf/",
-      "caption": "📊 Điểm nhanh một chủ đề mới đang được các thành viên trên cộng đồng r/Gold quốc tế đem ra thảo luận: \"Mua golf ở đâu\".\n\n💡 Trong bài viết, tác giả trên r/Gold chia sẻ góc nhìn thực tế: \"Tôi 18 tuổi và có khá nhiều tiền tiết kiệm nên không đi đâu mà không làm gì cả, tôi muốn mua tài sản sẽ tăng như vàng thì nên mua ở đâu? Từ các cửa hàng trang sức nói chung? Hoặc ở một nơi khác và làm cách nào để xác minh mọi thứ đều tốt và không bị lừa\"\n\n💬 Đối chiếu trên biểu đồ M15 đính kèm, hiện XAU/USD đang giao dịch quanh $3,875.6 (giữa vùng $3,868 và EMA20 $3,937, RSI H1 ở mức 17.5). Các sếp trong nhóm mình có góc nhìn thế nào về chủ đề trên r/Gold?"
-    },
-    {
-      "id_key": "reddit_thread_r/wallstreetbets/comments/1xk29i4/anthropic_day_1_day_27_unlocks_did_internal",
-      "sub": "wallstreetbets",
-      "raw_title": "Anthropic Day 1 & Day 27 unlocks: Did internal simulations forecast an AI bubble collapse, or am I overthinking it?",
-      "raw_body": "While reviewing the lock-up provisions in Anthropic’s S-1 filing, two specific terms stood out that deviate significantly from standard IPO practices:\n\n* **Immediate Employee Liquidity:** Non-founder staff can sell up to **10% of their vested shares on Day 1**, followed by another **35% unlock post-earnings** (unlocking \\~45% within the first 2-3 months).\n* **Accelerated Early-Investor Tranches:** Rolling releases for early institutional backers begin around **Day 27 and Day 48** (capped at \\~6% each), well ahead of the traditional 180-day cliff.\n\nAt the same time, the prospectus discloses massive compute obligations exceeding **$600B+** (largely structured as multi-year OpEx commitments and leases rather than owned CapEx).\n\nGiven that backdrop, it makes me wonder: could internal simulations using Claude have predicted an AI bubble popping soon, prompting leadership to structure fast exit ramps? Or is this purely standard float management, and am I overthinking it?",
-      "title": "r/wallstreetbets: Mở khóa Ngày 1 & Ngày 27 của Anthropic: Mô phỏng nội bộ có dự báo về sự sụp đổ bong bóng AI hay tôi đang suy nghĩ quá kỹ về nó?",
-      "image_url": "/home/runner/work/vt-markets-hub-bot/vt-markets-hub-bot/live_xauusd_chart.png",
-      "source_url": "https://www.reddit.com/r/wallstreetbets/comments/1xk29i4/anthropic_day_1_day_27_unlocks_did_internal/",
-      "caption": "📊 Điểm nhanh một chủ đề mới đang được các thành viên trên cộng đồng r/wallstreetbets quốc tế đem ra thảo luận: \"Mở khóa Ngày 1 & Ngày 27 của Anthropic: Mô phỏng nội bộ có dự báo về sự sụp đổ bong bóng AI hay tôi đang suy nghĩ quá kỹ về nó?\".\n\n💡 Trong bài viết, tác giả trên r/wallstreetbets chia sẻ góc nhìn thực tế: \"Trong khi xem xét các điều khoản khóa trong hồ sơ S-1 của Anthropic, có hai điều khoản cụ thể nổi bật khác biệt đáng kể so với các thông lệ IPO tiêu chuẩn:\n\n* **Tính thanh khoản ngay lập tức của nhân viên:** Nhân viên không phải người sáng lập có thể bán tới **10% số cổ phiếu được giao của họ vào Ngày 1**, sau đó là một ngày khác\"\n\n💬 Đối chiếu trên biểu đồ M15 đính kèm, hiện XAU/USD đang giao dịch quanh $3,875.6 (giữa vùng $3,868 và EMA20 $3,937, RSI H1 ở mức 17.5). Các sếp trong nhóm mình có góc nhìn thế nào về chủ đề trên r/wallstreetbets?"
-    },
-    {
-      "id_key": "reddit_thread_r/Silverbugs/comments/1xk0c3i/i_am_pretty_much_ended",
+      "id_key": "reddit_thread_r/Silverbugs/comments/1xkocnm/these_freakin_things_wont_light",
       "sub": "Silverbugs",
-      "raw_title": "I am pretty much ended",
-      "raw_body": "Here is my story.\n\n  \nWhen silver was mooning i decided to take out $500,000 equity from my house and purchased $500,000 worth of silver at the near peak. fast forward to today and my $500,000 has now become $218,000 today. Cutting my losses would hurt me so much.\n\n  \nThe whole idea was to double the 500,000 and move to thailand and take it easy. This won't be happening now clearly.\n\n  \nThose of you in a similar situation what did you do to get out of the mess? I have $200,000 i can buy more silver or gold thinking about doing that",
-      "title": "r/Silverbugs: Tôi gần như đã kết thúc",
+      "raw_title": "These Freakin Things Won't Light!",
+      "raw_body": "I usually someone who buys as close to spot as possible, but these were so cool I had to go for them. Just arrived yesterday. Thanks u/Competitive-Fly-3293!",
+      "title": "r/Silverbugs: Những thứ quái đản này sẽ không sáng!",
       "image_url": "/home/runner/work/vt-markets-hub-bot/vt-markets-hub-bot/live_xauusd_chart.png",
-      "source_url": "https://www.reddit.com/r/Silverbugs/comments/1xk0c3i/i_am_pretty_much_ended/",
-      "caption": "📊 Điểm nhanh một chủ đề mới đang được các thành viên trên cộng đồng r/Silverbugs quốc tế đem ra thảo luận: \"Tôi gần như đã kết thúc\".\n\n💡 Trong bài viết, tác giả trên r/Silverbugs chia sẻ góc nhìn thực tế: \"Đây là câu chuyện của tôi.\n\n  \nKhi bạc đang lên, tôi quyết định rút vốn cổ phần trị giá 500.000 đô la từ nhà của mình và mua số bạc trị giá 500.000 đô la vào thời điểm gần đạt đỉnh. chuyển nhanh đến ngày hôm nay và 500.000 đô la của tôi giờ đã trở thành 218.000 đô la ngày hôm nay. Việc cắt lỗ sẽ khiến tôi tổn thương rất nhiều.\n\n  \nToàn bộ tôi\"\n\n💬 Đối chiếu trên biểu đồ M15 đính kèm, hiện XAU/USD đang giao dịch quanh $3,875.6 (giữa vùng $3,868 và EMA20 $3,937, RSI H1 ở mức 17.5). Các sếp trong nhóm mình có góc nhìn thế nào về chủ đề trên r/Silverbugs?"
+      "source_url": "https://www.reddit.com/r/Silverbugs/comments/1xkocnm/these_freakin_things_wont_light/",
+      "caption": "📊 Điểm nhanh một chủ đề mới đang được các thành viên trên cộng đồng r/Silverbugs quốc tế đem ra thảo luận: \"Những thứ quái đản này sẽ không sáng!\".\n\n💡 Trong bài viết, tác giả trên r/Silverbugs chia sẻ góc nhìn thực tế: \"Tôi thường là người mua càng gần địa điểm càng tốt, nhưng những thứ này quá tuyệt nên tôi phải mua chúng. Mới về hôm qua. Cảm ơn bạn/Competitive-Fly-3293!\"\n\n💬 Đối chiếu trên biểu đồ M15 đính kèm, hiện XAU/USD đang giao dịch quanh $3,875.6 (giữa vùng $3,868 và EMA20 $3,937, RSI H1 ở mức 17.5). Các sếp trong nhóm mình có góc nhìn thế nào về chủ đề trên r/Silverbugs?"
+    },
+    {
+      "id_key": "reddit_thread_r/Daytrading/comments/1xkn58e/you_wont_be_getting_any_profitable_strategies_in",
+      "sub": "Daytrading",
+      "raw_title": "You won’t be getting any profitable strategies in this sub, so stop asking…",
+      "raw_body": "There are too many traders asking for profitable strategies here. This tells me that you’re looking for a shortcut.\n\nIf someone were to give you a strategy, you wouldn’t even be able to execute it. \n\nWhy? \n\nBecause the person who created the strategy knows every single detail and nuance about it.\n\nYou have to create a strategy for yourself. \n\nThat means getting dirty and spending time testing on the charts.\n\nNo shortcuts. No easy way out. \n\nDon’t even think about using AI, that’s not reliable either.",
+      "title": "r/Daytrading: Bạn sẽ không nhận được bất kỳ chiến lược sinh lợi nào trong phần phụ này, vì vậy hãy ngừng hỏi…",
+      "image_url": "/home/runner/work/vt-markets-hub-bot/vt-markets-hub-bot/live_xauusd_chart.png",
+      "source_url": "https://www.reddit.com/r/Daytrading/comments/1xkn58e/you_wont_be_getting_any_profitable_strategies_in/",
+      "caption": "📊 Điểm nhanh một chủ đề mới đang được các thành viên trên cộng đồng r/Daytrading quốc tế đem ra thảo luận: \"Bạn sẽ không nhận được bất kỳ chiến lược sinh lợi nào trong phần phụ này, vì vậy hãy ngừng hỏi…\".\n\n💡 Trong bài viết, tác giả trên r/Daytrading chia sẻ góc nhìn thực tế: \"Có quá nhiều nhà giao dịch yêu cầu chiến lược sinh lời ở đây. Điều này cho tôi biết rằng bạn đang tìm kiếm một lối tắt.\n\nNếu ai đó đưa cho bạn một chiến lược, bạn thậm chí sẽ không thể thực hiện được nó. \n\nTại sao? \n\nBởi vì người tạo ra chiến lược biết từng chi tiết nhỏ nhất và\"\n\n💬 Đối chiếu trên biểu đồ M15 đính kèm, hiện XAU/USD đang giao dịch quanh $3,875.6 (giữa vùng $3,868 và EMA20 $3,937, RSI H1 ở mức 17.5). Các sếp trong nhóm mình có góc nhìn thế nào về chủ đề trên r/Daytrading?"
+    },
+    {
+      "id_key": "reddit_thread_r/algotrading/comments/1xkpq8h/wanna_learn_trading",
+      "sub": "algotrading",
+      "raw_title": "Wanna learn Trading",
+      "raw_body": "Hi all   \nI had interest in market since my college days but I want to take it further can anyone suggest me a roadmap for algo trading how to begin? I have no prior knowledge as of now so how to begin?",
+      "title": "r/algotrading: Muốn học giao dịch",
+      "image_url": "/home/runner/work/vt-markets-hub-bot/vt-markets-hub-bot/live_xauusd_chart.png",
+      "source_url": "https://www.reddit.com/r/algotrading/comments/1xkpq8h/wanna_learn_trading/",
+      "caption": "📊 Điểm nhanh một chủ đề mới đang được các thành viên trên cộng đồng r/algotrading quốc tế đem ra thảo luận: \"Muốn học giao dịch\".\n\n💡 Trong bài viết, tác giả trên r/algotrading chia sẻ góc nhìn thực tế: \"Xin chào tất cả   \nTôi đã quan tâm đến thị trường từ những ngày còn học đại học nhưng tôi muốn tiến xa hơn. Ai có thể gợi ý cho tôi lộ trình giao dịch thuật toán để bắt đầu như thế nào không? Hiện tại tôi chưa có kiến ​​thức gì nên bắt đầu như thế nào?\"\n\n💬 Đối chiếu trên biểu đồ M15 đính kèm, hiện XAU/USD đang giao dịch quanh $3,875.6 (giữa vùng $3,868 và EMA20 $3,937, RSI H1 ở mức 17.5). Các sếp trong nhóm mình có góc nhìn thế nào về chủ đề trên r/algotrading?"
+    },
+    {
+      "id_key": "reddit_thread_r/FuturesTrading/comments/1xk5zcd/turning_point_for_bonds",
+      "sub": "FuturesTrading",
+      "raw_title": "Turning point for bonds",
+      "raw_body": "Two interesting developments occurred late i the week. Whilst Silent Kevin was finally speaking after the FOMC meeting, we witnessed a liquidity sweep occur on 10 year ZN that in a 30 minute period netted 420k of volume. These liquidity sweeps nearly always look like a candlestick doji star, and as the chart shows, have very consistent volume over the 30 minute period. What happens next is easily predicted as the price action shoots up. (I made a nice profit on that!). During the upward rally the bids and asks are heavily loaded, far more than is usual.\n\nThe next big thing that happened was at the close on Friday, where 500,000 lots were traded in the last 5 minutes. Whilst large volumes are not unusual at the end of the day session in stock indexes, this is not necessarily so in bonds, and the volume was eye popping large. \n\nWhere I live in Australia, we also had over 50K transacted in the last 5 minutes of the Friday day session on our XT 10 yr bonds. This large trade volume was also repeated in UK gilts on Friday afternoon as well. \n\nI have found over the years that rally's and trends end with extraordinary volume, and that appears to be what may have occurred this week. \n\nI wou",
+      "title": "r/FuturesTrading: Bước ngoặt của trái phiếu",
+      "image_url": "/home/runner/work/vt-markets-hub-bot/vt-markets-hub-bot/live_xauusd_chart.png",
+      "source_url": "https://www.reddit.com/r/FuturesTrading/comments/1xk5zcd/turning_point_for_bonds/",
+      "caption": "📊 Điểm nhanh một chủ đề mới đang được các thành viên trên cộng đồng r/FuturesTrading quốc tế đem ra thảo luận: \"Bước ngoặt của trái phiếu\".\n\n💡 Trong bài viết, tác giả trên r/FuturesTrading chia sẻ góc nhìn thực tế: \"Hai diễn biến thú vị xảy ra vào cuối tuần. Trong khi Silent Kevin cuối cùng đã phát biểu sau cuộc họp FOMC, chúng tôi đã chứng kiến ​​một đợt quét thanh khoản xảy ra trên ZN 10 năm mà trong khoảng thời gian 30 phút đã thu về khối lượng 420 nghìn. Những đợt quét thanh khoản này gần như luôn trông giống như một nến\"\n\n💬 Đối chiếu trên biểu đồ M15 đính kèm, hiện XAU/USD đang giao dịch quanh $3,875.6 (giữa vùng $3,868 và EMA20 $3,937, RSI H1 ở mức 17.5). Các sếp trong nhóm mình có góc nhìn thế nào về chủ đề trên r/FuturesTrading?"
     }
   ],
   "vt_posts": [

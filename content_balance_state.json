@@ -45,7 +45,8 @@
     "https://www.marketwatch.com/story/why-gold-plunged-to-its-lowest-price-in-a-year-despite-renewed-iran-jitters-365be0e2?mod=mw_rss_topstories",
     "ce_scn_gen_15305217",
     "ce_scn_gen_21760560",
-    "ce_scn_gen_451789"
+    "ce_scn_gen_451789",
+    "ce_gloss_gen_margin call"
   ],
   "category_counts": {
     "tintuc": 8,
@@ -85,6 +86,11 @@
       "t": 1793449824,
       "kind": "scenario",
       "title": "Cập nhật nhanh: Lệnh vàng đang +20 pip khi mình đi làm văn phòng, chỉ còn 8 phút"
+    },
+    {
+      "t": 1793500224,
+      "kind": "glossary",
+      "title": "Khái niệm: margin call"
     }
   ]
 }
