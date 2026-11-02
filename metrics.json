@@ -17,7 +17,19 @@
 "e": "join",
 "u": "4a59a43cb97bbed6",
 "link": ""
+},
+{
+"t": 1793639227,
+"e": "leave",
+"u": "4a59a43cb97bbed6",
+"link": ""
 }
 ],
-"activity": []
+"activity": [
+{
+"t": 1793639228,
+"u": "4a59a43cb97bbed6",
+"r": 0
+}
+]
 }
