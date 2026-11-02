@@ -4,6 +4,11 @@
    "status": "posted",
    "ts": 1793530640,
    "msg_id": 141
+  },
+  "video_MlxpfJ0vphI": {
+   "status": "posted",
+   "ts": 1793584802,
+   "msg_id": 144
   }
  },
  "history": [
@@ -17,6 +22,17 @@
    "text": "[Hồ sơ rủi ro: Warrior Trading day-trading scheme] Warrior Trading và CEO Ross Cameron đã quảng cáo lợi nhuận giả tạo, khiến khách hàng chi hàng nghìn đô la cho hệ thống giao dịch không hiệu quả.\n\n- Cơ chế gây thiệt hại: Những lời hứa lợi nhuận nhanh, các ví dụ cá nhân thành công tạo ấn tượng tin cậy, trong khi thực tế hầu hết khách hàng thực sự mất tiền.\n- Số liệu ghi nhận: $3 million; $101,280.47 (bị cáo buộc)\n- Dấu hiệu nhận diện sớm: Bạn sẽ nhận thấy quảng cáo hứa hẹn lợi nhuận lớn, dùng ví dụ cá nhân thành công, và khuyến khích chi tiền ngay lập tức; nếu có lời hứa “đảm bảo” lợi nhuận trong tuần tiếp theo, đó là dấu hiệu cảnh báo.\n\nBạn sẽ làm gì để bảo vệ tài khoản khi gặp quảng cáo hứa lợi nhuận nhanh chóng và không có minh chứng thực tế?\nNguồn (FTC, AI tóm tắt từ hồ sơ gốc): https://www.ftc.gov/node/78867",
    "source_url": "https://www.ftc.gov/node/78867",
    "ts": 1793530640
+  },
+  {
+   "id": "video_MlxpfJ0vphI",
+   "kind": "video_review",
+   "group": "",
+   "author": "Trades by Matt",
+   "topic": "phuong_phap",
+   "title": "Trades by Matt: How I became consistently profitable (Base Hits)",
+   "text": "[Góc nhìn từ Trades by Matt] Bạn tập trung vào những “base hits” 10-15 điểm, tránh “home run” lớn, và luôn đặt rủi ro rõ ràng để giữ kỷ luật.\nĐiểm cốt lõi trong video:\n- Sử dụng chiến lược “base hits” 10-15 điểm trên Nasdaq (phút 02:52)\n- Đặt rủi ro rõ ràng và chấp nhận rủi ro 100% khi vào lệnh (phút 04:57)\nKiểm chứng & Điểm mù thực chiến:\n- Nhận định (chưa kiểm chứng): Nếu không đạt được mục tiêu, nên thoát ngay và chờ cơ hội mới (không đưa dữ liệu kiểm chứng)\n- Điểm khuất cần lưu ý: Không đề cập đến spread, thanh khoản, hoặc kích thước mẫu backtest\n- Phù hợp khi: Thị trường cổ phiếu, chỉ số Nasdaq, giao dịch ngắn hạn với khối lượng lớn | Dễ hỏng khi: Thị trường ngoại hối, thị trường tiền điện tử có thanh khoản thấp, hoặc khi có spread lớn\nBạn đã bao giờ thử áp dụng “base hits” 10-15 điểm trong giao dịch thực tế chưa?\nNguồn (phụ đề tự động, tóm tắt bởi AI): https://www.youtube.com/watch?v=MlxpfJ0vphI",
+   "source_url": "https://www.youtube.com/watch?v=MlxpfJ0vphI",
+   "ts": 1793584802
   }
  ]
 }
