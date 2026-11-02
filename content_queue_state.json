@@ -9,6 +9,18 @@
    "status": "posted",
    "ts": 1793584802,
    "msg_id": 144
+  },
+  "thread_1xf3ph3": {
+   "status": "posted",
+   "ts": 1793622602,
+   "msg_id": 148,
+   "poll_msg_id": 148,
+   "result_due": 1793795402,
+   "poll_options": [
+    "Duy trì chiến lược cơ học, kiểm tra định kỳ",
+    "Sử dụng linh hoạt, điều chỉnh theo tình hình",
+    "Tùy điều kiện thị trường"
+   ]
   }
  },
  "history": [
@@ -33,6 +45,17 @@
    "text": "[Góc nhìn từ Trades by Matt] Bạn tập trung vào những “base hits” 10-15 điểm, tránh “home run” lớn, và luôn đặt rủi ro rõ ràng để giữ kỷ luật.\nĐiểm cốt lõi trong video:\n- Sử dụng chiến lược “base hits” 10-15 điểm trên Nasdaq (phút 02:52)\n- Đặt rủi ro rõ ràng và chấp nhận rủi ro 100% khi vào lệnh (phút 04:57)\nKiểm chứng & Điểm mù thực chiến:\n- Nhận định (chưa kiểm chứng): Nếu không đạt được mục tiêu, nên thoát ngay và chờ cơ hội mới (không đưa dữ liệu kiểm chứng)\n- Điểm khuất cần lưu ý: Không đề cập đến spread, thanh khoản, hoặc kích thước mẫu backtest\n- Phù hợp khi: Thị trường cổ phiếu, chỉ số Nasdaq, giao dịch ngắn hạn với khối lượng lớn | Dễ hỏng khi: Thị trường ngoại hối, thị trường tiền điện tử có thanh khoản thấp, hoặc khi có spread lớn\nBạn đã bao giờ thử áp dụng “base hits” 10-15 điểm trong giao dịch thực tế chưa?\nNguồn (phụ đề tự động, tóm tắt bởi AI): https://www.youtube.com/watch?v=MlxpfJ0vphI",
    "source_url": "https://www.youtube.com/watch?v=MlxpfJ0vphI",
    "ts": 1793584802
+  },
+  {
+   "id": "thread_1xf3ph3",
+   "kind": "debate",
+   "group": "",
+   "author": "r/FuturesTrading",
+   "topic": "phuong_phap",
+   "title": "Bạn sẽ ưu tiên duy trì chiến lược cơ học hay linh hoạt theo điều kiện thị trường?",
+   "text": "[Tranh luận thực chiến] Bạn sẽ ưu tiên duy trì chiến lược cơ học hay linh hoạt theo điều kiện thị trường?\n- Góc nhìn A: Chiến lược cơ học giúp loại bỏ cảm xúc, giảm rủi ro do quyết định sai lầm và tăng tính nhất quán, nhưng nếu thị trường thay đổi, hệ thống có thể bị phá vỡ\n- Góc nhìn B: Thị trường luôn biến động, các yếu tố không thể dự đoán; một chiến lược hoàn toàn cơ học dễ bị lỗi khi điều kiện thay đổi, vì vậy cần sự linh hoạt và can thiệp chủ quan\n- Điểm mù cả hai phía chưa nói: Tầm quan trọng của việc kiểm tra liên tục và điều chỉnh chiến lược khi dữ liệu mới xuất hiện\n- Lưu ý thiên kiến sống sót: Người có lệnh thắng thường lên tiếng nhiều hơn người đã cháy tài khoản.\nBạn nghiêng về hướng nào? Bỏ phiếu ở poll bên dưới (kết quả tổng hợp sau 48 giờ).\nNguồn (AI dựng từ thảo luận trên r/FuturesTrading): https://www.reddit.com/r/FuturesTrading/comments/1xf3ph3/do_you_have_a_fully_mechanical_strategy_with_set/",
+   "source_url": "https://www.reddit.com/r/FuturesTrading/comments/1xf3ph3/do_you_have_a_fully_mechanical_strategy_with_set/",
+   "ts": 1793622602
   }
  ]
 }
