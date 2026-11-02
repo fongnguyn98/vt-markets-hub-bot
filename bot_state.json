@@ -70,5 +70,6 @@
   "pending_questions": [],
   "admin_alerted": false,
   "intro_pinned": true,
-  "v3_web_photo_showcase_posted": true
+  "v3_web_photo_showcase_posted": true,
+  "last_report_week": "2026-W45"
 }
