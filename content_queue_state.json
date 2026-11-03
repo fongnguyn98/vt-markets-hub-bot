@@ -21,6 +21,11 @@
     "Sử dụng linh hoạt, điều chỉnh theo tình hình",
     "Tùy điều kiện thị trường"
    ]
+  },
+  "thread_1xhthb6": {
+   "status": "posted",
+   "ts": 1793671207,
+   "msg_id": 150
   }
  },
  "history": [
@@ -56,6 +61,17 @@
    "text": "[Tranh luận thực chiến] Bạn sẽ ưu tiên duy trì chiến lược cơ học hay linh hoạt theo điều kiện thị trường?\n- Góc nhìn A: Chiến lược cơ học giúp loại bỏ cảm xúc, giảm rủi ro do quyết định sai lầm và tăng tính nhất quán, nhưng nếu thị trường thay đổi, hệ thống có thể bị phá vỡ\n- Góc nhìn B: Thị trường luôn biến động, các yếu tố không thể dự đoán; một chiến lược hoàn toàn cơ học dễ bị lỗi khi điều kiện thay đổi, vì vậy cần sự linh hoạt và can thiệp chủ quan\n- Điểm mù cả hai phía chưa nói: Tầm quan trọng của việc kiểm tra liên tục và điều chỉnh chiến lược khi dữ liệu mới xuất hiện\n- Lưu ý thiên kiến sống sót: Người có lệnh thắng thường lên tiếng nhiều hơn người đã cháy tài khoản.\nBạn nghiêng về hướng nào? Bỏ phiếu ở poll bên dưới (kết quả tổng hợp sau 48 giờ).\nNguồn (AI dựng từ thảo luận trên r/FuturesTrading): https://www.reddit.com/r/FuturesTrading/comments/1xf3ph3/do_you_have_a_fully_mechanical_strategy_with_set/",
    "source_url": "https://www.reddit.com/r/FuturesTrading/comments/1xf3ph3/do_you_have_a_fully_mechanical_strategy_with_set/",
    "ts": 1793622602
+  },
+  {
+   "id": "thread_1xhthb6",
+   "kind": "thread_review",
+   "group": "",
+   "author": "r/algotrading",
+   "topic": "phuong_phap",
+   "title": "r/algotrading: lowering the barrier to build trading bots does not magically give you an edge",
+   "text": "[Mổ xẻ thảo luận trên r/algotrading] Thảo luận về việc xây dựng bot giao dịch nhanh chóng nhưng thiếu kiểm nghiệm thực tiễn và rủi ro thực tế\n- Luận điểm phía A: Bạn cho rằng việc giảm rào cản xây dựng bot chỉ là công cụ hỗ trợ, không tạo lợi thế thực sự\n- Luận điểm phía B: Bạn nhấn mạnh rằng việc chạy bot nhanh chóng là thành công kỹ thuật nhưng không đảm bảo chiến lược có lợi nhuận\n- Góc khuất thực tế: Chưa đề cập đến chất lượng dữ liệu, kiểm thử đa kịch bản và rủi ro từ việc overfitting\n- Lưu ý thiên kiến sống sót: Người có lệnh thắng thường lên tiếng nhiều hơn người đã cháy tài khoản.\nBạn đã bao giờ gặp tình huống bot hoạt động tốt trong backtest nhưng thất bại khi giao dịch thực?\nNguồn (AI tóm tắt từ r/algotrading): https://www.reddit.com/r/algotrading/comments/1xhthb6/lowering_the_barrier_to_build_trading_bots_does/",
+   "source_url": "https://www.reddit.com/r/algotrading/comments/1xhthb6/lowering_the_barrier_to_build_trading_bots_does/",
+   "ts": 1793671207
   }
  ]
 }
